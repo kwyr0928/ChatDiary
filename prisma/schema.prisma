@@ -16,14 +16,10 @@ datasource db {
 
 model User {
   id            String    @id @default(cuid())
-  name          String?
   email         String?   @unique
-  emailVerified DateTime?
+  emailVerified DateTime? //いる？
   passward      String    @db.VarChar(255) //hashed
   created_at    DateTime  @default(now())
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
 
   Diaries Diaries[]
 
@@ -36,22 +32,24 @@ model Diaries {
   id         String   @id @default(cuid())
   userId     String
   title      String   @db.VarChar(255)
-  detail     String   @db.VarChar(255)
-  summary    String   @db.VarChar(255)
-  isPublic   Boolean
+  summary    String?  @db.VarChar(255)
+  isPublic   Boolean  @default(false)
   created_at DateTime @default(now())
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   Chats      Chats[]
+
+  @@index([userId])
 }
 
 model Chats {
   id         String   @id @default(cuid())
   diaryId    String
-  question   String   @db.VarChar(255)
-  response   String   @db.VarChar(255)
+  message    String   @db.VarChar(255)
+  response   String?  @db.VarChar(255)
   created_at DateTime @default(now())
-  diary      Diaries  @relation(fields: [diariesId], references: [id], onDelete: Cascade)
-  diariesId  String
+  diary      Diaries  @relation(fields: [diaryId], references: [id], onDelete: Cascade)
+
+  @@index([diaryId])
 }
 
 model Tags {
@@ -65,10 +63,12 @@ model Tags {
 model MonthlySummaries {
   id         String   @id @default(cuid())
   userId     String
-  month      Int
+  month      Int //202411
   text       String   @db.VarChar(255)
   created_at DateTime @default(now())
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Analyses {
@@ -77,6 +77,8 @@ model Analyses {
   text       String   @db.VarChar(255)
   created_at DateTime @default(now())
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model DiaryTags {
@@ -85,37 +87,55 @@ model DiaryTags {
   tag    Tags   @relation(fields: [tag_id], references: [id], onDelete: Cascade)
 }
 
-model Account {
-  id                       String  @id @default(cuid())
-  userId                   String
-  type                     String
-  provider                 String
-  providerAccountId        String
-  refresh_token            String? @db.Text
-  access_token             String? @db.Text
-  expires_at               Int?
-  token_type               String?
-  scope                    String?
-  id_token                 String? @db.Text
-  session_state            String?
-  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  refresh_token_expires_in Int?
+// model User {
+//   id            String    @id @default(cuid())
+//   name          String?
+//   email         String?   @unique
+//   emailVerified DateTime?
+//   passward      String    @db.VarChar(255) //hashed
+//   created_at    DateTime  @default(now())
+//   image         String?
+//   accounts      Account[]
+//   sessions      Session[]
 
-  @@unique([provider, providerAccountId])
-}
+//   Diaries Diaries[]
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
+//   MonthlySummaries MonthlySummaries[]
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+//   Analyses Analyses[]
+// }
 
-  @@unique([identifier, token])
-}
+// model Account {
+//   id                       String  @id @default(cuid())
+//   userId                   String
+//   type                     String
+//   provider                 String
+//   providerAccountId        String
+//   refresh_token            String? @db.Text
+//   access_token             String? @db.Text
+//   expires_at               Int?
+//   token_type               String?
+//   scope                    String?
+//   id_token                 String? @db.Text
+//   session_state            String?
+//   user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   refresh_token_expires_in Int?
+
+//   @@unique([provider, providerAccountId])
+// }
+
+// model Session {
+//   id           String   @id @default(cuid())
+//   sessionToken String   @unique
+//   userId       String
+//   expires      DateTime
+//   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+// }
+
+// model VerificationToken {
+//   identifier String
+//   token      String   @unique
+//   expires    DateTime
+
+//   @@unique([identifier, token])
+// }
