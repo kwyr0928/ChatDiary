@@ -57,6 +57,10 @@ export const analyses = z.object({
 });
 
 
+export const zodUserId = z.object({
+  userId: z.string(),
+});
+
 /*
   POST/PUTデータの構造体 - アカウント関連
 */
@@ -64,13 +68,13 @@ export const analyses = z.object({
 // /api/user/signup
 export const postSignup = z.object({
   email: z.string().email(),
-  passward: z.string().min(1),
+  password: z.string().min(1),
 });
 
 // /api/user/signin
 export const postSignin = z.object({
   email: z.string().email(),
-  passward: z.string().min(1),
+  password: z.string().min(1),
 });
 
 // /api/user/signout

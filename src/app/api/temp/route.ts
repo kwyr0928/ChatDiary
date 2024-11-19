@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { zodUserId } from "~/lib/schemas";
+import { z } from "zod";
+import { postSignup } from "~/lib/schemas";
 
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const userId = zodUserId.parse(searchParams);
+    const userId = z.string().parse(searchParams.get("userId")); //クエリパラメータ
 
     return NextResponse.json({
       message: "get xxx successfully",
@@ -20,7 +21,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    //const { userId, xxx } = await req.json();
+    const { email, password } = postSignup.parse(await req.json()); //body
 
     return NextResponse.json({
       message: "create xxx successfully",
@@ -34,30 +35,10 @@ export async function POST(req: Request) {
   }
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } },
-) {
-  try {
-    const itemId = params.id;
-    const { userId, xxx } = await req.json();
-
-    return NextResponse.json({
-      message: "update xxx successfully",
-    });
-  } catch (error) {
-    console.error("Error in UPDATE xxx request:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
-  }
-}
-
 export async function DELETE(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("userId");
+    const userId = z.string().parse(searchParams.get("userId")); //クエリパラメータ
     
     return NextResponse.json({
       message: "delete xxx successfully",
