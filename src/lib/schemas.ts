@@ -7,7 +7,7 @@ import { z } from "zod";
 */
 export const user = z.object({
   id: z.string().min(1).optional(),
-  name: z.string().min(1),
+  registered: z.boolean(),
   email: z.string().email(),
   passward: z.string().min(1), //TODO: 暗号化する
   created_at: z.date().optional(),
@@ -89,9 +89,7 @@ export const postReEmail = z.object({
 
 // api/diary/[id]
 export const putDiary = z.object({
-  tags: z.array(z.number()),
-  text: z.string(),
-  isPublish: z.boolean()
+  mode: z.number(),
 });
 
 // api/chat
@@ -99,21 +97,66 @@ export const postChat = z.object({
   userId: z.string(),
 });
 
-// api/chat/[id]
-export const putChat = z.object({
-  mode: z.number(),
-});
-
 // api/chat/[id]/send
 export const postSendChat = z.object({
   mode: z.number(),
+  text: z.number(),
 });
 
 // api/diary/[id]/new
 export const postDiary = z.object({
-  mode: z.number(),
+  tags: z.array(z.number()),
+  summary: z.string(),
+  isPublic: z.boolean()
 });
 
 /*
   GETデータの構造体
 */
+
+// api/user/[id]
+export const getUser = z.object({
+  id: z.string().min(1).optional(),
+  email: z.string().email(),
+  passward: z.string().min(1), //TODO: 暗号化する
+  registered: z.boolean(),
+  created_at: z.date().optional(),
+});
+
+// api/diary
+export const getDiaries = z.object({
+  diaryIds: z.array(z.number()),
+});
+
+// api/diary/[id]
+export const getDiary = z.object({
+  title: z.string(),
+  summary: z.string(),
+  tags: z.array(z.string()),
+  isPublic: z.boolean(),
+  created_at: z.date()
+});
+
+// api/chat/[id]/receive
+export const getAiResponse = z.object({
+  response: z.string(),
+});
+
+// api/chat/[id]/summary
+export const getSummary = z.object({
+  summary: z.string(),
+});
+
+// api/share
+export const getShare = z.object({
+  diary: z.string(),
+});
+
+// api/feedback/[year]/[month]
+export const getFeedBack = z.object({
+  year: z.number(),
+  month: z.number(),
+  monthly: z.string(),
+  analysis: z.string(),
+  continuation: z.array(z.array(z.boolean())) //その月だけ？過去全部？
+});
