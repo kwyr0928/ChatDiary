@@ -56,11 +56,6 @@ export const analyses = z.object({
   created_at: z.date().optional(),
 });
 
-
-export const zodUserId = z.object({
-  userId: z.string(),
-});
-
 /*
   POST/PUTデータの構造体 - アカウント関連
 */
