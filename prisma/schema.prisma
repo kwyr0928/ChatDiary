@@ -50,7 +50,7 @@ model Chats {
   question   String   @db.VarChar(255)
   response   String   @db.VarChar(255)
   created_at DateTime @default(now())
-  diary      Diaries  @relation(fields: [diariesId], references: [id])
+  diary      Diaries  @relation(fields: [diariesId], references: [id], onDelete: Cascade)
   diariesId  String
 }
 
