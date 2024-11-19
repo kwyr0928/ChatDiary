@@ -1,32 +1,21 @@
-import Image from "next/image";
 import Link from "next/link";
+import { IoChevronBackSharp } from "react-icons/io5";
 
-export default function Page() {
+export default async function Page() {
   return (
-    <div>
-        <h1>G004 登録メール送信完了画面</h1>
-        <p>メールアドレス認証</p>
-        <Image
-            src="/メール送信画面 G004.png"
-            alt="メール送信画面"
-            width={300}
-            height={300}
-          />
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-          <Link href={"/signup/send"}>
-            ①メールを再送（今は何もない）
-          </Link>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-red-50 px-4 py-8 max-w-[375px] mx-auto">
+      <Link href={"/signup"} className="mr-auto">
+      <IoChevronBackSharp color="red" size={"30px"}/>
+      </Link>
+      <p className="text-2xl font-bold">メールアドレス認証</p>
+      <p className="text-center">nekoneko@gmail.comへメールを送信しました。<br/>
+      メールに記載されているURLを開いて登録を完了させてください。</p>
+      <Link href={"/signup/send"}>メールを再送</Link>
+      <Link href={"/signup/complete"}>
+        <button type="button" className="bg-red-400 px-3 py-1 text-white">
+          メール内URLをクリック
         </button>
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-          <Link href={"/signup/complete"}>
-            メール内URL（代用）（成功）
-          </Link>
-        </button>
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-          <Link href={"/signup/expired"}>
-            メール内URL（代用）（期限切れ）
-          </Link>
-        </button>
+      </Link>
     </div>
   );
 }

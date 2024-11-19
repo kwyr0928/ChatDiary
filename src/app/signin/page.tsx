@@ -1,28 +1,23 @@
-import Image from "next/image";
 import Link from "next/link";
+import { IoDocumentTextSharp } from "react-icons/io5";
 
 export default async function Page() {
   return (
- <div>
-       <h1>G001 ログイン画面</h1>
-       <p>ユーザーID, パスワードを入力後、「ログイン」を押す</p>
-       <p>ログインではなく新規登録なら、「新規登録へ」を押す</p>
-       <Image
-            src="/ログイン画面 G001.png"
-            alt="ログイン画面"
-            width={300}
-            height={300}
-          />
-       <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-         <Link href={"/home"}>
-           ④ログイン
-         </Link>
-       </button>
-       <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-         <Link href={"/signup"}>
-           ⑤新規登録へ
-         </Link>
-       </button>
- </div>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-red-50 px-4 py-8 max-w-[375px] mx-auto">
+      <IoDocumentTextSharp color="gray" size={"80px"}/>
+      <p className="text-2xl font-bold">ログイン</p>
+    <div className="flex flex-col">
+        <label className="text-left">ユーザーID</label>
+        <input type="text" />
+        <label className="text-left">パスワード</label>
+        <input type="password" />
+    </div>
+      <Link href={"/home"}>
+        <button type="button" className="bg-red-400 px-3 py-1 text-white">
+          ログイン
+        </button>
+      </Link>
+      <Link href={"/signup"}>新規登録へ</Link>
+    </div>
   );
 }

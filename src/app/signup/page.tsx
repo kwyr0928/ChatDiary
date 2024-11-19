@@ -1,24 +1,28 @@
-import Image from "next/image";
 import Link from "next/link";
-import Backbutton from "~/app/_components/Backbutton";
+import { IoChevronBackSharp } from "react-icons/io5";
 
-export default function Page() {
+export default async function Page() {
   return (
-    <div>
-        <h1>G002 ユーザー登録画面</h1>
-        <p>ユーザーID, メールアドレス, パスワード, パスワード(再入力)を入力後、「確認」を押す</p>
-        <Backbutton text="⑥戻る" />
-        <Image
-            src="/ユーザー登録画面 G002.png"
-            alt="ユーザー登録画面"
-            width={300}
-            height={300}
-          />
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-          <Link href={"/signup/confirm"}>
-            ⑤確認
-          </Link>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-red-50 px-4 py-8 max-w-[375px] mx-auto">
+      <Link href={"/signin"} className="mr-auto">
+      <IoChevronBackSharp color="red" size={"30px"}/>
+      </Link>
+      <p className="text-2xl font-bold">新規登録</p>
+    <div className="flex flex-col">
+        <label className="text-left">ユーザーID</label>
+        <input type="text" />
+        <label className="text-left">メールアドレス</label>
+        <input type="text" />
+        <label className="text-left">パスワード</label>
+        <input type="password" />
+        <label className="text-left">パスワード（再入力）</label>
+        <input type="text" />
+    </div>
+      <Link href={"/signup/confirm"}>
+        <button type="button" className="bg-red-400 px-3 py-1 text-white">
+          確認
         </button>
+      </Link>
     </div>
   );
 }
