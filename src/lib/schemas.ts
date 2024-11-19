@@ -9,7 +9,7 @@ export const user = z.object({
   id: z.string().min(1).optional(),
   registered: z.boolean(),
   email: z.string().email(),
-  passward: z.string().min(1), //TODO: 暗号化する
+  password: z.string().min(1), //TODO: 暗号化する
   created_at: z.date().optional(),
 });
 
@@ -62,14 +62,22 @@ export const analyses = z.object({
 
 // /api/user/signup
 export const postSignup = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
+  email: z.string().email({
+    message: 'メールアドレスを入力してください。',
+  }),
+  password: z.string().min(1, {
+    message: 'パスワードを入力してください。',
+  }),
 });
 
 // /api/user/signin
 export const postSignin = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
+  email: z.string().email({
+    message: 'メールアドレスを入力してください。',
+  }),
+  password: z.string().min(1, {
+    message: 'パスワードを入力してください。',
+  }),
 });
 
 // /api/user/signout
