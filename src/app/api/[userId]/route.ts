@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
+import { zodUserId } from "~/lib/schemas";
 
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("userId");
+    const userId = zodUserId.parse(searchParams);
 
     return NextResponse.json({
       message: "get xxx successfully",
@@ -19,7 +20,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const { userId, xxx } = await req.json();
+    //const { userId, xxx } = await req.json();
 
     return NextResponse.json({
       message: "create xxx successfully",
