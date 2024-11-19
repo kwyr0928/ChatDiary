@@ -18,7 +18,7 @@ model User {
   id            String    @id @default(cuid())
   email         String?   @unique
   emailVerified DateTime? //いる？
-  passward      String    @db.VarChar(255) //hashed
+  password      String    @db.VarChar(255) //hashed
   created_at    DateTime  @default(now())
 
   Diaries Diaries[]
@@ -93,7 +93,7 @@ model DiaryTags {
 //   name          String?
 //   email         String?   @unique
 //   emailVerified DateTime?
-//   passward      String    @db.VarChar(255) //hashed
+//   password      String    @db.VarChar(255) //hashed
 //   created_at    DateTime  @default(now())
 //   image         String?
 //   accounts      Account[]
