@@ -1,5 +1,6 @@
 import { IoRemoveCircleSharp } from "react-icons/io5";
 
+/* タグUI */
 export default function Tag(props: {text: string}) {
     const { text } = props
     return (
@@ -12,3 +13,4 @@ export default function Tag(props: {text: string}) {
         </span>
     )
 }
+// TODO:マイナスボタンを押したらタグが消えるようにする
