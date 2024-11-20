@@ -6,12 +6,13 @@ import { Card, CardContent } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 
 /* UI表示テスト用ページ */
 export default function Page() {
     return (
-        // 背景: red-50
-        <div className="flex items-center justify-center h-screen bg-red-50">
+        // 背景: bg-red-50
+        <div className="flex items-center justify-center bg-red-50">
             <div className="w-full max-w-md flex items-start flex-col">
                 {/* ボタンUI */}
                 <div className="mb-5">
@@ -71,6 +72,27 @@ export default function Page() {
                             出力された日記、チャット文、フィードバックなどを表示する際の白枠
                         </CardContent>
                     </Card>
+                </div>
+
+                {/* プルダウン */}
+                <div className="mb-5">
+                    <Label className="text-lg block">プルダウン</Label>
+                    <div className="flex items-center space-x-2">
+                        <Select>
+                            <SelectTrigger className="px-3">
+                                <SelectValue placeholder="あなたの気持ちを" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectItem value="one">要素１</SelectItem>
+                                    <SelectItem value="two">要素２</SelectItem>
+                                    <SelectItem value="three">要素３</SelectItem>
+                                    <SelectItem value="four">要素４</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        <span className="whitespace-nowrap">深堀る！</span>
+                    </div>
                 </div>
             </div>
         </div>
