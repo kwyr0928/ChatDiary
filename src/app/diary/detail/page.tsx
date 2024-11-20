@@ -1,31 +1,101 @@
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
-import Backbutton from "~/app/_components/Backbutton";
-import Footer from "~/app/_components/Footer";
+import { GoPencil } from "react-icons/go";
+import {
+  IoBarChartSharp,
+  IoChevronBackSharp,
+  IoCogSharp,
+  IoHomeSharp,
+  IoPersonCircleSharp,
+  IoTrashSharp,
+} from "react-icons/io5";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 export default function Page() {
   return (
-    <div>
-        <h1>G014 日記詳細画面</h1>
-        <p>日記詳細、削除、編集</p>
-        <Backbutton text="①戻る" />
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-        <Link href={"/diary/edit"}>
-          ②編集
+    <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center bg-red-50">
+      <div className="flex w-full justify-around px-5 text-center">
+        <Link href={"/home"}>
+          <IoChevronBackSharp color="red" size={"30px"} />
         </Link>
-      </button>
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-        <Link href={"/diary/delete/confirm"}>
-          ③削除
-        </Link>
-      </button>
-        <Image
-            src="/日記詳細画面 G014.png"
-            alt="日記詳細画面"
-            width={300}
-            height={300}
+        <p className="mb-2 w-[95%] text-gray-700">2024/10/2　22:10:32記録</p>
+        <IoTrashSharp color="gray" size={"30px"} />
+      </div>
+      <ScrollArea className="ml-10 h-[600px] w-full">
+        <div className="flex">
+          <p className="mt-4">日記本文</p>
+          <Link href={"/diary/edit"}>
+            <GoPencil
+              size={"25px"}
+              color="gray"
+              className="my-auto ml-5 mt-4"
+            />
+          </Link>
+        </div>
+        <p className="py-2 pl-5 text-red-400">#A　#パフェ　#お出かけ</p>
+        <div className="h-[120px] w-[90%] px-5 text-gray-700">
+          栗が好きなAさんを誘い、パフェを食べに行った。私はさつまいものアイスが乗ったパフェで、Aさんは栗のパウンドケーキが乗ったパフェだった。私が見つけた店で喜んでくれて嬉しい。彼女が喜ぶ店をまた探したいと思った。
+        </div>
+
+        <p className="mt-5">チャットログ</p>
+        <div className="my-2 ml-auto mr-10 h-[80px] w-[70%] rounded-md border bg-white p-4">
+          Aさんとパフェを食べに行った。
+          <br />
+          先週私が誘ったやつ。美味しかった
+        </div>
+        <div className="flex">
+          <IoPersonCircleSharp
+            size={"30px"}
+            color="gray"
+            className="my-auto mr-2"
           />
-        <Footer />
+          <div className="mr-auto h-[60px] w-[60%] rounded-md border bg-white p-4">
+            なぜAさんを誘ったのですか？
+          </div>
+        </div>
+        <div className="my-2 ml-auto mr-10 h-[80px] w-[70%] rounded-md border bg-white p-4">
+          Aさんとパフェを食べに行った。
+          <br />
+          先週私が誘ったやつ。美味しかった
+        </div>
+        <div className="flex">
+          <IoPersonCircleSharp
+            size={"30px"}
+            color="gray"
+            className="my-auto mr-2"
+          />
+          <div className="mr-auto h-[60px] w-[60%] rounded-md border bg-white p-4">
+            なぜAさんを誘ったのですか？
+          </div>
+        </div>
+        <div className="my-2 ml-auto mr-10 h-[80px] w-[70%] rounded-md border bg-white p-4">
+          Aさんとパフェを食べに行った。
+          <br />
+          先週私が誘ったやつ。美味しかった
+        </div>
+        <div className="flex">
+          <IoPersonCircleSharp
+            size={"30px"}
+            color="gray"
+            className="my-auto mr-2"
+          />
+          <div className="mr-auto h-[60px] w-[60%] rounded-md border bg-white p-4">
+            なぜAさんを誘ったのですか？
+          </div>
+        </div>
+      </ScrollArea>
+      <div className="flex w-full justify-around bg-white py-5">
+        <Link href={"/setting"}>
+          <IoCogSharp size={"50px"} color="gray" />
+        </Link>
+        <Link href={"/home"}>
+          <IoHomeSharp size={"50px"} color="red" />
+        </Link>
+        <Link href={"/feedback"}>
+          <IoBarChartSharp size={"50px"} color="gray" />
+        </Link>
+      </div>
     </div>
   );
 }

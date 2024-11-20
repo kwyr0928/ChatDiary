@@ -3,7 +3,7 @@ import { IoDocumentTextSharp } from "react-icons/io5";
 
 export default async function Page() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-red-50 px-4 py-8 max-w-[375px] mx-auto">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-red-50 max-w-md mx-auto">
       <IoDocumentTextSharp color="gray" size={"80px"}/>
       <p className="text-2xl font-bold">ログイン</p>
     <div className="flex flex-col">
