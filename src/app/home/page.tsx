@@ -1,29 +1,108 @@
-import Image from "next/image";
 import Link from "next/link";
-import Footer from "~/app/_components/Footer";
+import {
+  IoAddCircleSharp,
+  IoBarChartSharp,
+  IoCogSharp,
+  IoHomeSharp,
+} from "react-icons/io5";
+import { Button } from "~/components/ui/button";
+import { Command, CommandInput } from "~/components/ui/command";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
-export default function Page() {
+export default async function Page() {
   return (
-    <div>
-        <h1>G007 ホーム画面</h1>
-        <p>日記が表示されるよ</p>
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+    <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center bg-red-50">
+      <Command className="my-4 w-[90%] rounded-full">
+        <CommandInput placeholder="" />
+      </Command>
+      <ScrollArea className="ml-10 h-[600px] w-full">
+        <p className="mb-2 w-[95%] text-gray-700">2024年</p>
+        <p className="mb-2 w-[95%] text-gray-700">10月</p>
         <Link href={"/diary/detail"}>
-          ⑤日記詳細画面へ
+          <Button className="mb-5 flex h-fit w-[90%] flex-col bg-white text-left text-gray-500 hover:bg-white">
+            <p className="w-[95%]">
+              5日<span className="ml-12 text-red-400">#A #お出かけ</span>
+              <br />
+              Aさんと○○へ行き、...
+              <br />
+              ...
+              <br />
+              ...
+            </p>
+          </Button>
         </Link>
-      </button>
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-        <Link href={"/diary/chat"}>
-          ⑥新規作成（＋）
+        <Button className="mb-5 flex h-fit w-[90%] flex-col bg-white text-left text-gray-500 hover:bg-white">
+          <p className="w-[95%]">
+            5日<span className="ml-12 text-red-400">#A #お出かけ</span>
+            <br />
+            Aさんと○○へ行き、...
+            <br />
+            ...
+            <br />
+            ...
+          </p>
+        </Button>
+        <p className="mb-2 w-[95%] text-gray-700">9月</p>
+        <Button className="mb-5 flex h-fit w-[90%] flex-col bg-white text-left text-gray-500 hover:bg-white">
+          <p className="w-[95%]">
+            5日<span className="ml-12 text-red-400">#A #お出かけ</span>
+            <br />
+            Aさんと○○へ行き、...
+            <br />
+            ...
+            <br />
+            ...
+          </p>
+        </Button>
+        <Button className="mb-5 flex h-fit w-[90%] flex-col bg-white text-left text-gray-500 hover:bg-white">
+          <p className="w-[95%]">
+            5日<span className="ml-12 text-red-400">#A #お出かけ</span>
+            <br />
+            Aさんと○○へ行き、...
+            <br />
+            ...
+            <br />
+            ...
+          </p>
+        </Button>
+        <p className="mb-2 w-[95%] text-gray-700">8月</p>
+        <Button className="mb-5 flex h-fit w-[90%] flex-col bg-white text-left text-gray-500 hover:bg-white">
+          <p className="w-[95%]">
+            5日<span className="ml-12 text-red-400">#A #お出かけ</span>
+            <br />
+            Aさんと○○へ行き、...
+            <br />
+            ...
+            <br />
+            ...
+          </p>
+        </Button>
+        <Button className="mb-5 flex h-fit w-[90%] flex-col bg-white text-left text-gray-500 hover:bg-white">
+          <p className="w-[95%]">
+            5日<span className="ml-12 text-red-400">#A #お出かけ</span>
+            <br />
+            Aさんと○○へ行き、...
+            <br />
+            ...
+            <br />
+            ...
+          </p>
+        </Button>
+      </ScrollArea>
+      <Link href={"/diary/chat"} className="ml-auto">
+        <IoAddCircleSharp size={"70px"} color="red"/>
+      </Link>
+      <div className="flex w-full justify-around bg-white py-5">
+        <Link href={"/setting"}>
+          <IoCogSharp size={"50px"} color="gray" />
         </Link>
-      </button>
-      <Image
-            src="/ホーム画面 G007.png"
-            alt="ホーム画面"
-            width={300}
-            height={300}
-          />
-        <Footer />
+        <Link href={"/home"}>
+          <IoHomeSharp size={"50px"} color="red" />
+        </Link>
+        <Link href={"/feedback"}>
+          <IoBarChartSharp size={"50px"} color="gray" />
+        </Link>
+      </div>
     </div>
   );
 }

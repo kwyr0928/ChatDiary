@@ -1,22 +1,22 @@
-import Image from "next/image";
 import Link from "next/link";
+import { IoChevronBackSharp } from "react-icons/io5";
 
-export default function Page() {
+export default async function Page() {
   return (
-    <div>
-        <h1>G006 期限切れ画面</h1>
-        <p>このURLは有効期限が切れているので、再度手続き、「新規登録へ」を押す</p>
-        <Image
-            src="/期限切れ画面 G006.png"
-            alt="期限切れ画面"
-            width={300}
-            height={300}
-          />
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-          <Link href={"/signup"}>
-            ①新規登録へ
-          </Link>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-red-50 max-w-md mx-auto">
+      <Link href={"/signup"} className="mr-auto">
+      <IoChevronBackSharp color="red" size={"30px"}/>
+      </Link>
+      <p className="text-2xl font-bold">期限切れURL</p>
+      <p className="text-center">このURLは有効期限が切れています。<br/>
+      お手数をお掛けしますが、<br/>
+      再度お手続きいただくよう<br/>
+      お願いいたします。</p>
+      <Link href={"/signup"}>
+        <button type="button" className="bg-lime-400 px-3 py-1 text-white">
+          新規登録へ
         </button>
+      </Link>
     </div>
   );
 }
