@@ -17,21 +17,21 @@ export default function Page() {
                 {/* ボタンUI */}
                 <div className="mb-5">
                     <Label className="text-lg block">ボタン</Label>
-                    <Button className="bg-red-400 hover:bg-rose-500">塗りつぶしボタン</Button>
-                    <Button className="bg-white hover:bg-red-400 text-red-400 hover:text-white border border-red-400 hover:border-transparent">枠つきボタン</Button>
+                    <Button className="bg-red-400 hover:bg-rose-500 focus-visible:ring-0">塗りつぶしボタン</Button>
+                    <Button className="bg-white hover:bg-red-400 text-red-400 hover:text-white border border-red-400 hover:border-transparent focus-visible:ring-0">枠つきボタン</Button>
                 </div>
 
                 {/* インプット */}
                 <div className="mb-5">
                     <Label className="text-lg block">入力欄</Label>
-                    <Input />
+                    <Input className="focus-visible:ring-0 focus-visible:ring-offset-0"/>
                 </div>
 
                 {/* チャット欄 */}
                 <div className="mb-5">
                     <Label className="text-lg block">チャット</Label>
                     <div className="flex space-x-2 mb-3 items-end">
-                        <textarea rows={4} className="resize-none border rounded focus:outline-none" />
+                        <textarea rows={4} className="p-1 resize-none border rounded focus:outline-none" />
                         <IoSendSharp style={{ color: "#f87171", fontSize: '25px' }} />
                     </div>
                 </div>
@@ -53,11 +53,11 @@ export default function Page() {
                     <Label className="text-lg block">ラジオボタン</Label>
                     <RadioGroup defaultValue="private">
                         <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="public" id="public" className="border-red-400" />
+                            <RadioGroupItem value="public" id="public" className="border-red-400 focus-visible:ring-0" />
                             <Label htmlFor="public">公開</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="private" id="private" className="border-red-400" />
+                            <RadioGroupItem value="private" id="private" className="border-red-400 focus-visible:ring-0" />
                             <Label htmlFor="private">非公開</Label>
                         </div>
                     </RadioGroup>
@@ -79,7 +79,7 @@ export default function Page() {
                     <Label className="text-lg block">プルダウン</Label>
                     <div className="flex items-center space-x-2">
                         <Select>
-                            <SelectTrigger className="px-3">
+                            <SelectTrigger className="px-3 focus-visible:ring-0">
                                 <SelectValue placeholder="あなたの気持ちを" />
                             </SelectTrigger>
                             <SelectContent>
