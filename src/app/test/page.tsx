@@ -17,14 +17,14 @@ export default function Page() {
                 {/* ボタンUI */}
                 <div className="mb-5">
                     <Label className="text-lg block">ボタン</Label>
-                    <Button className="bg-red-400 hover:bg-rose-500 focus-visible:ring-0">塗りつぶしボタン</Button>
-                    <Button className="bg-white hover:bg-red-400 text-red-400 hover:text-white border border-red-400 hover:border-transparent focus-visible:ring-0">枠つきボタン</Button>
+                    <Button className="bg-red-400 hover:bg-rose-500">塗りつぶしボタン</Button>
+                    <Button className="bg-white hover:bg-red-400 text-red-400 hover:text-white border border-red-400 hover:border-transparent">枠つきボタン</Button>
                 </div>
 
                 {/* インプット */}
                 <div className="mb-5">
                     <Label className="text-lg block">入力欄</Label>
-                    <Input className="focus-visible:ring-0 focus-visible:ring-offset-0"/>
+                    <Input />
                 </div>
 
                 {/* チャット欄 */}
@@ -53,11 +53,11 @@ export default function Page() {
                     <Label className="text-lg block">ラジオボタン</Label>
                     <RadioGroup defaultValue="private">
                         <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="public" id="public" className="border-red-400 focus-visible:ring-0" />
+                            <RadioGroupItem value="public" id="public" className="border-red-400" />
                             <Label htmlFor="public">公開</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="private" id="private" className="border-red-400 focus-visible:ring-0" />
+                            <RadioGroupItem value="private" id="private" className="border-red-400" />
                             <Label htmlFor="private">非公開</Label>
                         </div>
                     </RadioGroup>
