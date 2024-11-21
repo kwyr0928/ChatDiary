@@ -20,7 +20,7 @@ const user = {
 export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="relative mx-auto flex min-h-screen max-w-md w-full flex-col items-center bg-red-50 text-gray-600">
+    <div className="mx-auto flex min-h-screen max-w-md w-full flex-col items-center bg-red-50 text-gray-600">
       <div className="mr-auto ml-8">
         <p className="mt-12 text-xl font-bold w-full text-left">アカウント情報</p>
         <p className="mt-4 text-md w-full text-left">ユーザーID：{user.id}</p>
@@ -34,7 +34,7 @@ export default function Page() {
         </div>
       </Link>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <div className="mt-6 w-[60%]">
+        <div className="mt-6 mb-auto w-[60%]">
           <Button
             className="rounded-full bg-red-400 hover:bg-rose-500 w-full"
             onClick={() => setIsOpen(true)}
@@ -68,7 +68,7 @@ export default function Page() {
           </div>
         </DialogContent>
       </Dialog>
-      <div className="absolute bottom-0 flex w-full justify-around bg-white py-5">
+      <div className="flex w-full justify-around bg-white py-5">
         <Link href={"/setting"}>
           <IoCogSharp size={"50px"} color="#f87171" />
         </Link>

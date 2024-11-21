@@ -36,7 +36,7 @@ export default async function Page() {
   const today = new Date().toISOString().split("T")[0];
 
   return (
-    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
       <p className="mt-5 mb-3 w-full pl-5 text-left text-xl font-bold">
         2024年11月の継続状況
       </p>
@@ -72,10 +72,10 @@ export default async function Page() {
         あなたの分析
       </p>
       {/* カード */}
-      <Card className="w-[85%] shadow-none">
+      <Card className="mb-auto w-[85%] shadow-none">
         <CardContent className="px-5 py-3">あなたは積極的に友人を誘ったり手助けできる人ですね。一方で自分から人に頼れない場面が多く、弱みを見せたくないというプライドの高さを感じます。</CardContent>
       </Card>
-      <div className="absolute bottom-0 flex w-full justify-around bg-white py-5">
+      <div className="flex w-full justify-around bg-white py-5">
         <Link href={"/setting"}>
           <IoCogSharp size={"50px"} color="gray" />
         </Link>

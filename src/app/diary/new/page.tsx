@@ -2,100 +2,107 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import {
-  IoAddCircleOutline,
-  IoBarChartSharp,
-  IoCheckmarkSharp,
-  IoChevronBackSharp,
-  IoCogSharp,
-  IoHomeSharp,
-  IoTrashSharp
-} from "react-icons/io5";
+import { IoAddCircleOutline, IoChevronBackSharp } from "react-icons/io5";
 import Tag from "~/components/tag";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent } from "~/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
-import { ScrollArea } from "~/components/ui/scroll-area";
 
 export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center bg-red-50">
-      <div className="flex w-full justify-around px-5 text-center">
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger
-          onClick={() => setIsOpen(true)}
-        >
-           <IoChevronBackSharp color="red" size={"30px"} />
-        </DialogTrigger>
-        <DialogContent className="w-[80%]">
+    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <div className="mb-5 flex w-full flex-col justify-around bg-white pt-5 text-center">
+        <div className="mb-3 flex">
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5">
+              <IoChevronBackSharp color="#f87171" size={"30px"} />
+            </DialogTrigger>
+            <DialogContent className="w-[80%]">
           <DialogHeader>
-            <DialogTitle>編集内容を取り消しますか？</DialogTitle>
+            <DialogTitle className="mt-5">編集内容を削除して戻りますか？</DialogTitle>
           </DialogHeader>
           <DialogDescription className="text-center text-gray-500">
-            現在は保存していても表示されます　あらま
+            作成した日記は削除されます
           </DialogDescription>
           <div className="flex justify-around">
-            <button
-              type="button"
-              className="border border-red-400 px-3 py-1 text-red-400"
-              onClick={() => setIsOpen(false)}
-            >
-              いいえ
-            </button>
-            <Link href={"/diary/detail"}>
-              <button type="button" className="bg-red-400 px-3 py-1 text-white">
-                はい
-              </button>
+            <div className="my-2">
+              <Button
+                className="w-[100px] rounded-full bg-white hover:bg-red-400 text-red-400 hover:text-white border border-red-400 hover:border-transparent"
+                onClick={() => setIsOpen(false)}
+              >
+                いいえ
+              </Button>
+            </div>
+            <Link href={"/home"}>
+              <div className="my-2">
+                <Button className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500">
+                  はい
+                </Button>
+              </div>
             </Link>
           </div>
         </DialogContent>
       </Dialog>
-        <p className="mb-2 w-[95%] text-gray-700">2024/10/2　22:10:32記録</p>
-        <IoTrashSharp color="gray" size={"30px"} />
+          <p className="my-auto mr-12 w-[95%] text-lg">2024/10/2</p>
+        </div>
       </div>
-      <ScrollArea className="ml-10 h-[600px] w-full">
-        <div className="flex">
-          <p className="mt-4">出力された日記</p>
-          <IoCheckmarkSharp size={"25px"} color="red" className="my-auto mt-4 ml-5"/>
-        </div>
-        <div className="h-[170px] w-[90%] rounded-md border bg-white p-5">
-          栗が好きなAさんを誘い、パフェを食べに行った。私はさつまいものアイスが乗ったパフェで、Aさんは栗のパウンドケーキが乗ったパフェだった。私が見つけた店で喜んでくれて嬉しい。彼女が喜ぶ店をまた探したいと思った。
-        </div>
-        <p className="mt-5">タグ</p>
+      <div className="w-[85%] mb-auto">
+        <p className="my-2 text-center text-lg">出力された日記</p>
+        {/* カード */}
+        <Card className="text-gray-600 shadow-none">
+          <CardContent className="px-5 py-3">
+            栗が好きなAさんを誘い、パフェを食べに行った。私はさつまいものアイスが乗ったパフェで、Aさんは栗のパウンドケーキが乗ったパフェだった。私が見つけた店で喜んでくれて嬉しい。彼女が喜ぶ店をまた探したいと思った。
+          </CardContent>
+        </Card>
+        <p className="mb-2 mt-5 text-left text-lg">タグ</p>
         <div className="flex gap-3">
           <Tag text="food" />
           <Tag text="Aちゃん" />
-          <IoAddCircleOutline color="red" size={"30px"} className="mt-0.5" />
+          <IoAddCircleOutline
+            color="#f87171"
+            size={"30px"}
+            className="mt-0.5"
+          />
         </div>
-        <p className="mt-5">公開範囲</p>
-        <RadioGroup defaultValue="public" className="my-3">
-          <div className="flex items-center space-x-2 mb-2">
-            <RadioGroupItem value="public" id="public"/>
-            <Label htmlFor="public">公開</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="private" id="private" />
-            <Label htmlFor="private">非公開</Label>
-          </div>
-        </RadioGroup>
-      </ScrollArea>
-      <Link href={"/home"}>
-        <button type="button" className="bg-red-400 px-3 py-1 text-white">
-          作成する！
-        </button>
-      </Link>
-      <div className="flex w-full justify-around bg-white py-5">
-        <Link href={"/setting"}>
-          <IoCogSharp size={"50px"} color="gray" />
-        </Link>
+        <p className="mb-2 mt-5 text-left text-lg">公開範囲</p>
+        {/* ラジオボタン */}
+        <div className="mb-5">
+          <RadioGroup defaultValue="private" className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="public"
+                id="public"
+                className="border-red-400"
+              />
+              <Label htmlFor="public">公開</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="private"
+                id="private"
+                className="border-red-400"
+              />
+              <Label htmlFor="private">非公開</Label>
+            </div>
+          </RadioGroup>
+        </div>
         <Link href={"/home"}>
-          <IoHomeSharp size={"50px"} color="red" />
-        </Link>
-        <Link href={"/feedback"}>
-          <IoBarChartSharp size={"50px"} color="gray" />
-        </Link>
+        {/* ボタンUI */}
+        <div className="flex justify-center my-10">
+                <Button className="bg-red-400 hover:bg-rose-500 rounded-full w-[80%] text-xl">作成する！</Button>
+            </div>
+      </Link>
       </div>
     </div>
   );

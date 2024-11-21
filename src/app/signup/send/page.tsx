@@ -14,7 +14,7 @@ export default function Page() {
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
       <Link href={"/signup/confirm"} className="absolute left-7 top-9">
-        <IoChevronBackSharp color="red" size={"30px"} />
+        <IoChevronBackSharp color="#f87171" size={"30px"} />
       </Link>
       <div className="flex h-[350px] w-[80%] flex-col items-center justify-center rounded-md bg-white">
         <p className="mb-8 mt-2 text-xl font-bold">メールアドレス認証</p>
