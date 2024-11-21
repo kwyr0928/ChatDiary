@@ -1,28 +1,55 @@
 import Link from "next/link";
 import { IoChevronBackSharp } from "react-icons/io5";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
 
 export default async function Page() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-red-50 max-w-md mx-auto">
-      <Link href={"/signin"} className="mr-auto">
-      <IoChevronBackSharp color="red" size={"30px"}/>
+    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <Link href={"/signin"} className="absolute left-7 top-9">
+        <IoChevronBackSharp color="red" size={"30px"} />
       </Link>
-      <p className="text-2xl font-bold">新規登録</p>
-    <div className="flex flex-col">
-        <label className="text-left">ユーザーID</label>
-        <input type="text" />
-        <label className="text-left">メールアドレス</label>
-        <input type="text" />
-        <label className="text-left">パスワード</label>
-        <input type="password" />
-        <label className="text-left">パスワード（再入力）</label>
-        <input type="text" />
-    </div>
+      <p className="text-3xl font-bold my-8">新規登録</p>
+      <form className="flex flex-col space-y-4 w-[70%]">
+        <div className="space-y-2">
+          <label className="text-sm">ユーザーID</label>
+          <Input
+            type="text"
+            className="h-12 rounded-full border-gray-200 px-4"
+            placeholder="ユーザーID"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm">メールアドレス</label>
+          <Input
+            type="text"
+            className="h-12 rounded-full border-gray-200 px-4"
+            placeholder="メールアドレス"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm">パスワード</label>
+          <Input
+            type="password"
+            className="h-12 rounded-full border-gray-200 px-4"
+            placeholder="パスワード"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm">パスワード（再入力）</label>
+          <Input
+            type="password"
+            className="h-12 rounded-full border-gray-200 px-4"
+            placeholder="パスワード（再入力）"
+          />
+        </div>
       <Link href={"/signup/confirm"}>
-        <button type="button" className="bg-red-400 px-3 py-1 text-white">
-          確認
-        </button>
+        {/* ボタンUI */}
+        <div className="my-7">
+                <Button className="bg-red-400 hover:bg-red-500 rounded-full　w-full text-xl">登録</Button>
+            </div>
       </Link>
+      </form>
     </div>
   );
 }

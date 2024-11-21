@@ -1,24 +1,39 @@
 import Link from "next/link";
 import { IoChevronBackSharp } from "react-icons/io5";
+import { Button } from "~/components/ui/button";
+
+const user = {
+    id: "nekoneko",
+    mail: "nekoneko@gmail.com"
+}
 
 export default async function Page() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-red-50 max-w-md mx-auto">
-      <Link href={"/signup"} className="mr-auto">
-      <IoChevronBackSharp color="red" size={"30px"}/>
+    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <Link href={"/signup"} className="absolute left-7 top-9">
+        <IoChevronBackSharp color="red" size={"30px"} />
       </Link>
-      <p className="text-2xl font-bold">確認</p>
-    <div className="flex flex-col">
-        <label className="text-left">ユーザーID</label>
-        <p>nekoneko</p>
-        <label className="text-left">メールアドレス</label>
-        <p>nekoneko@gmail.com</p>
-    </div>
-      <Link href={"/signup/send"}>
-        <button type="button" className="bg-red-400 px-3 py-1 text-white">
-          確定して登録
-        </button>
-      </Link>
+      <div className="flex h-[350px] w-[80%] flex-col items-center justify-center rounded-md bg-white">
+        <p className="my-8 text-xl font-bold">確認</p>
+        <div className="flex w-[80%] flex-col space-y-5 text-left">
+          <div className="space-y-1">
+            <label className="text-md">ユーザーID</label>
+            <p className="text-xl">{user.id}</p>
+          </div>
+          <div className="space-y-1">
+            <label className="text-md">メールアドレス</label>
+            <p className="text-xl">{user.mail}</p>
+          </div>
+          <Link href={"/signup/send"}>
+            {/* ボタンUI */}
+            <div className="my-7">
+              <Button className="rounded-full　w-full bg-red-400 text-xl hover:bg-red-500">
+                確定して登録
+              </Button>
+            </div>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

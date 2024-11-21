@@ -1,19 +1,23 @@
 import Link from "next/link";
-import { IoChevronBackSharp } from "react-icons/io5";
+import { Button } from "~/components/ui/button";
 
 export default async function Page() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-red-50 max-w-md mx-auto">
-      <Link href={"/signup"} className="mr-auto">
-      <IoChevronBackSharp color="red" size={"30px"}/>
-      </Link>
-      <p className="text-2xl font-bold">登録完了</p>
-      <p className="text-center">登録が完了しました。</p>
-      <Link href={"/signin"}>
-        <button type="button" className="bg-lime-400 px-3 py-1 text-white">
-          ログイン画面へ
-        </button>
-      </Link>
+    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <div className="flex h-[350px] w-[80%] flex-col items-center justify-center rounded-md bg-white">
+      <p className="my-8 text-xl font-bold">登録完了</p>
+      <div className="flex w-[80%] flex-col space-y-5 text-left">
+        <p className="text-center my-10">登録が完了しました。</p>
+        <Link href={"/signin"}>
+          {/* ボタンUI */}
+          <div className="my-6">
+                <Button className="rounded-full　w-full bg-lime-500 text-xl hover:bg-lime-600">
+                  ログイン画面へ
+                </Button>
+              </div>
+        </Link>
+      </div>
+      </div>
     </div>
   );
 }
