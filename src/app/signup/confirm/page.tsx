@@ -27,7 +27,7 @@ export default async function Page() {
           <Link href={"/signup/send"}>
             {/* ボタンUI */}
             <div className="my-7">
-              <Button className="rounded-full　w-full bg-red-400 text-xl hover:bg-red-500">
+              <Button className="rounded-full　w-full bg-red-400 text-xl hover:bg-rose-500">
                 確定して登録
               </Button>
             </div>
