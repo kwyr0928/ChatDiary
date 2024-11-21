@@ -1,5 +1,4 @@
 import { IoSendSharp } from "react-icons/io5";
-import ResizeTextarea from "~/components/resizeTextarea";
 import Tag from "~/components/tag";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
@@ -37,10 +36,10 @@ export default function Page() {
                 </div>
 
                 {/* 可変テキストエリア */}
-                <div className="mb-5">
+                {/* <div className="mb-5">
                     <Label className="text-lg block">高さが変わるテキストエリア</Label>
-                    <ResizeTextarea className="resize-none border rounded focus:outline-none mb-3" />
-                </div>
+                    <ResizeTextarea className="resize-none border rounded focus:outline-none mb-3" defaultValue="初期値" />
+                </div> */}
 
                 {/* タグ(見た目のみ) */}
                 <div className="mb-5">
