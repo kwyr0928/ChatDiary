@@ -5,99 +5,75 @@ import {
   IoCogSharp,
   IoHomeSharp,
 } from "react-icons/io5";
-import { Button } from "~/components/ui/button";
+import { Card, CardContent } from "~/components/ui/card";
 import { Command, CommandInput } from "~/components/ui/command";
-import { ScrollArea } from "~/components/ui/scroll-area";
 
-export default async function Page() {
+const diary = {
+  diary: [
+    {
+      tag: ["A", "お出かけ"],
+      context:
+        "Aさんと○○へ行き、xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      date: "2024-11-21",
+    },
+    {
+      tag: ["B", "旅行"],
+      context: "Bさんと△△へ行き、xxxxxxxxxxxxxxxxxxxxx",
+      date: "2024-11-01",
+    },
+    {
+      tag: ["C", "仕事"],
+      context: "Cさんと□□へ行き、xxxx",
+      date: "2024-10-10",
+    },
+    {
+      tag: ["D", "ねむい"],
+      context: "ねむいでござんす",
+      date: "2024-10-9",
+    },
+  ],
+};
+
+export default function Page() {
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center bg-red-50">
-      <Command className="my-4 w-[90%] rounded-full">
-        <CommandInput placeholder="" />
-      </Command>
-      <ScrollArea className="ml-10 h-[600px] w-full">
-        <p className="mb-2 w-[95%] text-gray-700">2024年</p>
-        <p className="mb-2 w-[95%] text-gray-700">10月</p>
-        <Link href={"/diary/detail"}>
-          <Button className="mb-5 flex h-fit w-[90%] flex-col bg-white text-left text-gray-500 hover:bg-white">
-            <p className="w-[95%]">
-              5日<span className="ml-12 text-red-400">#A #お出かけ</span>
-              <br />
-              Aさんと○○へ行き、...
-              <br />
-              ...
-              <br />
-              ...
-            </p>
-          </Button>
-        </Link>
-        <Button className="mb-5 flex h-fit w-[90%] flex-col bg-white text-left text-gray-500 hover:bg-white">
-          <p className="w-[95%]">
-            5日<span className="ml-12 text-red-400">#A #お出かけ</span>
-            <br />
-            Aさんと○○へ行き、...
-            <br />
-            ...
-            <br />
-            ...
-          </p>
-        </Button>
-        <p className="mb-2 w-[95%] text-gray-700">9月</p>
-        <Button className="mb-5 flex h-fit w-[90%] flex-col bg-white text-left text-gray-500 hover:bg-white">
-          <p className="w-[95%]">
-            5日<span className="ml-12 text-red-400">#A #お出かけ</span>
-            <br />
-            Aさんと○○へ行き、...
-            <br />
-            ...
-            <br />
-            ...
-          </p>
-        </Button>
-        <Button className="mb-5 flex h-fit w-[90%] flex-col bg-white text-left text-gray-500 hover:bg-white">
-          <p className="w-[95%]">
-            5日<span className="ml-12 text-red-400">#A #お出かけ</span>
-            <br />
-            Aさんと○○へ行き、...
-            <br />
-            ...
-            <br />
-            ...
-          </p>
-        </Button>
-        <p className="mb-2 w-[95%] text-gray-700">8月</p>
-        <Button className="mb-5 flex h-fit w-[90%] flex-col bg-white text-left text-gray-500 hover:bg-white">
-          <p className="w-[95%]">
-            5日<span className="ml-12 text-red-400">#A #お出かけ</span>
-            <br />
-            Aさんと○○へ行き、...
-            <br />
-            ...
-            <br />
-            ...
-          </p>
-        </Button>
-        <Button className="mb-5 flex h-fit w-[90%] flex-col bg-white text-left text-gray-500 hover:bg-white">
-          <p className="w-[95%]">
-            5日<span className="ml-12 text-red-400">#A #お出かけ</span>
-            <br />
-            Aさんと○○へ行き、...
-            <br />
-            ...
-            <br />
-            ...
-          </p>
-        </Button>
-      </ScrollArea>
-      <Link href={"/diary/chat"} className="ml-auto">
-        <IoAddCircleSharp size={"70px"} color="red"/>
+    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <div className="absolute top-5 w-[85%]">
+        <Command className="rounded-full">
+          <CommandInput placeholder="日記を検索" />
+        </Command>
+      </div>
+      <div className="absolute top-20 mx-auto w-[85%]">
+        {diary.diary.map((d, index) => (
+          <Link key={index} href={`/diary/detail`}>
+              {/* カード */}
+              <div className="mb-5">
+                <Card className="shadow-none text-gray-600">
+                  <CardContent className="px-5 py-3">
+                    <p className="leading-6 break-words">
+                      {d.date}
+                      <span className="ml-12 space-x-4 text-red-400">
+                        {d.tag.map((tag, tagIndex) => (
+                          <span key={tagIndex}>#{tag}</span>
+                        ))}
+                      </span>
+                      <br />
+                      {d.context}
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+          </Link>
+        ))}
+      </div>
+      <Link href={"/diary/chat"} className="absolute bottom-28 right-5">
+        <IoAddCircleSharp size={"70px"} color="#f87171" />
       </Link>
-      <div className="flex w-full justify-around bg-white py-5">
+      <div className="absolute bottom-0 flex w-full justify-around bg-white py-5">
         <Link href={"/setting"}>
           <IoCogSharp size={"50px"} color="gray" />
         </Link>
         <Link href={"/home"}>
-          <IoHomeSharp size={"50px"} color="red" />
+          <IoHomeSharp size={"50px"} color="#f87171" />
         </Link>
         <Link href={"/feedback"}>
           <IoBarChartSharp size={"50px"} color="gray" />

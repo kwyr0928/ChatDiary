@@ -29,7 +29,7 @@ export default async function Page() {
         <Link href={"/home"}>
               {/* ボタンUI */}
               <div className="my-7">
-                <Button className="bg-red-400 hover:bg-red-500 rounded-full　w-full text-xl">ログイン</Button>
+                <Button className="bg-red-400 hover:bg-rose-500 rounded-full　w-full text-xl">ログイン</Button>
             </div>
         </Link>
       </form>
