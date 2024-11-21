@@ -1,12 +1,16 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 import {
   IoAddCircleSharp,
   IoBarChartSharp,
   IoCogSharp,
   IoHomeSharp,
+  IoSearchSharp,
 } from "react-icons/io5";
 import { Card, CardContent } from "~/components/ui/card";
-import { Command, CommandInput } from "~/components/ui/command";
+import { Input } from "~/components/ui/input";
 
 const diary = {
   diary: [
@@ -35,21 +39,29 @@ const diary = {
 };
 
 export default function Page() {
+  const [keyword, setKeyword] = useState("");
+  const filteredDiary = diary.diary.filter((d) =>
+    JSON.stringify(d).includes(keyword),
+  );
+
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
-      <div className="absolute top-5 w-[85%]">
-        <Command className="rounded-full">
-          <CommandInput placeholder="日記を検索" />
-        </Command>
+      <div className="mt-5 flex items-center w-[85%] space-x-3">
+      <IoSearchSharp size={"25px"}/>
+        <Input
+          placeholder="日記を検索"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+        />
       </div>
-      <div className="absolute top-20 mx-auto w-[85%]">
-        {diary.diary.map((d, index) => (
-          <Link key={index} href={`/diary/detail`}>
-              {/* カード */}
+      <div className="mx-auto mb-auto mt-5 w-[85%]">
+        {filteredDiary.length > 0 ? (
+          filteredDiary.map((d, index) => (
+            <Link key={index} href={`/diary/detail`}>
               <div className="mb-5">
-                <Card className="shadow-none text-gray-600">
+                <Card className="text-gray-600 shadow-none">
                   <CardContent className="px-5 py-3">
-                    <p className="leading-6 break-words">
+                    <p className="break-words leading-6">
                       {d.date}
                       <span className="ml-12 space-x-4 text-red-400">
                         {d.tag.map((tag, tagIndex) => (
@@ -62,13 +74,18 @@ export default function Page() {
                   </CardContent>
                 </Card>
               </div>
-          </Link>
-        ))}
+            </Link>
+          ))
+        ) : (
+          <p className="text-center text-gray-400">
+            該当する日記はありません。
+          </p>
+        )}
       </div>
       <Link href={"/diary/chat"} className="absolute bottom-28 right-5">
         <IoAddCircleSharp size={"70px"} color="#f87171" />
       </Link>
-      <div className="absolute bottom-0 flex w-full justify-around bg-white py-5">
+      <div className="flex w-full justify-around bg-white py-5">
         <Link href={"/setting"}>
           <IoCogSharp size={"50px"} color="gray" />
         </Link>

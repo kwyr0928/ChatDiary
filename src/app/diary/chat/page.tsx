@@ -1,112 +1,124 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import {
-  IoBarChartSharp,
   IoChevronBackSharp,
-  IoCogSharp,
-  IoHomeSharp,
   IoPersonCircleSharp,
   IoSendSharp,
 } from "react-icons/io5";
-import { ScrollArea } from "~/components/ui/scroll-area";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent } from "~/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
 
 export default function Page() {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center bg-red-50">
-      <div className="flex w-full justify-around px-5 text-center bg-white">
-        <Link href={"/home"}>
-          <IoChevronBackSharp color="red" size={"30px"} />
-        </Link>
-        <p className="mb-2 mr-8 w-[95%] text-gray-700">2024/10/2</p>
+    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <div className="mb-5 flex w-full flex-col justify-around bg-white pt-5 text-center">
+        <div className="mb-3 flex">
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5">
+              <IoChevronBackSharp color="#f87171" size={"30px"} />
+            </DialogTrigger>
+            <DialogContent className="w-[80%]">
+          <DialogHeader>
+            <DialogTitle className="mt-5">編集内容を削除して戻りますか？</DialogTitle>
+          </DialogHeader>
+          <DialogDescription className="text-center text-gray-500">
+            作成した日記は削除されます
+          </DialogDescription>
+          <div className="flex justify-around">
+            <div className="my-2">
+              <Button
+                className="w-[100px] rounded-full bg-white hover:bg-red-400 text-red-400 hover:text-white border border-red-400 hover:border-transparent"
+                onClick={() => setIsOpen(false)}
+              >
+                いいえ
+              </Button>
+            </div>
+            <Link href={"/home"}>
+              <div className="my-2">
+                <Button className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500">
+                  はい
+                </Button>
+              </div>
+            </Link>
+          </div>
+        </DialogContent>
+      </Dialog>
+          <p className="my-auto mr-12 w-[95%] text-lg text-gray-700">
+            2024/10/2
+          </p>
+        </div>
+        {/* プルダウン */}
+        <div className="mx-auto mb-3 w-fit">
+          <div className="flex items-center space-x-2">
+            <Select>
+              <SelectTrigger className="px-3 focus-visible:ring-0">
+                <SelectValue placeholder="あなたの気持ちを" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="one">要素１を</SelectItem>
+                  <SelectItem value="two">要素２を</SelectItem>
+                  <SelectItem value="three">要素３を</SelectItem>
+                  <SelectItem value="four">要素４を</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <span className="whitespace-nowrap">深堀る！</span>
+          </div>
+        </div>
       </div>
-  <div className="flex justify-center items-center gap-2 w-full py-3 bg-white mb-5">
-        <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="何を？" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="1">あなたの気持ちを</SelectItem>
-            <SelectItem value="2">あなたの気持ちを</SelectItem>
-            <SelectItem value="3">あなたの気持ちを</SelectItem>
-          </SelectContent>
-        </Select>
-        <p>深掘る！</p>
-  </div>
-      <ScrollArea className="ml-10 h-[600px] w-full">
-        <div className="my-2 ml-auto mr-10 h-[80px] w-[70%] rounded-md border bg-white p-4">
-          Aさんとパフェを食べに行った。
-          <br />
-          先週私が誘ったやつ。美味しかった
-        </div>
-        <div className="flex">
+      <div className="mb-auto">
+        {/* カード */}
+        <Card className="mb-5 ml-auto mr-3 w-[70%] text-gray-600 shadow-none">
+          <CardContent className="px-5 py-3">
+            Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
+          </CardContent>
+        </Card>
+        <div className="ml-3 mr-auto flex">
           <IoPersonCircleSharp
-            size={"30px"}
+            size={"35px"}
             color="gray"
-            className="my-auto mr-2"
+            className="mr-2 mt-2"
           />
-          <div className="mr-auto h-[60px] w-[60%] rounded-md border bg-white p-4">
-            なぜAさんを誘ったのですか？
-          </div>
+          {/* カード */}
+          <Card className="mb-5 w-[70%] text-gray-600 shadow-none">
+            <CardContent className="px-5 py-3">
+              なぜAさんを誘ったのですか？
+            </CardContent>
+          </Card>
         </div>
-        <div className="my-2 ml-auto mr-10 h-[80px] w-[70%] rounded-md border bg-white p-4">
-          Aさんとパフェを食べに行った。
-          <br />
-          先週私が誘ったやつ。美味しかった
-        </div>
-        <div className="flex">
-          <IoPersonCircleSharp
-            size={"30px"}
-            color="gray"
-            className="my-auto mr-2"
+         {/* カード */}
+         <Card className="mb-5 ml-auto mr-3 w-[70%] text-gray-600 shadow-none">
+          <CardContent className="px-5 py-3">
+            Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
+          </CardContent>
+        </Card>
+      </div>
+      {/* チャット欄 */}
+        <div className="mb-5 flex items-center space-x-2">
+          <textarea
+            rows={1}
+            className="w-[300px] resize-none rounded border p-1 focus:outline-none"
           />
-          <div className="mr-auto h-[60px] w-[60%] rounded-md border bg-white p-4">
-            なぜAさんを誘ったのですか？
-          </div>
+          <IoSendSharp color="#f87171" size={"25px"}/>
         </div>
-        <div className="my-2 ml-auto mr-10 h-[80px] w-[70%] rounded-md border bg-white p-4">
-          Aさんとパフェを食べに行った。
-          <br />
-          先週私が誘ったやつ。美味しかった
-        </div>
-        <div className="flex">
-          <IoPersonCircleSharp
-            size={"30px"}
-            color="gray"
-            className="my-auto mr-2"
-          />
-          <div className="mr-auto h-[60px] w-[60%] rounded-md border bg-white p-4">
-            なぜAさんを誘ったのですか？
-          </div>
-        </div>
-       <div className="flex items-center gap-2 mt-10">
-         <textarea name="" id="" className="w-[80%] border rounded-lg"></textarea>
-         <IoSendSharp size={"30px"} color="red"/>
-       </div>
-       <Link href={"/diary/new"}>
+      <Link href={"/diary/new"} className="absolute bottom-36">
         <button type="button" className="bg-red-400 px-3 py-1 text-white">
           日記作成へ（本来は自動遷移）
         </button>
       </Link>
-      </ScrollArea>
-      <div className="flex w-full justify-around bg-white py-5">
-        <Link href={"/setting"}>
-          <IoCogSharp size={"50px"} color="gray" />
-        </Link>
-        <Link href={"/home"}>
-          <IoHomeSharp size={"50px"} color="red" />
-        </Link>
-        <Link href={"/feedback"}>
-          <IoBarChartSharp size={"50px"} color="gray" />
-        </Link>
-      </div>
     </div>
   );
 }

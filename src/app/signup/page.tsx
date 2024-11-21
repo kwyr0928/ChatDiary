@@ -7,7 +7,7 @@ export default async function Page() {
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
       <Link href={"/signin"} className="absolute left-7 top-9">
-        <IoChevronBackSharp color="red" size={"30px"} />
+        <IoChevronBackSharp color="#f87171" size={"30px"} />
       </Link>
       <p className="text-3xl font-bold my-8">新規登録</p>
       <form className="flex flex-col space-y-4 w-[70%]">
