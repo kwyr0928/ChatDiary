@@ -1,4 +1,5 @@
 import { IoSendSharp } from "react-icons/io5";
+import DiaryCard from "~/components/diaryCard";
 import Tag from "~/components/tag";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
@@ -7,8 +8,37 @@ import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 
+const diary = {
+    diary: [
+        {
+            tag: ["A", "お出かけ"],
+            context:
+                "Aさんと○○へ行き、xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            date: "2024-11-21",
+        },
+        {
+            tag: ["B", "旅行"],
+            context: "Bさんと△△へ行き、xxxxxxxxxxxxxxxxxxxxx",
+            date: "2024-11-01",
+        },
+        {
+            tag: ["C", "仕事"],
+            context: "Cさんと□□へ行き、xxxx",
+            date: "2024-10-10",
+        },
+        {
+            tag: ["D", "ねむい"],
+            context: "ねむいでござんす",
+            date: "2024-10-9",
+        },
+    ],
+};
+
 /* UI表示テスト用ページ */
 export default function Page() {
+    const filteredDiary = diary.diary.filter((d) =>
+        JSON.stringify(d).includes(""),
+    );
     return (
         // 背景: bg-red-50
         <div className="flex items-center justify-center bg-red-50">
@@ -92,6 +122,23 @@ export default function Page() {
                         </Select>
                         <span className="whitespace-nowrap">深堀る！</span>
                     </div>
+                </div>
+
+                {/* 日記カード */}
+                <div className="mb-5">
+                    <Label className="text-lg block">日記カード</Label>
+                    {
+                        filteredDiary.length > 0 ? (
+                            filteredDiary.map((d, index) => (
+                                // 日記カード表示
+                                <DiaryCard key={index} d={d} index={index}/>
+                            ))
+                        ) : (
+                            <p className="text-center text-gray-400">
+                                該当する日記はありません。
+                            </p>
+                        )
+                    }
                 </div>
             </div>
         </div>
