@@ -9,9 +9,9 @@ export default function Tag(props: {text: string}) {
     // }
     
     return (
-        <span id="badge-dismiss-1" className="inline-flex items-center px-1 mr-2 font-semibold text-red-400 bg-white rounded-full border border-red-400">
+        <span id="badge-${text}" className="inline-flex items-center px-1 mr-2 font-semibold text-red-400 bg-white rounded-full border border-red-400">
             <span className="whitespace-nowrap pt-0.5 px-1 text-base leading-none">{text}</span>
-            <button data-dismiss-target="#badge-dismiss-1" className="focus:outline-none">
+            <button className="focus:outline-none">
                 {/* onClick={removeTag} */}
                 <IoCloseCircleSharp size="26px" className="text-red-400 pl-0.5" />
             </button>
