@@ -49,7 +49,7 @@ export default function DiaryCard(props: { d: { tag: string[], context: string, 
                                 ))}
                             </span>
                             <br />
-                            <p className="line-clamp-2 pt-1">{d.context}</p>
+                            <span className="line-clamp-2 pt-1">{d.context}</span>
                         </p>
                     </div>
                 </div>

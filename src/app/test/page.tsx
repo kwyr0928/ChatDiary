@@ -1,3 +1,5 @@
+"use client";
+
 import { IoSendSharp } from "react-icons/io5";
 import DiaryCard from "~/components/diaryCard";
 import Tag from "~/components/tag";
@@ -39,6 +41,8 @@ export default function Page() {
     const filteredDiary = diary.diary.filter((d) =>
         JSON.stringify(d).includes(""),
     );
+    const tagList: string[] = ["タグ1", "タグ2"]
+
     return (
         // 背景: bg-red-50
         <div className="flex items-center justify-center bg-red-50">
@@ -74,7 +78,9 @@ export default function Page() {
                 {/* タグ(見た目のみ) */}
                 <div className="mb-5">
                     <Label className="text-lg block">タグ</Label>
-                    <Tag text="新規タグ" />
+                    {tagList.map((tag, tagIndex) => (
+                            <Tag key={tagIndex} text={tag} />
+                        ))}
                 </div>
 
                 {/* ラジオボタン */}
