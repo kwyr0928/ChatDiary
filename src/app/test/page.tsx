@@ -1,8 +1,8 @@
 "use client";
 
-import { IoAddCircleOutline, IoSendSharp } from "react-icons/io5";
+import { IoSendSharp } from "react-icons/io5";
 import DiaryCard from "~/components/diaryCard";
-import Tag from "~/components/tag";
+import InputTag from "~/components/inputTag";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
@@ -41,7 +41,7 @@ export default function Page() {
     const filteredDiary = diary.diary.filter((d) =>
         JSON.stringify(d).includes(""),
     );
-    const tagList: string[] = ["タグ1", "タグ2"]
+    //const tagList: string[] = ["タグ1", "タグ2"]
 
     return (
         // 背景: bg-red-50
@@ -78,12 +78,7 @@ export default function Page() {
                 {/* タグ(見た目のみ) */}
                 <div className="mb-5">
                     <Label className="text-lg block">タグ</Label>
-                    <div className="flex items-center mb-3">
-                    {tagList.map((tag, tagIndex) => (
-                            <Tag key={tagIndex} text={tag} />
-                        ))}
-                    <IoAddCircleOutline style={{ color: "#f87171", fontSize: '35px' }} />
-                    </div>
+                    <InputTag />
                 </div>
 
                 {/* ラジオボタン */}
