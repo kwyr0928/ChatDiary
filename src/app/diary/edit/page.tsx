@@ -12,7 +12,6 @@ import {
   IoPersonCircleSharp,
   IoTrashSharp,
 } from "react-icons/io5";
-import ResizeTextarea from "~/components/resizeTextarea";
 import Tag from "~/components/tag";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
@@ -109,15 +108,10 @@ export default function Page() {
           </Link>
         </div>
         {/* 可変テキストエリアにしたい */}
-          {/* <textarea
+          <textarea
                 className="w-full text-gray-600  h-36 px-5 py-3 rounded border border-gray-300 p-2"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-              /> */}
-          <ResizeTextarea 
-                className="resize-none focus:outline-none w-full text-gray-600 h-36 px-5 py-3 rounded border border-gray-300 p-2"
-                text={text}
-                onChange={setText}
               />
         <p className="mb-2 mt-5 text-left text-lg">タグ</p>
         <div className="flex gap-3">

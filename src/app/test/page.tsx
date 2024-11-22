@@ -131,7 +131,7 @@ export default function Page() {
                         filteredDiary.length > 0 ? (
                             filteredDiary.map((d, index) => (
                                 // 日記カード表示
-                                <DiaryCard key={index} d={d} index={index}/>
+                                <DiaryCard key={index} d={d} index={index} />
                             ))
                         ) : (
                             <p className="text-center text-gray-400">
@@ -141,6 +141,6 @@ export default function Page() {
                     }
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
