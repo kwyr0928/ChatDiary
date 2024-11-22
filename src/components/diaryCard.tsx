@@ -40,16 +40,16 @@ export default function DiaryCard(props: { d: { tag: string[], context: string, 
                         width={317}
                         height={92}
                     />
-                    <div className="absolute inset-0 text-gray-600 p-2 ml-2">
+                    <div className="absolute inset-0 text-gray-600 px-2 py-1.5 ml-2">
                         <p className="break-words">
                             <span className="ml-4 text-sm">{d.date}</span>
-                            <span className="md-4 ml-12 space-x-4 text-red-400 text-sm">
+                            <span className="ml-12 space-x-4 text-red-400 text-sm">
                                 {d.tag.map((tag, tagIndex) => (
                                     <span key={tagIndex}>#{tag}</span>
                                 ))}
                             </span>
                             <br />
-                            {d.context}
+                            <p className="line-clamp-2 pt-1">{d.context}</p>
                         </p>
                     </div>
                 </div>
