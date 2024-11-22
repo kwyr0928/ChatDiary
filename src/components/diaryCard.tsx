@@ -32,7 +32,7 @@ export default function DiaryCard(props: { d: { tag: string[], context: string, 
     const { d, index } = props
     return (
         <div>
-            <Link href={`/diary/detail`}>
+            <Link href={`/diary/detail`} className="focus-visible:outline-none focus-visible:ring-0 focus:outline-none">
                 <div className="relative w-[317px] h-[92px] mb-3">
                     <Image
                         src="/日記カード.png"

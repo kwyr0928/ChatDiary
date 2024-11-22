@@ -1,6 +1,6 @@
 "use client";
 
-import { IoSendSharp } from "react-icons/io5";
+import { IoAddCircleOutline, IoSendSharp } from "react-icons/io5";
 import DiaryCard from "~/components/diaryCard";
 import Tag from "~/components/tag";
 import { Button } from "~/components/ui/button";
@@ -78,9 +78,12 @@ export default function Page() {
                 {/* タグ(見た目のみ) */}
                 <div className="mb-5">
                     <Label className="text-lg block">タグ</Label>
+                    <div className="flex items-center mb-3">
                     {tagList.map((tag, tagIndex) => (
                             <Tag key={tagIndex} text={tag} />
                         ))}
+                    <IoAddCircleOutline style={{ color: "#f87171", fontSize: '35px' }} />
+                    </div>
                 </div>
 
                 {/* ラジオボタン */}
