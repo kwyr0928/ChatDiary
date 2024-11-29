@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { IoSendSharp } from "react-icons/io5";
 import DiaryCard from "~/components/diaryCard";
 import InputTag from "~/components/inputTag";
@@ -41,7 +42,8 @@ export default function Page() {
     const filteredDiary = diary.diary.filter((d) =>
         JSON.stringify(d).includes(""),
     );
-    //const tagList: string[] = ["タグ1", "タグ2"]
+    const initialTags: string[] = ["タグ1", "タグ2"]
+    const [nowTags, setTags] = useState<String[]>(initialTags)
 
     return (
         // 背景: bg-red-50
@@ -78,7 +80,7 @@ export default function Page() {
                 {/* タグ(見た目のみ) */}
                 <div className="mb-5">
                     <Label className="text-lg block">タグ</Label>
-                    <InputTag />
+                    <InputTag initialTags={initialTags} onChangeTags={setTags} />
                 </div>
 
                 {/* ラジオボタン */}

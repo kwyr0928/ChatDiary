@@ -7,11 +7,13 @@ import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
 
-export default function InputTag() {
-    const tagList: string[] = ["タグ1", "タグ2"]
-    const [tags, setTags] = useState<string[]>(tagList)
+// タグ編集フォームUI
+export default function InputTag(props: { initialTags: string[], onChangeTags: (updatedTags: string[]) => void}) {
+    const { initialTags, onChangeTags = () => { } } = props
+    const [tags, setTags] = useState<string[]>(initialTags)
     const [text, setText] = useState<string>("")
 
+    // 入力されている状態でenterキーが押されたとき実行
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             e.preventDefault(); // Enterキーのデフォルト動作（改行）を無効化
@@ -19,8 +21,10 @@ export default function InputTag() {
         }
     }
 
+    // 文字列をタグに追加し、入力欄を空にする
     const addTags = (newItem: string) => {
         setTags((prevItems) => [...prevItems, newItem]); // 新しい配列を作成
+        onChangeTags(tags)
         setText("")
     };
 
