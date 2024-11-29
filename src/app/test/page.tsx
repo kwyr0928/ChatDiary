@@ -42,8 +42,8 @@ export default function Page() {
     const filteredDiary = diary.diary.filter((d) =>
         JSON.stringify(d).includes(""),
     );
-    const initialTags: string[] = ["タグ1", "タグ2"]
-    const [nowTags, setTags] = useState<String[]>(initialTags)
+    const initialTags: string[] = ["タグ1", "タグ2"] // 変更前タグ(編集内容を取り消す際に返す)
+    const [nowTags, setTags] = useState<String[]>(initialTags)//変更後タグ配列(タグ増減するたびに更新し、修正確定されたときにDB変更)
 
     return (
         // 背景: bg-red-50
