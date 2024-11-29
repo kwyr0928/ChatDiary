@@ -25,20 +25,22 @@ export default function InputTag(props: { initialTags: string[], onChangeTags: (
 
     // エラー確認
     const errorCheck = (tag: string) => {
-        if(tag.trim() === ""){
+        if(tag === ""){
             return '作成するタグの名前を入力してください'
         }else if (tag.length > maxTagLength){
             return `${maxTagLength}文字以内で入力してください`
+        }else if(tags.includes(tag)){
+            return "このタグはすでに追加されています"
         }
         return ""
     }
 
     // 文字列をタグに追加し、入力欄を空にする
     const addTags = (newItem: string) => {
-        const errorMes = errorCheck(newItem) // エラー確認
+        const errorMes = errorCheck(newItem.trim()) // エラー確認
         setError(errorMes)
         if (errorMes.length === 0) {
-            setTags((prevItems) => [...prevItems, newItem]); // 新しい配列を作成
+            setTags((prevItems) => [...prevItems, newItem.trim()]); // 新しい配列を作成
             onChangeTags(tags)
             setText("")
         }
@@ -64,6 +66,3 @@ export default function InputTag(props: { initialTags: string[], onChangeTags: (
         </div>
     )
 }
-
-// TODO:
-// 同じタグを追加しない
