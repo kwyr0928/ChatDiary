@@ -66,6 +66,4 @@ export default function InputTag(props: { initialTags: string[], onChangeTags: (
 }
 
 // TODO:
-// 文字数上限を設ける
-// 何も入力されていないときはタグ追加しない
 // 同じタグを追加しない
