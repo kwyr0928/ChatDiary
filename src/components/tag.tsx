@@ -1,15 +1,20 @@
-import { IoRemoveCircleSharp } from "react-icons/io5";
+import { IoCloseCircleSharp } from "react-icons/io5";
 
 /* タグUI */
 export default function Tag(props: {text: string}) {
     const { text } = props
+
+    // const removeTag = () =>{
+
+    // }
+    
     return (
-        <span id="badge-dismiss-1" className="inline-flex items-center px-2 py-1 font-semibold text-red-400 bg-white rounded-full border border-red-400 mb-3">
-            <button data-dismiss-target="#badge-dismiss-1" className="focus:outline-none">
+        <span id="badge-${text}" className="inline-flex items-center px-1 font-semibold text-red-400 bg-white rounded-full border border-red-400">
+            <span className="whitespace-nowrap pt-0.5 px-1 text-base leading-none">{text}</span>
+            <button className="focus:outline-none">
                 {/* onClick={removeTag} */}
-                <IoRemoveCircleSharp size="24px" className="text-red-400" />
+                <IoCloseCircleSharp size="26px" className="text-red-400" />
             </button>
-            <span className="pt-0.5 px-1 text-base leading-none">{text}</span>
         </span>
     )
 }
