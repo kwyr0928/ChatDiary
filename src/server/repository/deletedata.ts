@@ -14,3 +14,18 @@ export async function deleteUser(userId: string) {
     return null;
   }
 }
+
+export async function deleteDiary(diaryId: string) {
+  try {
+    if (diaryId == null) throw new Error("Invalid option data");
+    const deleted = await db.diaries.delete({
+      where: {
+        id: diaryId,
+      },
+    });
+    return deleted;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}

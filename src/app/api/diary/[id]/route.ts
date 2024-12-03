@@ -5,6 +5,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { chatLogSchema, putDiary } from "~/lib/schemas";
+import { deleteDiary } from "~/server/repository/deletedata";
 import { getChatsByDiaryId, getDiaryData, getTagByID, getTagByName, getTagConnectionsByDiary } from "~/server/repository/getdata";
 import { connectDiaryTag, createTag } from "~/server/repository/insertdata";
 import { updateDiary } from "~/server/repository/updatedata";
@@ -86,6 +87,29 @@ export async function PUT(req: Request,
     });
   } catch (error) {
     console.error("Error in UPDATE diary request:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(req: Request,
+  { params }: { params: { id: string } },
+) {
+  try {
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    const par = await params;
+    const diaryId = z.string().parse(par.id); //パスパラメータ
+    
+    const deleted = await deleteDiary(diaryId);
+    if(deleted==null) throw new Error("err in deleteDiary");
+    
+    return NextResponse.json({
+      message: "delete diary successfully. diaryTitle: " + deleted.title,
+    });
+  } catch (error) {
+    console.error("Error in DELETE diary request:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },
