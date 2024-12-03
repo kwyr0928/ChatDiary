@@ -30,3 +30,21 @@ export async function summariedDiary(diaryId: string, aiSummary: string) {
     return null;
   }
 }
+
+export async function createdDiary(diaryId: string, summary: string, isPublic: boolean) {
+  try {
+    if (diaryId==null || summary==null || isPublic==null) throw new Error("Invalid option data");
+    const update = await db.diaries.update({
+      where: {id: diaryId},
+      data: {
+        summary: summary,
+        isPublic: isPublic,
+        },
+    });
+    const parsedUpdata = diariesSchema.parse(update);
+    return parsedUpdata;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}

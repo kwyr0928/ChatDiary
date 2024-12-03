@@ -51,7 +51,7 @@ export const tagsSchema = z.object({
 });
 
 export const diaryTagsSchema = z.object({
-  id: z.string().min(1).optional(),
+  diaryId: z.string().min(1),
   tagId: z.string().min(1),
 });
 
@@ -126,7 +126,7 @@ export const postSendChat = z.object({
 
 // api/diary/[id]/new
 export const postDiary = z.object({
-  tags: z.array(z.number()),
+  tags: z.array(z.string()),
   summary: z.string(),
   isPublic: z.boolean()
 });

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { chatsSchema, diariesSchema, userSchema } from "~/lib/schemas";
+import { chatsSchema, diariesSchema, diaryTagsSchema, userSchema } from "~/lib/schemas";
 import { db } from "../db";
 
 export async function insertNewUser(userData: z.infer<typeof userSchema>) {
@@ -44,6 +44,36 @@ export async function initializeChat(diaryId: string, mode: number, userMessage:
     };
     const create = await db.chats.create({
       data: chatData,
+    });
+    return create;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function createTag(name: string) {
+  try {
+    if (name ==null) throw new Error("Invalid option data");
+    const create = await db.tags.create({
+      data: { tagName: name },
+    });
+    return create;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function connectDiaryTag(diaryId: string, tagId: string) {
+  try {
+    if (diaryId == null || tagId ==null) throw new Error("Invalid option data");
+    const tagData: z.infer<typeof diaryTagsSchema> = {
+      diaryId: diaryId,
+      tagId: tagId
+    };
+    const create = await db.diaryTags.create({
+      data: tagData,
     });
     return create;
   } catch (error) {
