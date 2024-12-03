@@ -1,35 +1,184 @@
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
-import Footer from "~/app/_components/Footer";
+import { useState } from "react";
+import {
+  IoAddCircleOutline,
+  IoBarChartSharp,
+  IoCheckmarkSharp,
+  IoChevronBackSharp,
+  IoCogSharp,
+  IoHomeSharp,
+  IoPersonCircleSharp,
+  IoTrashSharp,
+} from "react-icons/io5";
+import Tag from "~/components/tag";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent } from "~/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
+import { Label } from "~/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { useToast } from "~/hooks/use-toast";
 
 export default function Page() {
+  const { toast } = useToast()
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
+  const [text, setText] = useState(
+    "栗が好きなAさんを誘い、パフェを食べに行った。私はさつまいものアイスが乗ったパフェで、Aさんは栗のパウンドケーキが乗ったパフェだった。私が見つけた店で喜んでくれて嬉しい。彼女が喜ぶ店をまた探したいと思った。"
+  );
   return (
-    <div>
-        <h1>G015 日記編集画面</h1>
-        <p>日記編集、削除</p>
-        <p>未変更状態でも「戻る」押したら確認画面出るようになってる（今だけ）</p>
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-        <Link href={"/diary/edit/delete/confirm"}>
-          ①戻る
-        </Link>
-      </button>
-      <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-        <Link href={"/diary/detail"}>
-          ②日記保存
-        </Link>
-      </button>
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-        <Link href={"/diary/delete/confirm"}>
-          ③削除
-        </Link>
-      </button>
-      <Image
-            src="/日記編集画面 G015.png"
-            alt="日記編集画面"
-            width={300}
-            height={300}
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <div className="flex w-full items-center justify-around pt-5 text-center">
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger onClick={() => setIsOpen(true)} className="">
+              <IoChevronBackSharp color="#f87171" size={"30px"} />
+            </DialogTrigger>
+            <DialogContent className="w-[80%]">
+          <DialogHeader>
+            <DialogTitle className="mt-5">編集内容を削除して戻りますか？</DialogTitle>
+          </DialogHeader>
+          <DialogDescription className="text-center text-gray-500">
+            編集内容は反映されません
+          </DialogDescription>
+          <div className="flex justify-around">
+            <div className="my-2">
+              <Button
+                className="w-[100px] rounded-full bg-white hover:bg-red-400 text-red-400 hover:text-white border border-red-400 hover:border-transparent"
+                onClick={() => setIsOpen(false)}
+              >
+                いいえ
+              </Button>
+            </div>
+            <Link href={"/diary/detail"}>
+              <div className="my-2">
+                <Button className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500">
+                  はい
+                </Button>
+              </div>
+            </Link>
+          </div>
+        </DialogContent>
+      </Dialog>
+        <p className="text-lg text-gray-700">2024/10/2</p>
+        <Dialog open={isOpen2} onOpenChange={setIsOpen2}>
+            <DialogTrigger onClick={() => setIsOpen2(true)} className="">
+              <IoTrashSharp color="gray" size={"35px"} />
+            </DialogTrigger>
+            <DialogContent className="w-[80%]">
+          <DialogHeader>
+            <DialogTitle className="mt-5">日記を削除しますか？</DialogTitle>
+          </DialogHeader>
+          <DialogDescription className="text-center text-gray-500">
+            この操作は元に戻せません
+          </DialogDescription>
+          <div className="flex justify-around">
+            <div className="my-2">
+              <Button
+                className="w-[100px] rounded-full bg-white hover:bg-red-400 text-red-400 hover:text-white border border-red-400 hover:border-transparent"
+                onClick={() => setIsOpen2(false)}
+              >
+                いいえ
+              </Button>
+            </div>
+            <Link href={"/home"}>
+              <div className="my-2">
+                <Button className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500" onClick={() => {
+        toast({
+          title: "日記を削除しました。",
+        })
+      }}>
+                  はい
+                </Button>
+              </div>
+            </Link>
+          </div>
+        </DialogContent>
+      </Dialog>
+      </div>
+      <div className="mb-auto mt-5 w-[85%]">
+        <div className="flex items-center justify-start space-x-5">
+          <p className="my-2 text-lg">日記本文</p>
+          <Link href={"/diary/edit"}>
+            <IoCheckmarkSharp size={"23px"} color="#f87171"  onClick={() => {
+        toast({
+          title: "保存しました。",
+        })
+      }}/>
+          </Link>
+        </div>
+        {/* 可変テキストエリアにしたい */}
+          <textarea
+                className="w-full text-gray-600  h-36 px-5 py-3 rounded border border-gray-300 p-2"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+              />
+        <p className="mb-2 mt-5 text-left text-lg">タグ</p>
+        <div className="flex gap-3">
+          <Tag text="food" />
+          <Tag text="Aちゃん" />
+          <IoAddCircleOutline
+            color="#f87171"
+            size={"30px"}
+            className="mt-0.5"
           />
-        <Footer />
+        </div>
+        <p className="mb-2 mt-5 text-left text-lg">公開範囲</p>
+        {/* ラジオボタン */}
+        <div className="mb-8">
+          <RadioGroup defaultValue="private" className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="public"
+                id="public"
+                className="border-red-400"
+              />
+              <Label htmlFor="public">公開</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="private"
+                id="private"
+                className="border-red-400"
+              />
+              <Label htmlFor="private">非公開</Label>
+            </div>
+          </RadioGroup>
+        </div>
+        <p className="my-2 text-lg">チャットログ</p>
+        <div className="mb-auto">
+        {/* カード */}
+        <Card className="mb-5 ml-auto w-[70%] text-gray-600 shadow-none">
+          <CardContent className="px-5 py-3">
+            Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
+          </CardContent>
+        </Card>
+        <div className="mr-auto flex">
+          <IoPersonCircleSharp
+            size={"35px"}
+            color="gray"
+            className="mr-2 mt-2"
+          />
+          {/* カード */}
+          <Card className="mb-5 w-[70%] text-gray-600 shadow-none">
+            <CardContent className="px-5 py-3">
+              なぜAさんを誘ったのですか？
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+      </div>
+      <div className="flex w-full justify-around bg-white py-5">
+        <Link href={"/setting"}>
+          <IoCogSharp size={"50px"} color="gray" />
+        </Link>
+        <Link href={"/home"}>
+          <IoHomeSharp size={"50px"} color="gray" />
+        </Link>
+        <Link href={"/feedback"}>
+          <IoBarChartSharp size={"50px"} color="gray" />
+        </Link>
+      </div>
     </div>
   );
 }

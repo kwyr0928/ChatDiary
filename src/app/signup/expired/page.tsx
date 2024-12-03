@@ -1,22 +1,31 @@
-import Image from "next/image";
 import Link from "next/link";
+import { Button } from "~/components/ui/button";
 
-export default function Page() {
+export default async function Page() {
   return (
-    <div>
-        <h1>G006 期限切れ画面</h1>
-        <p>このURLは有効期限が切れているので、再度手続き、「新規登録へ」を押す</p>
-        <Image
-            src="/期限切れ画面 G006.png"
-            alt="期限切れ画面"
-            width={300}
-            height={300}
-          />
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <div className="flex h-[350px] w-[80%] flex-col items-center justify-center rounded-md bg-white">
+        <p className="my-7 text-xl font-bold">期限切れURL</p>
+        <div className="flex w-[80%] flex-col space-y-5 text-left">
+          <p className=" text-center leading-8">
+            このURLは有効期限が切れています。
+            <br />
+            お手数をお掛けしますが、
+            <br />
+            再度お手続きいただくよう
+            <br />
+            お願いいたします。
+          </p>
           <Link href={"/signup"}>
-            ①新規登録へ
+            {/* ボタンUI */}
+            <div className="my-3">
+              <Button className="rounded-full　w-full bg-lime-500 text-xl hover:bg-lime-600">
+                新規登録へ
+              </Button>
+            </div>
           </Link>
-        </button>
+        </div>
+      </div>
     </div>
   );
 }

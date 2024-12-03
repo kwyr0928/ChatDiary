@@ -1,29 +1,101 @@
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
-import Footer from "~/app/_components/Footer";
+import { useState } from "react";
+import {
+  IoAddCircleSharp,
+  IoBarChartSharp,
+  IoCogSharp,
+  IoHomeSharp,
+  IoSearchSharp,
+} from "react-icons/io5";
+import { Card, CardContent } from "~/components/ui/card";
+import { Input } from "~/components/ui/input";
+
+const diary = {
+  diary: [
+    {
+      tag: ["A", "お出かけ"],
+      context:
+        "Aさんと○○へ行き、xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      date: "2024-11-21",
+    },
+    {
+      tag: ["B", "旅行"],
+      context: "Bさんと△△へ行き、xxxxxxxxxxxxxxxxxxxxx",
+      date: "2024-11-01",
+    },
+    {
+      tag: ["C", "仕事"],
+      context: "Cさんと□□へ行き、xxxx",
+      date: "2024-10-10",
+    },
+    {
+      tag: ["D", "ねむい"],
+      context: "ねむいでござんす",
+      date: "2024-10-9",
+    },
+  ],
+};
 
 export default function Page() {
+  const [keyword, setKeyword] = useState("");
+  const filteredDiary = diary.diary.filter((d) =>
+    JSON.stringify(d).includes(keyword),
+  );
+
   return (
-    <div>
-        <h1>G007 ホーム画面</h1>
-        <p>日記が表示されるよ</p>
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-        <Link href={"/diary/detail"}>
-          ⑤日記詳細画面へ
+    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <div className="mt-5 flex items-center w-[85%] space-x-3">
+      <IoSearchSharp size={"25px"}/>
+        <Input
+          placeholder="日記を検索"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+        />
+      </div>
+      <div className="mx-auto mb-auto mt-5 w-[85%]">
+        {filteredDiary.length > 0 ? (
+          filteredDiary.map((d, index) => (
+            <Link key={index} href={`/diary/detail`}>
+              <div className="mb-5">
+                <Card className="text-gray-600 shadow-none">
+                  <CardContent className="px-5 py-3">
+                    <p className="break-words leading-6">
+                      {d.date}
+                      <span className="ml-12 space-x-4 text-red-400">
+                        {d.tag.map((tag, tagIndex) => (
+                          <span key={tagIndex}>#{tag}</span>
+                        ))}
+                      </span>
+                      <br />
+                      {d.context}
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </Link>
+          ))
+        ) : (
+          <p className="text-center text-gray-400">
+            該当する日記はありません。
+          </p>
+        )}
+      </div>
+      <Link href={"/diary/chat"} className="absolute bottom-28 right-5">
+        <IoAddCircleSharp size={"70px"} color="#f87171" />
+      </Link>
+      <div className="flex w-full justify-around bg-white py-5">
+        <Link href={"/setting"}>
+          <IoCogSharp size={"50px"} color="gray" />
         </Link>
-      </button>
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-        <Link href={"/diary/chat"}>
-          ⑥新規作成（＋）
+        <Link href={"/home"}>
+          <IoHomeSharp size={"50px"} color="#f87171" />
         </Link>
-      </button>
-      <Image
-            src="/ホーム画面 G007.png"
-            alt="ホーム画面"
-            width={300}
-            height={300}
-          />
-        <Footer />
+        <Link href={"/feedback"}>
+          <IoBarChartSharp size={"50px"} color="gray" />
+        </Link>
+      </div>
     </div>
   );
 }

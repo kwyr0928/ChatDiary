@@ -1,32 +1,91 @@
-import Image from "next/image";
 import Link from "next/link";
+import { IoBarChartSharp, IoCogSharp, IoHomeSharp } from "react-icons/io5";
+import { Card, CardContent } from "~/components/ui/card";
 
-export default function Page() {
+const keep = {
+  keep: [
+    {
+      date: "2024-11-1",
+      keep: true
+    },
+    {
+      date: "2024-11-2",
+      keep: false
+    },
+    {
+      date: "2024-11-3",
+      keep: true
+    },
+    {
+      date: "2024-11-4",
+      keep: true
+    },
+    {
+      date: "2024-11-5",
+      keep: true
+    },
+    {
+      date: "2024-11-6",
+      keep: false
+    }
+  ]
+}
+
+
+export default async function Page() {
+  const today = new Date().toISOString().split("T")[0];
+
   return (
-    <div>
-        <h1>G017 FB画面</h1>
-        <p>継続状況、先月のまとめ、あなたの分析</p>
-        <Image
-            src="/FB画面 G017.png"
-            alt="FB画面"
-            width={300}
-            height={300}
-          />
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-          <Link href={"/setting"}>
-           設定（歯車）
-          </Link>
-        </button>
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-          <Link href={"/home"}>
-           ホーム（家）
-          </Link>
-        </button>
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-          <Link href={"/feedback"}>
-           フィードバック（グラフ）
-          </Link>
-        </button>
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
+      <p className="mt-5 mb-3 w-full pl-5 text-left text-xl font-bold">
+        2024年11月の継続状況
+      </p>
+      <div className="grid grid-cols-7 gap-3">
+      {Array.from({ length: 31 }).map((_, index) => {
+          const date = `2024-11-${index + 1}`;
+          const keepData = keep.keep.find((k) => k.date === date);
+          const isToday = today === date;
+          const bgColor = keepData
+            ? keepData.keep
+              ? "bg-lime-400"
+              : "bg-gray-300"
+            : "bg-gray-300";
+
+          return (
+            <div
+              key={index}
+              className={`rounded-xl px-4 py-4 ${bgColor} ${
+                isToday ? "bg-blue-300" : ""
+              }`}
+            ></div>
+          );
+        })}
+      </div>
+      <p className="mt-5 mb-3 w-full pl-5 text-left text-xl font-bold">
+        先月のまとめ
+      </p>
+      {/* カード */}
+      <Card className="w-[85%] shadow-none">
+        <CardContent className="px-5 py-3">あなたは...</CardContent>
+      </Card>
+      <p className="mt-5 mb-3 w-full pl-5 text-left text-xl font-bold">
+        あなたの分析
+      </p>
+      {/* カード */}
+      <Card className="mb-auto w-[85%] shadow-none">
+        <CardContent className="px-5 py-3">あなたは積極的に友人を誘ったり手助けできる人ですね。一方で自分から人に頼れない場面が多く、弱みを見せたくないというプライドの高さを感じます。</CardContent>
+      </Card>
+      <div className="flex w-full justify-around bg-white py-5">
+        <Link href={"/setting"}>
+          <IoCogSharp size={"50px"} color="gray" />
+        </Link>
+        <Link href={"/home"}>
+          <IoHomeSharp size={"50px"} color="gray" />
+        </Link>
+        <Link href={"/feedback"}>
+          <IoBarChartSharp size={"50px"} color="#f87171" />
+        </Link>
+      </div>
     </div>
   );
 }

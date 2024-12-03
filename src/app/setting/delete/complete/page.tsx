@@ -1,22 +1,23 @@
-import Image from "next/image";
 import Link from "next/link";
+import { Button } from "~/components/ui/button";
 
-export default function Page() {
+export default async function Page() {
   return (
-    <div>
-        <h1>G018 退会完了画面</h1>
-        <p>退会完了</p>
-        <Image
-            src="/退会完了メッセージ G018.png"
-            alt="退会完了画面"
-            width={300}
-            height={300}
-          />
-        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <div className="flex h-[350px] w-[80%] flex-col items-center justify-center rounded-md bg-white">
+      <p className="my-8 text-xl font-bold">退会完了</p>
+      <div className="flex w-[80%] flex-col space-y-5 text-left">
+        <p className="text-center my-10">ご利用ありがとうございました。</p>
         <Link href={"/signin"}>
-          ①ログイン画面へ
+          {/* ボタンUI */}
+          <div className="my-6">
+                <Button className="rounded-full　w-full bg-lime-500 text-xl hover:bg-lime-600">
+                  ログイン画面へ
+                </Button>
+              </div>
         </Link>
-      </button>
+      </div>
+      </div>
     </div>
   );
 }
