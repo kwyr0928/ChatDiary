@@ -2,6 +2,12 @@
 // Route Handler
 import { z } from "zod";
 
+// モード
+export const modeList = {
+  detail: 0,
+  personality: 1,
+};
+
 /*
   スキーマへ与えるデータの構造体
 */
@@ -32,8 +38,9 @@ export const diariesSchema = z.object({
 export const chatsSchema = z.object({
   id: z.string().min(1).optional(),
   diaryId: z.string().min(1),
+  mode: z.number(),
   message: z.string().min(1), // userの送信
-  response: z.string().min(1), // AIからの質問
+  response: z.string().min(1).optional(), // AIからの質問
   created_at: z.date().optional(),
 });
 
