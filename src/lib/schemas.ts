@@ -117,11 +117,6 @@ export const postReEmail = z.object({
   POST/PUTデータの構造体 - 日記関連
 */
 
-// api/diary/[id]
-export const putDiary = z.object({
-  mode: z.number(),
-});
-
 // api/chat
 export const postChat = z.object({
   userId: z.string(),
@@ -133,8 +128,9 @@ export const postSendChat = z.object({
   text: z.string(),
 });
 
+// api/diary/[id] PUT
 // api/diary/[id]/new
-export const postDiary = z.object({
+export const putDiary = z.object({
   tags: z.array(z.string()),
   summary: z.string(),
   isPublic: z.boolean()
