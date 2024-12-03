@@ -38,7 +38,7 @@ export async function login(prevState: string | undefined, formData: z.infer<typ
       redirect: false, // リダイレクトを無効化
     });
     return NextResponse.json({
-      message: "successfully in login",
+      message: "successfully logined",
     });
   } catch (error) {
     if (error instanceof AuthError) {
@@ -61,7 +61,10 @@ export async function login(prevState: string | undefined, formData: z.infer<typ
 
 export async function logout() {
   try {
-    await signOut();
+    await signOut({redirect: false,});
+    return NextResponse.json({
+      message: "successfully logouted",
+    });
   } catch (error) {
     throw error;
   }
