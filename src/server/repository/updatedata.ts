@@ -1,4 +1,4 @@
-import { chatsSchema } from "~/lib/schemas";
+import { chatsSchema, diariesSchema } from "~/lib/schemas";
 import { db } from "../db";
 
 export async function returnedChat(chatId: string, aiMessage: string) {
@@ -9,6 +9,21 @@ export async function returnedChat(chatId: string, aiMessage: string) {
       data: {response: aiMessage},
     });
     const parsedUpdata = chatsSchema.parse(update);
+    return parsedUpdata;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function summariedDiary(diaryId: string, aiSummary: string) {
+  try {
+    if (diaryId == null || aiSummary ==null) throw new Error("Invalid option data");
+    const update = await db.diaries.update({
+      where: {id: diaryId},
+      data: {summary: aiSummary},
+    });
+    const parsedUpdata = diariesSchema.parse(update);
     return parsedUpdata;
   } catch (error) {
     console.error(error);
