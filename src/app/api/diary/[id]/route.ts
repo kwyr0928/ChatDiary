@@ -1,7 +1,3 @@
-// 特定の日記の詳細GET
-// タグ、本文、公開範囲更新のPUT
-// 日記削除DELETE
-
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { chatLogSchema, putDiary } from "~/lib/schemas";
@@ -10,6 +6,7 @@ import { getChatsByDiaryId, getDiaryData, getTagByID, getTagByName, getTagConnec
 import { connectDiaryTag, createTag } from "~/server/repository/insertdata";
 import { updateDiary } from "~/server/repository/updatedata";
 
+// 特定の日記の詳細GET
 export async function GET(req: Request,
   { params }: { params: { id: string } },
 ) {
@@ -54,6 +51,7 @@ export async function GET(req: Request,
   }
 }
 
+// タグ、本文、公開範囲更新のPUT
 export async function PUT(req: Request,
   { params }: { params: { id: string } },
 ) {
@@ -94,6 +92,7 @@ export async function PUT(req: Request,
   }
 }
 
+// 日記削除DELETE
 export async function DELETE(req: Request,
   { params }: { params: { id: string } },
 ) {

@@ -78,7 +78,29 @@ export const getChatsByDiaryId = async (diaryId: string) => {
   }
 };
 
+export const getOtherUserDiaryData = async (userId: string) => {
+  const data = await db.diaries.findFirst({
+    where: {
+      isPublic: true,
+      NOT: {userId: userId}
+    },
+  });
+  if(data == null) return null;
+  return diariesSchema.parse(data);
+};
+
 ////////////////////////////////
+
+export const getTagByUserId = async (diaryId: string) => {
+  try {
+    const data = await db.diaryTags.findMany({ where: { diaryId } });
+    if(data == null) throw new Error("tags not found");
+    return z.array(diaryTagsSchema).parse(data);
+  } catch (error) {
+    console.error("Error in getTagConnectionsByDiary:", error);
+    return null;
+  }
+};
 
 export const getTagByName = async (name: string) => {
   const data = await db.tags.findFirst({ where: { name } });
