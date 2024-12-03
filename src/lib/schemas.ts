@@ -7,7 +7,7 @@ import { z } from "zod";
 */
 export const userSchema = z.object({
   id: z.string().min(1).optional(),
-  emailVerified: z.date().optional(),
+  emailVerified: z.date().nullable().optional(),
   email: z.string().email(),
   password: z.string().min(1), //TODO: 暗号化する
   created_at: z.date().optional(),

@@ -1,7 +1,10 @@
 'use server';
 
 import { AuthError } from 'next-auth';
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { signIn, signOut } from '~/server/auth';
+import { userSchema } from './schemas';
 
 export type SignUpState = {
   errors?: {
@@ -11,37 +14,15 @@ export type SignUpState = {
   message?: string | null;
 };
 
+export type  SignInParams = {
+  email: string;
+  password: string;
+  redirect: boolean;
+}
+
 // export async function signUp(prevState: SignUpState, formData: FormData): Promise<SignUpState> {
-//   const validatedFields = postSignup.safeParse({
-//     email: formData.get('email'),
-//     password: formData.get('password'),
-//   });
-
-//   if (!validatedFields.success) {
-//     return {
-//       errors: validatedFields.error.flatten().fieldErrors,
-//       message: '入力項目が足りません。',
-//     };
-//   }
-
-//   const { email, password } = validatedFields.data;
-
 //   try {
-//     const hashedPassword = await bcrypt.hash(password, 10);
-//     const existingUser = await getUserByEmail(email);
-
-//     if (existingUser) {
-//       return {
-//         message: '既に登録されているユーザーです。',
-//       };
-//     }
-
-//     await db.user.create({
-//       data: {
-//         email: email,
-//         password: hashedPassword,
-//       },
-//     });
+//     await signUp(prevState, formData);
 //   } catch (error) {
 //     throw error;
 //   }
@@ -49,19 +30,31 @@ export type SignUpState = {
 //   redirect('/login');
 // }
 
-export async function login(prevState: string | undefined, formData: FormData) {
+export async function login(prevState: string | undefined, formData: z.infer<typeof userSchema>) {
   try {
-    await signIn('credentials', formData);
+    await signIn(prevState, {
+      email: formData.email,
+      password: formData.password,
+      redirect: false, // リダイレクトを無効化
+    });
+    return NextResponse.json({
+      message: "successfully in login",
+    });
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
-          return 'Invalid credentials.';
+          return NextResponse.json(
+            { error: "Invalid credentials.メールかパスワードが違います." },
+            { status: 500 },
+          );
         default:
-          return 'Something went wrong.';
+          return NextResponse.json(
+            { error: "Something went wrong." },
+            { status: 500 },
+          );
       }
     }
-
     throw error;
   }
 }

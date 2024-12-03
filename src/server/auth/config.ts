@@ -34,20 +34,28 @@ export const authConfig = {
   },
   providers: [
     CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "email", type: "text" },
+        password: { label: "password", type: "password" },
+      },
       async authorize(credentials) {
         const parsedCredentials = postSignin.safeParse(credentials);
         if (!parsedCredentials.success) {
+          console.log("Invalid credentials format");
           return null;
         }
         const { email, password } = parsedCredentials.data;
         //DBチェック
         const user = await getUserByEmail(email);
         if (!user) {
+          console.log("User not found");
           return null;
         }
         //パスワードチェック
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
+          console.log("Password mismatch");
           return null;
         }
         return {
@@ -69,15 +77,11 @@ export const authConfig = {
       }
       return token;
     },
-    async session({ session, token }) {
-      session.user = { id: token.id as string, email: token.email!, emailVerified: token.emailVerified as Date };
-      return session;
-    },
     authorized({ auth, request: { nextUrl } }) {
+      console.log("authorized");
       const isLoggedIn = !!auth?.user;
       const isAuthRoute = ['/signin', '/signup'].includes(nextUrl.pathname);
       const isPublicRoute = ['/'].includes(nextUrl.pathname);
-
       if (isAuthRoute) {
         if (isLoggedIn) {
           return Response.redirect(new URL('/', nextUrl));
@@ -87,13 +91,14 @@ export const authConfig = {
       }
 
       if (!isPublicRoute && !isLoggedIn) {
-        return false;
+        return Response.redirect(new URL('/signin', nextUrl));
+        //return false;
       }
 
       return true;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.AUTH_SECRET,
 } satisfies NextAuthConfig;
 
 /**
