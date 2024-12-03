@@ -9,7 +9,14 @@ export const userSchema = z.object({
   id: z.string().min(1).optional(),
   emailVerified: z.date().nullable().optional(),
   email: z.string().email(),
-  password: z.string().min(1), //TODO: 暗号化する
+  password: z.string().min(1),
+  created_at: z.date().optional(),
+});
+
+export const safeUserSchema = z.object({
+  id: z.string().min(1).optional(),
+  emailVerified: z.date().nullable().optional(),
+  email: z.string().email(),
   created_at: z.date().optional(),
 });
 
