@@ -1,12 +1,7 @@
 'use server';
 
-import bcrypt from 'bcrypt';
 import { AuthError } from 'next-auth';
-import { redirect } from 'next/navigation';
 import { signIn, signOut } from '~/server/auth';
-import { db } from '~/server/db';
-import { getUserByEmail } from '~/server/repository/getdata';
-import { postSignup } from './schemas';
 
 export type SignUpState = {
   errors?: {
@@ -16,43 +11,43 @@ export type SignUpState = {
   message?: string | null;
 };
 
-export async function signUp(prevState: SignUpState, formData: FormData): Promise<SignUpState> {
-  const validatedFields = postSignup.safeParse({
-    email: formData.get('email'),
-    password: formData.get('password'),
-  });
+// export async function signUp(prevState: SignUpState, formData: FormData): Promise<SignUpState> {
+//   const validatedFields = postSignup.safeParse({
+//     email: formData.get('email'),
+//     password: formData.get('password'),
+//   });
 
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: '入力項目が足りません。',
-    };
-  }
+//   if (!validatedFields.success) {
+//     return {
+//       errors: validatedFields.error.flatten().fieldErrors,
+//       message: '入力項目が足りません。',
+//     };
+//   }
 
-  const { email, password } = validatedFields.data;
+//   const { email, password } = validatedFields.data;
 
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const existingUser = await getUserByEmail(email);
+//   try {
+//     const hashedPassword = await bcrypt.hash(password, 10);
+//     const existingUser = await getUserByEmail(email);
 
-    if (existingUser) {
-      return {
-        message: '既に登録されているユーザーです。',
-      };
-    }
+//     if (existingUser) {
+//       return {
+//         message: '既に登録されているユーザーです。',
+//       };
+//     }
 
-    await db.user.create({
-      data: {
-        email: email,
-        password: hashedPassword,
-      },
-    });
-  } catch (error) {
-    throw error;
-  }
+//     await db.user.create({
+//       data: {
+//         email: email,
+//         password: hashedPassword,
+//       },
+//     });
+//   } catch (error) {
+//     throw error;
+//   }
 
-  redirect('/login');
-}
+//   redirect('/login');
+// }
 
 export async function login(prevState: string | undefined, formData: FormData) {
   try {

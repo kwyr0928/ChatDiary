@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
-import Credentials from 'next-auth/providers/credentials';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { postSignin } from '~/lib/schemas';
 import { getUserByEmail } from '../repository/getdata';
 
@@ -14,22 +14,65 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      email: string;
+      emailVerified: Date;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    emailVerified: Date | null,
+    // ...other properties
+    // role: UserRole;
+  }
 }
 
 export const authConfig = {
   pages: {
     signIn: '/signin',
   },
+  providers: [
+    CredentialsProvider({
+      async authorize(credentials) {
+        const parsedCredentials = postSignin.safeParse(credentials);
+        if (!parsedCredentials.success) {
+          return null;
+        }
+        const { email, password } = parsedCredentials.data;
+        //DBチェック
+        const user = await getUserByEmail(email);
+        if (!user) {
+          return null;
+        }
+        //パスワードチェック
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) {
+          return null;
+        }
+        return {
+          id: user.id,
+          email: user.email,
+          emailVerified: user.emailVerified ?? null,
+        };
+      },
+    }),
+  ],
+  session: {
+    strategy: "jwt",
+  },
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user = { id: token.id as string, email: token.email!, emailVerified: token.emailVerified as Date };
+      return session;
+    },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isAuthRoute = ['/signin', '/signup'].includes(nextUrl.pathname);
@@ -50,26 +93,7 @@ export const authConfig = {
       return true;
     },
   },
-  providers: [
-    Credentials({
-      async authorize(credentials) {
-        const parsedCredentials = postSignin.safeParse(credentials);
-
-        if (parsedCredentials.success) {
-          const { email, password } = parsedCredentials.data;
-          const user = await getUserByEmail(email);
-
-          if (!user) return null;
-
-          const passwordMatch = await bcrypt.compare(password, user.password);
-
-          if (passwordMatch) return user;
-        }
-
-        return null;
-      },
-    }),
-  ],
+  secret: process.env.NEXTAUTH_SECRET,
 } satisfies NextAuthConfig;
 
 /**
