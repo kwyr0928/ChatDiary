@@ -26,7 +26,7 @@ export async function POST(req: Request,
     if(diaryCounts==null) throw new Error("err in getChatCounts");
 
     let aiResponse = "";
-    if(diaryCounts <= chatLimit){
+    if(diaryCounts < chatLimit){
       // TODO: @にいろ AIに質問を聞く処理
 
       const dummy = "dummy質問ですがどうですか？";
