@@ -5,15 +5,15 @@ import { z } from "zod";
 /*
   スキーマへ与えるデータの構造体
 */
-export const user = z.object({
+export const userSchema = z.object({
   id: z.string().min(1).optional(),
-  registered: z.boolean(),
+  emailVerified: z.date().nullable().optional(),
   email: z.string().email(),
-  passward: z.string().min(1), //TODO: 暗号化する
+  password: z.string().min(1), //TODO: 暗号化する
   created_at: z.date().optional(),
 });
 
-export const diaries = z.object({
+export const diariesSchema = z.object({
   id: z.string().min(1).optional(),
   userId: z.string().min(1),
   title: z.string().min(1),
@@ -22,7 +22,7 @@ export const diaries = z.object({
   created_at: z.date().optional(),
 });
 
-export const chats = z.object({
+export const chatsSchema = z.object({
   id: z.string().min(1).optional(),
   diaryId: z.string().min(1),
   message: z.string().min(1), // userの送信
@@ -30,18 +30,18 @@ export const chats = z.object({
   created_at: z.date().optional(),
 });
 
-export const tags = z.object({
+export const tagsSchema = z.object({
   id: z.string().min(1).optional(),
   name: z.string().min(1),
   created_at: z.date().optional(),
 });
 
-export const diaryTags = z.object({
+export const diaryTagsSchema = z.object({
   id: z.string().min(1).optional(),
   tagId: z.string().min(1),
 });
 
-export const monthlySummaries = z.object({
+export const monthlySummariesSchema = z.object({
   id: z.string().min(1).optional(),
   userId: z.string().min(1),
   month: z.number(),
@@ -49,7 +49,7 @@ export const monthlySummaries = z.object({
   created_at: z.date().optional(),
 });
 
-export const analyses = z.object({
+export const analysesSchema = z.object({
   id: z.string().min(1).optional(),
   userId: z.string().min(1),
   text: z.string().min(1),
@@ -62,14 +62,22 @@ export const analyses = z.object({
 
 // /api/user/signup
 export const postSignup = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
+  email: z.string().email({
+    message: 'メールアドレスを入力してください。',
+  }),
+  password: z.string().min(1, {
+    message: 'パスワードを入力してください。',
+  }),
 });
 
 // /api/user/signin
 export const postSignin = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
+  email: z.string().email({
+    message: 'メールアドレスを入力してください。',
+  }),
+  password: z.string().min(1, {
+    message: 'パスワードを入力してください。',
+  }),
 });
 
 // /api/user/signout
