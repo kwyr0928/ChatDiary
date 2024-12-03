@@ -2,6 +2,12 @@
 // Route Handler
 import { z } from "zod";
 
+// モード
+export const modeList = {
+  detail: 0,
+  personality: 1,
+};
+
 /*
   スキーマへ与えるデータの構造体
 */
@@ -9,7 +15,14 @@ export const userSchema = z.object({
   id: z.string().min(1).optional(),
   emailVerified: z.date().nullable().optional(),
   email: z.string().email(),
-  password: z.string().min(1), //TODO: 暗号化する
+  password: z.string().min(1),
+  created_at: z.date().optional(),
+});
+
+export const safeUserSchema = z.object({
+  id: z.string().min(1).optional(),
+  emailVerified: z.date().nullable().optional(),
+  email: z.string().email(),
   created_at: z.date().optional(),
 });
 
@@ -25,8 +38,9 @@ export const diariesSchema = z.object({
 export const chatsSchema = z.object({
   id: z.string().min(1).optional(),
   diaryId: z.string().min(1),
+  mode: z.number(),
   message: z.string().min(1), // userの送信
-  response: z.string().min(1), // AIからの質問
+  response: z.string().min(1).optional(), // AIからの質問
   created_at: z.date().optional(),
 });
 
@@ -37,7 +51,7 @@ export const tagsSchema = z.object({
 });
 
 export const diaryTagsSchema = z.object({
-  id: z.string().min(1).optional(),
+  diaryId: z.string().min(1),
   tagId: z.string().min(1),
 });
 
@@ -107,12 +121,12 @@ export const postChat = z.object({
 // api/chat/[id]/send
 export const postSendChat = z.object({
   mode: z.number(),
-  text: z.number(),
+  text: z.string(),
 });
 
 // api/diary/[id]/new
 export const postDiary = z.object({
-  tags: z.array(z.number()),
+  tags: z.array(z.string()),
   summary: z.string(),
   isPublic: z.boolean()
 });
