@@ -121,7 +121,7 @@ export const postChat = z.object({
 // api/chat/[id]/send
 export const postSendChat = z.object({
   mode: z.number(),
-  text: z.number(),
+  text: z.string(),
 });
 
 // api/diary/[id]/new

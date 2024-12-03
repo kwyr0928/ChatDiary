@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { chatsSchema, diariesSchema, modeList, userSchema } from "~/lib/schemas";
+import { chatsSchema, diariesSchema, userSchema } from "~/lib/schemas";
 import { db } from "../db";
 
 export async function insertNewUser(userData: z.infer<typeof userSchema>) {
@@ -34,12 +34,12 @@ export async function initializeDiary(userId: string) {
   }
 }
 
-export async function initializeChat(diaryId: string, userMessage: string) {
+export async function initializeChat(diaryId: string, mode: number, userMessage: string) {
   try {
     if (diaryId == null || userMessage ==null) throw new Error("Invalid option data");
     const chatData: z.infer<typeof chatsSchema> = {
       diaryId: diaryId,
-      mode: modeList.detail,
+      mode: mode,
       message: userMessage,
     };
     const create = await db.chats.create({
