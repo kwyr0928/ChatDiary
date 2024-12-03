@@ -56,7 +56,7 @@ export async function createTag(name: string) {
   try {
     if (name ==null) throw new Error("Invalid option data");
     const create = await db.tags.create({
-      data: { tagName: name },
+      data: { name: name },
     });
     return create;
   } catch (error) {

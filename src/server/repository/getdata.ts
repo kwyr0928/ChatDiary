@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { diariesSchema, safeUserSchema, tagsSchema, userSchema } from '~/lib/schemas';
+import { chatsSchema, diariesSchema, diaryTagsSchema, safeUserSchema, tagsSchema, userSchema } from '~/lib/schemas';
 import { db } from "../db";
 
 export const getUserByEmail = async (email: string) => {
@@ -50,10 +50,50 @@ export const getChatCounts = async (diaryId: string) => {
   }
 };
 
+export const getChatsByDiaryId = async (diaryId: string) => {
+  try {
+    const data = await db.chats.findMany({
+      where: { diaryId: diaryId },
+      orderBy: { created_at: 'asc' },
+    });
+    if(data == null) throw new Error("chats not found");
+    return z.array(chatsSchema).parse(data);
+  } catch (error) {
+    console.error("Error in getChatsByDiaryId:", error);
+    return null;
+  }
+};
+
+////////////////////////////////
+
 export const getTagByName = async (name: string) => {
-  const data = await db.tags.findFirst({ where: { tagName: name } });
+  const data = await db.tags.findFirst({ where: { name } });
   if(data == null) {
     return null;
   }
   return tagsSchema.parse(data);
+};
+
+export const getTagByID = async (tagId: string) => {
+  try {
+    const data = await db.tags.findUnique({
+      where: { id: tagId }
+    });
+    if(data == null) throw new Error("tags not found");
+    return tagsSchema.parse(data);
+  } catch (error) {
+    console.error("Error in getTagByID:", error);
+    return null;
+  }
+};
+
+export const getTagConnectionsByDiary = async (diaryId: string) => {
+  try {
+    const data = await db.diaryTags.findMany({ where: { diaryId } });
+    if(data == null) throw new Error("tags not found");
+    return z.array(diaryTagsSchema).parse(data);
+  } catch (error) {
+    console.error("Error in getTagConnectionsByDiary:", error);
+    return null;
+  }
 };

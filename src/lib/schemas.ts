@@ -40,7 +40,7 @@ export const chatsSchema = z.object({
   diaryId: z.string().min(1),
   mode: z.number(),
   message: z.string().min(1), // userの送信
-  response: z.string().min(1).optional(), // AIからの質問
+  response: z.string().min(1).nullable().optional(), // AIからの質問
   created_at: z.date().optional(),
 });
 
@@ -69,6 +69,15 @@ export const analysesSchema = z.object({
   text: z.string().min(1),
   created_at: z.date().optional(),
 });
+
+/////////////
+
+export const chatLogSchema = z.object({
+  message: z.string().min(1), // userの送信
+  response: z.string().min(1).nullable().optional(), // AIからの質問
+});
+
+/////////////
 
 /*
   POST/PUTデータの構造体 - アカウント関連

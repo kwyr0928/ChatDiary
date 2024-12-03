@@ -56,7 +56,7 @@ model Chats {
 
 model Tags {
   id         String   @id @default(cuid())
-  tagName   String   @db.VarChar(255)
+  name   String   @db.VarChar(255)
   created_at DateTime @default(now())
 
   DiaryTags DiaryTags[]
