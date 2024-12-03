@@ -28,6 +28,20 @@ export const getUserByUserID = async (userId: string) => {
 
 ////////////////////////////////
 
+export const getDiariesByUserId = async (userId: string) => {
+  try {
+    const data = await db.diaries.findMany({
+      where: { userId: userId },
+      orderBy: { created_at: 'asc' },
+    });
+    if(data == null) throw new Error("diary not found");
+    return z.array(diariesSchema).parse(data);
+  } catch (error) {
+    console.error("Error in getDiariesByUserId:", error);
+    return null;
+  }
+};
+
 export const getDiaryData = async (diaryId: string) => {
   try {
     const data = await db.diaries.findUnique({ where: { id: diaryId } });
