@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { diariesSchema, safeUserSchema, tagsSchema, userSchema } from '~/lib/schemas';
+import { chatsSchema, diariesSchema, safeUserSchema, tagsSchema, userSchema } from '~/lib/schemas';
 import { db } from "../db";
 
 export const getUserByEmail = async (email: string) => {
@@ -46,6 +46,20 @@ export const getChatCounts = async (diaryId: string) => {
     return z.number().parse(count);
   } catch (error) {
     console.error("Error in getChatCounts:", error);
+    return null;
+  }
+};
+
+export const getHistoryData = async (diaryId: string) => {
+  try {
+    const count = await db.chats.findMany({
+      where: { diaryId: diaryId },
+      orderBy: { created_at: 'asc'}
+    });
+    if(count == null) throw new Error("chats not found");
+    return z.array(chatsSchema).parse(count);
+  } catch (error) {
+    console.error("Error in getHistoryData:", error);
     return null;
   }
 };
