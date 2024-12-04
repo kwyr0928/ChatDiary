@@ -71,6 +71,13 @@ export const analysesSchema = z.object({
   created_at: z.date().optional(),
 });
 
+export const continuationSchema = z.object({
+  id: z.string().min(1).optional(),
+  userId: z.string().min(1),
+  day: z.number(),
+  done: z.boolean()
+});
+
 /////////////
 
 export const chatLogSchema = z.object({
