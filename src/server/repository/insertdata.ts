@@ -18,9 +18,18 @@ export async function insertNewUser(userData: z.infer<typeof userSchema>) {
 export async function initializeDiary(userId: string) {
   try {
     if (userId == null) throw new Error("Invalid option data");
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1; // 月は0始まりなので+1する
+    const day = now.getDate();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+
+    // フォーマットした日時文字列を返す
+    const dateString = `${year}/${month}/${day} ${hours}:${minutes}`;
     const diaryData: z.infer<typeof diariesSchema> = {
       userId: userId,
-      title: "新しい日記",
+      title: dateString,
       summary: "出力結果",
       isPublic: false,
     };
@@ -56,7 +65,7 @@ export async function createTag(name: string) {
   try {
     if (name ==null) throw new Error("Invalid option data");
     const create = await db.tags.create({
-      data: { tagName: name },
+      data: { name: name },
     });
     return create;
   } catch (error) {

@@ -31,7 +31,7 @@ export async function summariedDiary(diaryId: string, aiSummary: string) {
   }
 }
 
-export async function createdDiary(diaryId: string, summary: string, isPublic: boolean) {
+export async function updateDiary(diaryId: string, summary: string, isPublic: boolean) {
   try {
     if (diaryId==null || summary==null || isPublic==null) throw new Error("Invalid option data");
     const update = await db.diaries.update({
