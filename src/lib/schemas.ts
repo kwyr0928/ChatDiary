@@ -46,6 +46,7 @@ export const chatsSchema = z.object({
 
 export const tagsSchema = z.object({
   id: z.string().min(1).optional(),
+  userId: z.string().min(1),
   name: z.string().min(1),
   created_at: z.date().optional(),
 });
@@ -131,6 +132,7 @@ export const postSendChat = z.object({
 // api/diary/[id] PUT
 // api/diary/[id]/new
 export const putDiary = z.object({
+  userId: z.string().min(1),
   tags: z.array(z.string()),
   summary: z.string(),
   isPublic: z.boolean()

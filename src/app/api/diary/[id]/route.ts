@@ -59,7 +59,7 @@ export async function PUT(req: Request,
     // eslint-disable-next-line @typescript-eslint/await-thenable
     const par = await params;
     const diaryId = z.string().parse(par.id); //パスパラメータ
-    const { summary, tags, isPublic } = putDiary.parse(await req.json()); //body
+    const { userId, summary, tags, isPublic } = putDiary.parse(await req.json()); //body
 
     const updatedDiary = await updateDiary(diaryId, summary, isPublic);
     if(updatedDiary==null) throw new Error("err in getDiaryData");
@@ -70,7 +70,7 @@ export async function PUT(req: Request,
       let tagId = "";
       if(tagData==null){
         // 新しいタグ生成
-        const newTag = await createTag(tag);
+        const newTag = await createTag(tag, userId);
         if(newTag==null) throw new Error("err in createTag");
         tagId = newTag.id;
       } else {

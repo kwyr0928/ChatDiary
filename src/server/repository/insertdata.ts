@@ -61,11 +61,11 @@ export async function initializeChat(diaryId: string, mode: number, userMessage:
   }
 }
 
-export async function createTag(name: string) {
+export async function createTag(name: string, userId: string) {
   try {
     if (name ==null) throw new Error("Invalid option data");
     const create = await db.tags.create({
-      data: { name: name },
+      data: { name: name, userId: userId },
     });
     return create;
   } catch (error) {
