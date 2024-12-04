@@ -98,6 +98,16 @@ export const getTagByUserId = async (diaryId: string) => {
     return z.array(diaryTagsSchema).parse(data);
   } catch (error) {
     console.error("Error in getTagConnectionsByDiary:", error);
+export const getHistoryData = async (diaryId: string) => {
+  try {
+    const count = await db.chats.findMany({
+      where: { diaryId: diaryId },
+      orderBy: { created_at: 'asc'}
+    });
+    if(count == null) throw new Error("chats not found");
+    return z.array(chatsSchema).parse(count);
+  } catch (error) {
+    console.error("Error in getHistoryData:", error);
     return null;
   }
 };
