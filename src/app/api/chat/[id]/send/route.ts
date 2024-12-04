@@ -28,7 +28,6 @@ export async function POST(req: Request,
 
     let aiResponse = "";
     if (diaryCounts < chatLimit) {
-      // TODO: @にいろ AIに質問を聞く処理
       // Gemini APIキーを設定
       const apiKey = process.env.GEMINI_API_KEY;
 
@@ -46,12 +45,14 @@ export async function POST(req: Request,
       const historyData = await getHistoryData(diaryId);
       if (historyData == null) throw new Error("err in getHistoryData");
       for (const data of historyData) {
-        historyArray.push({ role: "user", parts: [{ text: data.message }] });
-        historyArray.push({ role: "model", parts: [{ text: data.response! }] });
+        if (data?.message && data?.response) {
+          historyArray.push({ role: "user", parts: [{ text: data.message }] });
+          historyArray.push({ role: "model", parts: [{ text: data.response }] });
+        }
       }
 
       // テキスト生成
-      const chat = await model.startChat({
+      const chat = model.startChat({
         history: historyArray
       })
 
@@ -60,7 +61,6 @@ export async function POST(req: Request,
       const response = result.response;
       const responseText = response.text();
 
-      const dummy = "dummy質問ですがどうですか？";
       const res = await returnedChat(sendChat?.id, responseText);
       if (res == null) throw new Error("err in returnedChat");
       aiResponse = res.response!;
