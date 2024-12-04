@@ -26,6 +26,10 @@ model User {
   MonthlySummaries MonthlySummaries[]
 
   Analyses Analyses[]
+
+  Tags Tags[]
+
+  Continuation Continuation[]
 }
 
 model Diaries {
@@ -56,9 +60,11 @@ model Chats {
 
 model Tags {
   id         String   @id @default(cuid())
-  name   String   @db.VarChar(255)
+  userId     String
+  name       String   @db.VarChar(255)
   created_at DateTime @default(now())
 
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   DiaryTags DiaryTags[]
 }
 
@@ -81,6 +87,15 @@ model Analyses {
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model Continuation {
+  id     String  @id @default(cuid())
+  userId String
+  day    Int
+  done   Boolean
+  
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model DiaryTags {
