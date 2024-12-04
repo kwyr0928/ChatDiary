@@ -2,6 +2,7 @@
 import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
 import { postSignup, userSchema } from "~/lib/schemas";
+import { sendEmail } from "~/server/mail/sendEmail";
 import { insertNewUser } from "~/server/repository/insertdata";
 
 export async function POST(req: Request) {
@@ -16,6 +17,9 @@ export async function POST(req: Request) {
       email: email,
       password: hashedPassword,
     }))
+
+    // メール送信
+    const emailSended = await sendEmail(email);
 
     return NextResponse.json({
       message: "create User successfully! email: " + email,
