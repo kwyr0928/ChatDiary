@@ -4,13 +4,10 @@ import Link from "next/link";
 import { useState } from "react";
 import {
   IoAddCircleOutline,
-  IoBarChartSharp,
   IoCheckmarkSharp,
   IoChevronBackSharp,
-  IoCogSharp,
-  IoHomeSharp,
   IoPersonCircleSharp,
-  IoTrashSharp,
+  IoTrashSharp
 } from "react-icons/io5";
 import ResizeTextarea from "~/components/resizeTextarea";
 import Tag from "~/components/tag";
@@ -30,7 +27,7 @@ export default function Page() {
   );
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
-      <div className="flex w-full items-center justify-around pt-5 text-center">
+      <div className="fixed top-0 flex w-full items-center justify-around pt-5 text-center bg-red-50">
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger onClick={() => setIsOpen(true)} className="">
             <IoChevronBackSharp color="#f87171" size={"30px"} />
@@ -97,7 +94,7 @@ export default function Page() {
           </DialogContent>
         </Dialog>
       </div>
-      <div className="mb-auto mt-5 w-[85%]">
+      <div className="mt-[60px] mb-auto mt-5 w-[85%]">
         <div className="flex items-center justify-start space-x-5">
           <p className="my-2 text-lg">日記本文</p>
           <Link href={"/diary/edit"}>
@@ -163,17 +160,6 @@ export default function Page() {
             </Card>
           </div>
         </div>
-      </div>
-      <div className="flex w-full justify-around bg-white py-5">
-        <Link href={"/setting"}>
-          <IoCogSharp size={"50px"} color="gray" />
-        </Link>
-        <Link href={"/home"}>
-          <IoHomeSharp size={"50px"} color="gray" />
-        </Link>
-        <Link href={"/feedback"}>
-          <IoBarChartSharp size={"50px"} color="gray" />
-        </Link>
       </div>
     </div>
   );

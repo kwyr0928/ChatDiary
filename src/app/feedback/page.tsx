@@ -37,7 +37,8 @@ export default async function Page() {
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
-      <p className="mt-5 mb-3 w-full pl-5 text-left text-xl font-bold">
+      <div className="mb-[110px] mx-auto w-[85%]">
+      <p className="mt-5 mb-3 w-full text-left text-xl font-bold">
         2024年11月の継続状況
       </p>
       <div className="grid grid-cols-7 gap-3">
@@ -61,21 +62,22 @@ export default async function Page() {
           );
         })}
       </div>
-      <p className="mt-5 mb-3 w-full pl-5 text-left text-xl font-bold">
+      <p className="mt-5 mb-3 w-full text-left text-xl font-bold">
         先月のまとめ
       </p>
       {/* カード */}
-      <Card className="w-[85%] shadow-none">
+      <Card className=" shadow-none">
         <CardContent className="px-5 py-3">あなたは...</CardContent>
       </Card>
-      <p className="mt-5 mb-3 w-full pl-5 text-left text-xl font-bold">
+      <p className="mt-5 mb-3 w-full text-left text-xl font-bold">
         あなたの分析
       </p>
       {/* カード */}
-      <Card className="mb-auto w-[85%] shadow-none">
+      <Card className="mb-auto shadow-none">
         <CardContent className="px-5 py-3">あなたは積極的に友人を誘ったり手助けできる人ですね。一方で自分から人に頼れない場面が多く、弱みを見せたくないというプライドの高さを感じます。</CardContent>
       </Card>
-      <div className="flex w-full justify-around bg-white py-5">
+      </div>
+      <div className="fixed bottom-0 flex w-full justify-around bg-white py-5">
         <Link href={"/setting"}>
           <IoCogSharp size={"50px"} color="gray" />
         </Link>
