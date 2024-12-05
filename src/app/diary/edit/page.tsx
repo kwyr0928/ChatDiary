@@ -27,9 +27,9 @@ export default function Page() {
   );
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
-      <div className="fixed top-0 flex w-full items-center justify-around pt-5 text-center bg-red-50">
+      <div className="fixed top-0 flex w-full items-center justify-center pt-5 text-center bg-red-50">
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger onClick={() => setIsOpen(true)} className="">
+          <DialogTrigger onClick={() => setIsOpen(true)} className="fixed left-3">
             <IoChevronBackSharp color="#f87171" size={"30px"} />
           </DialogTrigger>
           <DialogContent className="w-[80%]">
@@ -60,7 +60,7 @@ export default function Page() {
         </Dialog>
         <p className="text-lg text-gray-700">2024/10/2</p>
         <Dialog open={isOpen2} onOpenChange={setIsOpen2}>
-          <DialogTrigger onClick={() => setIsOpen2(true)} className="">
+          <DialogTrigger onClick={() => setIsOpen2(true)} className="fixed right-5">
             <IoTrashSharp color="gray" size={"35px"} />
           </DialogTrigger>
           <DialogContent className="w-[80%]">
@@ -94,7 +94,7 @@ export default function Page() {
           </DialogContent>
         </Dialog>
       </div>
-      <div className="mt-[60px] mb-auto mt-5 w-[85%]">
+      <div className="mt-[60px] mb-auto w-[85%]">
         <div className="flex items-center justify-start space-x-5">
           <p className="my-2 text-lg">日記本文</p>
           <Link href={"/diary/edit"}>

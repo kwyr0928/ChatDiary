@@ -21,13 +21,13 @@ export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
-      <div className="fixed top-0 flex w-full items-center justify-around pt-5 text-center">
-        <Link href={"/home"}>
+      <div className="fixed top-0 flex w-full items-center justify-center pt-5 text-center pb-3 bg-red-50">
+        <Link className="fixed left-3" href={"/home"}>
           <IoChevronBackSharp color="#f87171" size={"30px"} />
         </Link>
         <p className="text-lg text-gray-700">2024/10/2</p>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger onClick={() => setIsOpen(true)} className="">
+          <DialogTrigger onClick={() => setIsOpen(true)} className="fixed right-5">
             <IoTrashSharp color="gray" size={"35px"} />
           </DialogTrigger>
           <DialogContent className="w-[80%]">
