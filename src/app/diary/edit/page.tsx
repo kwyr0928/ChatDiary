@@ -97,7 +97,7 @@ export default function Page() {
       <div className="mt-[60px] mb-auto w-[85%]">
         <div className="flex items-center justify-start space-x-5">
           <p className="my-2 text-lg">日記本文</p>
-          <Link href={"/diary/edit"}>
+          <Link href={"/diary/detail"}>
             <IoCheckmarkSharp size={"23px"} color="#f87171" onClick={() => {
               toast({
                 title: "保存しました。",
