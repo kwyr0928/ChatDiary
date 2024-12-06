@@ -27,7 +27,7 @@ export default function Page() {
   );
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
-      <div className="fixed top-0 flex w-full items-center justify-center pt-5 text-center bg-red-50">
+      <div className="fixed top-0 max-w-md flex w-full items-center justify-center pt-5 text-center bg-red-50">
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger onClick={() => setIsOpen(true)} className="fixed left-3">
             <IoChevronBackSharp color="#f87171" size={"30px"} />
