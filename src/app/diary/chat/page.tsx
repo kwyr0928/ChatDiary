@@ -23,7 +23,7 @@ export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
-      <div className="fixed top-0 mb-5 flex w-full flex-col justify-center bg-white pt-5 text-center">
+      <div className="fixed top-0 mb-5 max-w-md flex w-full flex-col justify-center bg-white pt-5 text-center">
         <div className="mb-3 flex">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5">
@@ -107,7 +107,7 @@ export default function Page() {
         </Card>
       </div>
       {/* チャット欄 */}
-      <div className="fixed bottom-0 w-full flex items-center justify-center space-x-2 pt-3 pb-5 bg-red-50">
+      <div className="fixed bottom-0 max-w-md w-full flex items-center justify-center space-x-2 pt-3 pb-5 bg-red-50">
         <textarea
           rows={1}
           className="w-[300px] resize-none rounded border p-1 focus:outline-none"

@@ -21,7 +21,7 @@ export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
-      <div className="fixed top-0 flex w-full items-center justify-center pt-5 text-center pb-3 bg-red-50">
+      <div className="fixed top-0 flex w-full max-w-md items-center justify-center pt-5 text-center pb-3 bg-red-50">
         <Link className="fixed left-3" href={"/home"}>
           <IoChevronBackSharp color="#f87171" size={"30px"} />
         </Link>
@@ -98,7 +98,7 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <div className="fixed bottom-0 flex w-full justify-around bg-white py-5">
+      <div className="fixed bottom-0 max-w-md flex w-full justify-around bg-white py-5">
         <Link href={"/setting"}>
           <IoCogSharp size={"50px"} color="gray" />
         </Link>

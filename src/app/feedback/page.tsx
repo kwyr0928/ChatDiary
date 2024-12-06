@@ -77,7 +77,7 @@ export default async function Page() {
         <CardContent className="px-5 py-3">あなたは積極的に友人を誘ったり手助けできる人ですね。一方で自分から人に頼れない場面が多く、弱みを見せたくないというプライドの高さを感じます。</CardContent>
       </Card>
       </div>
-      <div className="fixed bottom-0 flex w-full justify-around bg-white py-5">
+      <div className="fixed bottom-0 max-w-md flex w-full justify-around bg-white py-5">
         <Link href={"/setting"}>
           <IoCogSharp size={"50px"} color="gray" />
         </Link>

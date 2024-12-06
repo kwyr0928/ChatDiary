@@ -11,6 +11,7 @@ import {
 } from "react-icons/io5";
 import { Card, CardContent } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
+// import { ScrollArea } from "~/components/ui/scroll-area";
 
 const diary = {
   diary: [
@@ -51,7 +52,7 @@ export default function Page() {
 
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
-      <div className="fixed top-0 pt-5 pb-5 flex items-center w-[85%] space-x-3 bg-red-50">
+      <div className="fixed top-0 pt-5 pb-5 flex items-center w-[85%] max-w-md space-x-3 bg-red-50">
         <IoSearchSharp size={"25px"} />
         <Input
           placeholder="日記を検索"
@@ -59,7 +60,7 @@ export default function Page() {
           onChange={(e) => setKeyword(e.target.value)}
         />
       </div>
-      <div className="mx-auto mt-[80px] mb-[130px] w-[85%]">
+      <div className="mx-auto mt-[80px] mb-[130px] w-[85%]">       
         {filteredDiary.length > 0 ? (
           filteredDiary.map((d, index) => (
             <Link key={index} href={`/diary/detail`}>
@@ -87,10 +88,10 @@ export default function Page() {
           </p>
         )}
       </div>
-        <Link href={"/diary/chat"} className="fixed bottom-24 right-5">
+        <Link href={"/diary/chat"} className="fixed bottom-24 right-5 max-w-md">
           <IoAddCircleSharp size={"70px"} color="#f87171" />
         </Link>
-        <div className="fixed bottom-0 flex w-full justify-around bg-white py-5">
+        <div className="max-w-md fixed bottom-0 flex w-full justify-around bg-white py-5">
           <Link href={"/setting"}>
             <IoCogSharp size={"50px"} color="gray" />
           </Link>
