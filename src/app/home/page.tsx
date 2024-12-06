@@ -11,7 +11,7 @@ import {
 } from "react-icons/io5";
 import { Card, CardContent } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
-// import { ScrollArea } from "~/components/ui/scroll-area";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 const diary = {
   diary: [
@@ -60,7 +60,7 @@ export default function Page() {
           onChange={(e) => setKeyword(e.target.value)}
         />
       </div>
-      <div className="mx-auto mt-[80px] mb-[130px] w-[85%]">       
+      <div className="mx-auto mt-[80px] mb-[130px] w-[85%]">      
         {filteredDiary.length > 0 ? (
           filteredDiary.map((d, index) => (
             <Link key={index} href={`/diary/detail`}>
