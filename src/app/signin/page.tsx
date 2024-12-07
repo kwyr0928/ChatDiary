@@ -10,17 +10,19 @@ export default async function Page() {
       <p className="text-3xl font-bold my-8">ログイン</p>
       <form className="flex flex-col space-y-4 w-[70%]">
         <div className="space-y-2">
-          <label className="text-sm">ユーザーID</label>
+          <label className="text-sm">メールアドレス</label>
           <Input
+            name="email"
             type="text"
             className="h-12 rounded-full border-gray-200 px-4"
-            placeholder="ユーザーID"
+            placeholder="メールアドレス"
           />
         </div>
 
         <div className="space-y-2">
           <label className="text-sm">パスワード</label>
           <Input
+            name="password"
             type="password"
             className="h-12 rounded-full border-gray-200 px-4"
             placeholder="パスワード"
