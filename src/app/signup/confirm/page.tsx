@@ -8,7 +8,7 @@ import { Button } from "~/components/ui/button";
 
 const user = {
   id: "nekoneko",
-  mail: "azukiii@gmail.com",
+  mail: "nekoneko@gmail.com",
   password: "nekochan"
 }
 
