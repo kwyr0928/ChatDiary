@@ -8,7 +8,7 @@ import { Input } from "~/components/ui/input";
 
 export default function Page() {
   const [signinResponse, setSigninResponse] = useState(null)
-  const [ data, setData ] = useState({ email: '', password: '' });
+  const [data, setData] = useState({ email: '', password: '' });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -16,7 +16,7 @@ export default function Page() {
 
   const handleSignin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       const response = await fetch('/api/user/signin', {
         method: 'POST',
@@ -28,7 +28,8 @@ export default function Page() {
 
       setSigninResponse(await response.json())
       console.log(signinResponse);
-
+      // TODO: message: "successfully logined"の時にページ遷移
+      //       入力エラーメッセージ表示
     } catch (error) {
       console.error("Error during sign in:", error);
     }
@@ -60,13 +61,10 @@ export default function Page() {
             onChange={onChange}
           />
         </div>
-        {/* <Link href={"/home"}> */}
-              {/* ボタンUI */}
-              <div className="my-7">
-                <Button type="submit" className="bg-red-400 hover:bg-rose-500 rounded-full　w-full text-xl">ログイン</Button>
-            </div>
-            {signinResponse && <p>{JSON.stringify(signinResponse)}</p>}
-        {/* </Link> */}
+        {/* ボタンUI */}
+        <div className="my-7">
+          <Button type="submit" className="bg-red-400 hover:bg-rose-500 rounded-full　w-full text-xl">ログイン</Button>
+        </div>
       </form>
       <Link href={"/signup"} className="border-b">新規登録へ</Link>
     </div>
