@@ -62,7 +62,7 @@ export default function Page() {
           </DialogContent>
         </Dialog>
       </div>
-      <div className="mt-[60px] mb-[120px] w-[85%]">
+      <div className="mt-[60px] w-[85%]">
         <div className="flex items-center justify-start space-x-5">
           <p className="my-2 text-lg">日記本文</p>
           <Link href={"/diary/edit"}>
@@ -77,14 +77,14 @@ export default function Page() {
           </CardContent>
         </Card>
         <p className="mt-8 mb-2 text-lg">チャットログ</p>
-        <div className="mb-auto">
-          <ChatCard isAI={false}>
-            Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
-          </ChatCard>
-          <ChatCard isAI={true}>
-            なぜAさんを誘ったのですか？
-          </ChatCard>
-        </div>
+      </div>
+      <div className="mb-[120px]">
+        <ChatCard isAI={false}>
+          Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
+        </ChatCard>
+        <ChatCard isAI={true}>
+          なぜAさんを誘ったのですか？
+        </ChatCard>
       </div>
       <div className="fixed bottom-0 max-w-md flex w-full justify-around bg-white py-5">
         <Link href={"/setting"}>
