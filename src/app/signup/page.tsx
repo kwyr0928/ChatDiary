@@ -43,10 +43,11 @@ export default async function Page() {
             placeholder="パスワード（再入力）"
           />
         </div>
+        {/* TODO: 入力データのバリデーション */}
       <Link href={"/signup/confirm"}>
         {/* ボタンUI */}
         <div className="my-7">
-                <Button className="bg-red-400 hover:bg-rose-500 rounded-full　w-full text-xl">登録</Button>
+                <Button className="bg-red-400 hover:bg-rose-500 rounded-full w-full text-xl">登録</Button>
             </div>
       </Link>
       </form>
