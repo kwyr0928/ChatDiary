@@ -17,6 +17,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { useToast } from "~/hooks/use-toast";
+import ChatCard from "~/components/chatCard";
 
 export default function Page() {
   const { toast } = useToast()
@@ -140,25 +141,12 @@ export default function Page() {
         </div>
         <p className="my-2 text-lg">チャットログ</p>
         <div className="mb-auto">
-          {/* カード */}
-          <Card className="mb-5 ml-auto w-[70%] text-gray-600 shadow-none">
-            <CardContent className="px-5 py-3">
-              Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
-            </CardContent>
-          </Card>
-          <div className="mr-auto flex">
-            <IoPersonCircleSharp
-              size={"35px"}
-              color="gray"
-              className="mr-2 mt-2"
-            />
-            {/* カード */}
-            <Card className="mb-5 w-[70%] text-gray-600 shadow-none">
-              <CardContent className="px-5 py-3">
-                なぜAさんを誘ったのですか？
-              </CardContent>
-            </Card>
-          </div>
+          <ChatCard isAI={false}>
+            Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
+          </ChatCard>
+          <ChatCard isAI={true}>
+            なぜAさんを誘ったのですか？
+          </ChatCard>
         </div>
       </div>
     </div>
