@@ -5,7 +5,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: "jsdom",
+    environment: "node", //"jsdom", //@t3-oss/env-coreはサーバーサイド専用の環境変数にアクセスする。
     globals: true,
     setupFiles: ["./vitest.setup.ts"],
     include: ["test/**/*.test.ts"],
