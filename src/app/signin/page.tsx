@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { IoDocumentTextSharp } from "react-icons/io5";
 import { Button } from "~/components/ui/button";
@@ -9,6 +10,7 @@ import { Input } from "~/components/ui/input";
 export default function Page() {
   const [signinResponse, setSigninResponse] = useState(null)
   const [data, setData] = useState({ email: '', password: '' });
+  const router = useRouter()
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -28,10 +30,14 @@ export default function Page() {
 
       setSigninResponse(await response.json())
       console.log(signinResponse);
-      // TODO: message: "successfully logined"の時にページ遷移
-      //       入力エラーメッセージ表示
+      if(response.ok){
+        router.push("/home")
+      } else{
+        console.error("ログインに失敗しました")
+      }
+      // TODO: 入力エラーメッセージ表示
     } catch (error) {
-      console.error("Error during sign in:", error);
+      console.error("エラーが発生しました :", error);
     }
   }
 

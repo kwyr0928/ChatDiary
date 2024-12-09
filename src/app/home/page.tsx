@@ -51,6 +51,8 @@ export default function Page() {
     JSON.stringify(d).includes(keyword),
   );
 
+
+
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
       <div className="mx-auto mt-[80px] mb-[130px] w-[85%]">

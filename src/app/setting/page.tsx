@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 
+
 const user = {
   id: "nekoneko",
   mail: "nekoneko@gmail.com",
@@ -19,6 +20,17 @@ const user = {
 
 export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const getJWT = async () => {
+    const response = await fetch("/api/jwt");
+    if (response.ok) {
+      const data = await response.json();
+      console.log("JSON Web Token", data.token); // JWT 情報を確認
+    } else {
+      console.error("Failed to fetch JWT");
+    }
+  };
+
   return (
     <div className="mx-auto flex min-h-screen max-w-md w-full flex-col items-center bg-red-50 text-gray-600">
       <div className="mr-auto ml-8">
@@ -68,6 +80,7 @@ export default function Page() {
           </div>
         </DialogContent>
       </Dialog>
+
       <div className="flex w-full justify-around bg-white py-5">
         <Link href={"/setting"}>
           <IoCogSharp size={"50px"} color="#f87171" />
