@@ -11,6 +11,8 @@ import {
 } from "react-icons/io5";
 import { Card, CardContent } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
+import { ScrollArea } from "~/components/ui/scroll-area";
+import DiaryCard from "~/components/diaryCard";
 
 const diary = {
   diary: [
@@ -35,6 +37,11 @@ const diary = {
       context: "ねむいでござんす",
       date: "2024-10-9",
     },
+    {
+      tag: ["E", "スイーツ"],
+      context: "栗が好きなAさんを誘い、パフェを食べに行った。私はさつまいものアイスが乗ったパフェで、Aさんは栗のパウンドケーキが乗ったパフェだった。",
+      date: "2024-10-14",
+    },
   ],
 };
 
@@ -44,18 +51,26 @@ export default function Page() {
     JSON.stringify(d).includes(keyword),
   );
 
+
+
   return (
-    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
-      <div className="mt-5 flex items-center w-[85%] space-x-3">
-      <IoSearchSharp size={"25px"}/>
-        <Input
-          placeholder="日記を検索"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-        />
-      </div>
-      <div className="mx-auto mb-auto mt-5 w-[85%]">
-        {filteredDiary.length > 0 ? (
+    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
+      <div className="mx-auto mt-[80px] mb-[140px] w-[85%]">
+        {/* <ScrollArea> */}
+          {
+            filteredDiary.length > 0 ? (
+              filteredDiary.map((d, index) => (
+                // 日記カード表示
+                <DiaryCard key={index} d={d} index={index} />
+              ))
+            ) : (
+              <p className="text-center text-gray-400">
+                該当する日記はありません。
+              </p>
+            )
+          }
+        {/* </ScrollArea> */}
+        {/* {filteredDiary.length > 0 ? (
           filteredDiary.map((d, index) => (
             <Link key={index} href={`/diary/detail`}>
               <div className="mb-5">
@@ -80,12 +95,20 @@ export default function Page() {
           <p className="text-center text-gray-400">
             該当する日記はありません。
           </p>
-        )}
+        )} */}
       </div>
-      <Link href={"/diary/chat"} className="absolute bottom-28 right-5">
+      <div className="fixed top-0 pt-5 pb-5 flex items-center max-w-sm w-[85%] space-x-3 bg-red-50">
+        <IoSearchSharp size={"25px"} />
+        <Input
+          placeholder="日記を検索"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+        />
+      </div>
+      <Link href={"/diary/chat"} className="max-w-md fixed bottom-24 flex w-full justify-end pr-4">
         <IoAddCircleSharp size={"70px"} color="#f87171" />
       </Link>
-      <div className="flex w-full justify-around bg-white py-5">
+      <div className="max-w-md fixed bottom-0 flex w-full justify-around bg-white py-5">
         <Link href={"/setting"}>
           <IoCogSharp size={"50px"} color="gray" />
         </Link>

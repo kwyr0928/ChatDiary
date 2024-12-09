@@ -1,19 +1,18 @@
 import { IoCloseCircleSharp } from "react-icons/io5";
 
 /* タグUI */
-export default function Tag(props: {text: string}) {
-    const { text } = props
+export default function Tag(props: {text: string, onRemoveTag: (removeTag: string) => void}) {
+    const { text, onRemoveTag = () => { } } = props
 
-    // const removeTag = () =>{
-
-    // }
+    const removeTag = () =>{
+        onRemoveTag(text)
+    }
     
     return (
         <span id="badge-${text}" className="inline-flex items-center px-1 font-semibold text-red-400 bg-white rounded-full border border-red-400">
             <span className="whitespace-nowrap pt-0.5 px-1 text-base leading-none">{text}</span>
             <button className="focus:outline-none">
-                {/* onClick={removeTag} */}
-                <IoCloseCircleSharp size="26px" className="text-red-400" />
+                <IoCloseCircleSharp size="26px" className="text-red-400" onClick={removeTag} />
             </button>
         </span>
     )

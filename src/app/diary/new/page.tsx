@@ -16,48 +16,51 @@ import {
 } from "~/components/ui/dialog";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import InputTag from "~/components/inputTag";
 
 export default function Page() {
+  const initialTags: string[] = ["タグ1", "タグ2"]
+  const [nowTags, setTags] = useState<String[]>(initialTags)
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
-      <div className="mb-5 flex w-full flex-col justify-around bg-white pt-5 text-center">
+      <div className="fixed top-0 max-w-md mb-5 flex w-full flex-col justify-around bg-white pt-5 text-center">
         <div className="mb-3 flex">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5">
               <IoChevronBackSharp color="#f87171" size={"30px"} />
             </DialogTrigger>
             <DialogContent className="w-[80%]">
-          <DialogHeader>
-            <DialogTitle className="mt-5">編集内容を削除して戻りますか？</DialogTitle>
-          </DialogHeader>
-          <DialogDescription className="text-center text-gray-500">
-            作成した日記は削除されます
-          </DialogDescription>
-          <div className="flex justify-around">
-            <div className="my-2">
-              <Button
-                className="w-[100px] rounded-full bg-white hover:bg-red-400 text-red-400 hover:text-white border border-red-400 hover:border-transparent"
-                onClick={() => setIsOpen(false)}
-              >
-                いいえ
-              </Button>
-            </div>
-            <Link href={"/home"}>
-              <div className="my-2">
-                <Button className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500">
-                  はい
-                </Button>
+              <DialogHeader>
+                <DialogTitle className="mt-5">編集内容を削除して戻りますか？</DialogTitle>
+              </DialogHeader>
+              <DialogDescription className="text-center text-gray-500">
+                作成した日記は削除されます
+              </DialogDescription>
+              <div className="flex justify-around">
+                <div className="my-2">
+                  <Button
+                    className="w-[100px] rounded-full bg-white hover:bg-red-400 text-red-400 hover:text-white border border-red-400 hover:border-transparent"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    いいえ
+                  </Button>
+                </div>
+                <Link href={"/home"}>
+                  <div className="my-2">
+                    <Button className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500">
+                      はい
+                    </Button>
+                  </div>
+                </Link>
               </div>
-            </Link>
-          </div>
-        </DialogContent>
-      </Dialog>
+            </DialogContent>
+          </Dialog>
           <p className="my-auto mr-12 w-[95%] text-lg">2024/10/2</p>
         </div>
       </div>
-      <div className="w-[85%] mb-auto">
+      <div className="w-[85%] mt-[70px] mb-auto">
         <p className="my-2 text-center text-lg">出力された日記</p>
         {/* カード */}
         <Card className="text-gray-600 shadow-none">
@@ -67,13 +70,14 @@ export default function Page() {
         </Card>
         <p className="mb-2 mt-5 text-left text-lg">タグ</p>
         <div className="flex gap-3">
-          <Tag text="food" />
+        <InputTag initialTags={initialTags} onChangeTags={setTags} />
+          {/* <Tag text="food" />
           <Tag text="Aちゃん" />
           <IoAddCircleOutline
             color="#f87171"
             size={"30px"}
             className="mt-0.5"
-          />
+          /> */}
         </div>
         <p className="mb-2 mt-5 text-left text-lg">公開範囲</p>
         {/* ラジオボタン */}
@@ -98,11 +102,11 @@ export default function Page() {
           </RadioGroup>
         </div>
         <Link href={"/home"}>
-        {/* ボタンUI */}
-        <div className="flex justify-center my-10">
-                <Button className="bg-red-400 hover:bg-rose-500 rounded-full w-[80%] text-xl">作成する！</Button>
-            </div>
-      </Link>
+          {/* ボタンUI */}
+          <div className="flex justify-center my-10">
+            <Button className="bg-red-400 hover:bg-rose-500 rounded-full w-[80%] text-xl">作成する！</Button>
+          </div>
+        </Link>
       </div>
     </div>
   );
