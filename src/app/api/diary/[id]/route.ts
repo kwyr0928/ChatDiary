@@ -3,8 +3,8 @@ import { z } from "zod";
 import { chatLogSchema, putDiary } from "~/lib/schemas";
 import { deleteDiary } from "~/server/repository/deletedata";
 import { getChatsByDiaryId, getDiaryData, getTagByID, getTagByName, getTagConnectionsByDiary } from "~/server/repository/getdata";
-import { connectDiaryTag, createTag } from "~/server/repository/insertdata";
 import { updateDiary } from "~/server/repository/updatedata";
+import { connectDiaryTag, createTag } from "~/server/service/create";
 
 // 特定の日記の詳細GET
 export async function GET(req: Request,

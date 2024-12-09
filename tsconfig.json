@@ -27,7 +27,6 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"],
-      "@/lib": ["./src/lib"]
     },
 
     "types": ["node", "vitest/globals", "testcontainers"],
