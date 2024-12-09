@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 const diary = {
     diary: [
@@ -32,27 +31,25 @@ export default function DiaryCard(props: { d: { tag: string[], context: string, 
     const { d, index } = props
     return (
         <div className="w-full max-w-md mx-auto">
-            <Link href={`/diary/detail`} className="focus-visible:outline-none focus-visible:ring-0 focus:outline-none">
-                <div className="relative aspect-[317/92] mb-3">
-                    <Image
-                        src="/日記カード.png"
-                        alt="Diary"
-                        fill
-                    />
-                    <div className="absolute inset-0 text-gray-600 px-2 py-1.5 ml-2">
-                        <p className="break-words">
-                            <span className="ml-4 text-sm">{d.date}</span>
-                            <span className="ml-12 space-x-4 text-red-400 text-sm">
-                                {d.tag.map((tag, tagIndex) => (
-                                    <span key={tagIndex}>#{tag}</span>
-                                ))}
-                            </span>
-                            <br />
-                            <span className="line-clamp-2 pt-1">{d.context}</span>
-                        </p>
-                    </div>
+            <div className="relative aspect-[317/92] mb-3">
+                <Image
+                    src="/日記カード.png"
+                    alt="Diary"
+                    fill
+                />
+                <div className="absolute inset-0 text-gray-600 px-2 py-1.5 ml-2">
+                    <p className="break-words">
+                        <span className="ml-4 text-sm">{d.date}</span>
+                        <span className="ml-12 space-x-4 text-red-400 text-sm">
+                            {d.tag.map((tag, tagIndex) => (
+                                <span key={tagIndex}>#{tag}</span>
+                            ))}
+                        </span>
+                        <br />
+                        <span className="line-clamp-2 pt-1">{d.context}</span>
+                    </p>
                 </div>
-            </Link>
+            </div>
         </div>
     )
 }
