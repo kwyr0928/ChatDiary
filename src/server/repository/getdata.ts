@@ -3,9 +3,12 @@ import { z } from 'zod';
 import { analysesSchema, chatsSchema, continuationSchema, diariesSchema, diaryTagsSchema, monthlySummariesSchema, safeUserSchema, tagsSchema, userSchema } from '~/lib/schemas';
 import { db } from "../db";
 
-export const getUserByEmail = async (email: string) => {
+export const getVerifiedUserByEmail = async (email: string) => {
   try {
-    const user = await db.user.findUnique({ where: { email } });
+    const user = await db.user.findUnique({
+      where: { email, emailVerified: { not: null } }
+
+    });
     if(user==null) throw new Error("user not found");
     const parsedUser = userSchema.parse(user);
     return parsedUser;

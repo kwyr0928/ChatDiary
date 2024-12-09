@@ -13,16 +13,18 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // DB挿入
-    await insertNewUser(userSchema.parse({
+    const user = await insertNewUser(userSchema.parse({
       email: email,
       password: hashedPassword,
     }))
+    if(user==null) throw new Error("err in insertNewUser");
 
     // メール送信
-    const emailSended = await sendEmail(email);
+    await sendEmail(email);
 
     return NextResponse.json({
       message: "create User successfully! email: " + email,
+      userId: user.id,
     });
   } catch (error) {
     console.error("Error in POST signup request:", error);
