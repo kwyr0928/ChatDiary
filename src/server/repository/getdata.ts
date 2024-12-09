@@ -91,16 +91,6 @@ export const getOtherUserDiaryData = async (userId: string) => {
 
 ////////////////////////////////
 
-export const getTagByUserId = async (diaryId: string) => {
-  try {
-    const data = await db.diaryTags.findMany({ where: { diaryId } });
-    if(data == null) throw new Error("tags not found");
-    return z.array(diaryTagsSchema).parse(data);
-  } catch (error) {
-    console.error("Error in getTagConnectionsByDiary:", error);
-  }
-}
-
 export const getHistoryData = async (diaryId: string) => {
   try {
     const count = await db.chats.findMany({
@@ -135,6 +125,30 @@ export const getTagByID = async (tagId: string) => {
     return null;
   }
 };
+
+export const getTagsByUserId = async (userId: string) => {
+  try {
+    const data = await db.tags.findMany({ where: { userId } });
+    if(data == null) throw new Error("tags not found");
+    return z.array(tagsSchema).parse(data);
+  } catch (error) {
+    console.error("Error in getTagsByUserId:", error);
+  }
+}
+
+export const getRecentTagsByUserId = async (userId: string) => {
+  try {
+    const data = await db.tags.findMany({
+      where: { userId },
+      orderBy: { updated_at: 'desc'},
+      take: 3,
+    });
+    if(data == null) throw new Error("tags not found");
+    return z.array(tagsSchema).parse(data);
+  } catch (error) {
+    console.error("Error in getRecentTagsByUserId:", error);
+  }
+}
 
 export const getTagConnectionsByDiary = async (diaryId: string) => {
   try {

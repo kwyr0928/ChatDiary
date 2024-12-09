@@ -49,6 +49,7 @@ export const tagsSchema = z.object({
   userId: z.string().min(1),
   name: z.string().min(1),
   created_at: z.date().optional(),
+  updated_at: z.date().optional(),
 });
 
 export const diaryTagsSchema = z.object({

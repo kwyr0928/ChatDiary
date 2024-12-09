@@ -50,7 +50,7 @@ describe("initializeChat", () => {
   });
 });
 
-describe("initializeChat", () => {
+describe("createTag", () => {
   test("正常系", async () => {
     const email = "xxx@gmail.com";
     const hashedPassword = "pass";
