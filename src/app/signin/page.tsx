@@ -46,7 +46,7 @@ export default function Page() {
       <IoDocumentTextSharp color="gray" size={"70px"} />
       <p className="text-3xl font-bold my-8">ログイン</p>
       <form className="flex flex-col space-y-4 w-[70%]" onSubmit={handleSignin}>
-        <div className="space-y-2">
+        <div>
           <label className="text-sm">メールアドレス</label>
           <Input
             name="email"
@@ -57,7 +57,7 @@ export default function Page() {
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="mb-2">
           <label className="text-sm">パスワード</label>
           <Input
             name="password"
@@ -68,8 +68,8 @@ export default function Page() {
           />
         </div>
         {/* ボタンUI */}
-        <div className="my-7">
-          <Button type="submit" className="bg-red-400 hover:bg-rose-500 rounded-full　w-full text-xl">ログイン</Button>
+        <div>
+          <Button type="submit" className="bg-red-400 hover:bg-rose-500 rounded-full　w-full text-xl mt-6 mb-2">ログイン</Button>
         </div>
       </form>
       <Link href={"/signup"} className="border-b">新規登録へ</Link>

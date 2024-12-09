@@ -10,7 +10,7 @@ import { postSignup } from "~/lib/schemas";
 import { z } from "zod";
 // 再入力パスワードはバリデーションしてない
 export default function Page() {
-  const [data, setData] = useState({ email: '', password: '', confirmPassword: ''})
+  const [data, setData] = useState({ email: '', password: '', confirmPassword: '' })
   const [error, setError] = useState<{ email?: string; password?: string; confirmPassword?: string }>({})
   const router = useRouter();
 
@@ -24,13 +24,13 @@ export default function Page() {
 
     try {
       // 再入力パスワードが未入力かどうか
-      if(data.confirmPassword === ""){
+      if (data.confirmPassword === "") {
         errorMessage.confirmPassword = "パスワードを再入力してください。"
         throw new Error();
       }
 
       // パスワードと再入力パスワードが一致するかどうか
-      if(data.confirmPassword !== data.password){
+      if (data.confirmPassword !== data.password) {
         errorMessage.confirmPassword = "パスワードが一致しません。"
         throw new Error();
       }
@@ -43,7 +43,7 @@ export default function Page() {
 
     } catch (error) {
       // バリデーションエラーがある場合
-      if (error instanceof z.ZodError) { 
+      if (error instanceof z.ZodError) {
         const errorMessage: { email?: string; password?: string } = {};
         error.errors.forEach((err) => {
           if (err.path[0] === 'email') errorMessage.email = err.message;
@@ -60,8 +60,8 @@ export default function Page() {
         <IoChevronBackSharp color="#f87171" size={"30px"} />
       </Link>
       <p className="text-3xl font-bold my-8">新規登録</p>
-      <form className="flex flex-col space-y-4 w-[70%]" onSubmit={onSubmit}>
-        <div className="space-y-2">
+      <form className="flex flex-col space-y-6 w-[70%]" onSubmit={onSubmit}>
+        <div>
           <label className="text-sm">メールアドレス</label>
           <Input
             type="text"
@@ -72,7 +72,7 @@ export default function Page() {
           />
           {error.email && <p className="text-red-500 text-sm mb-2">{error.email}</p>}
         </div>
-        <div className="space-y-2">
+        <div className="mb-4">
           <label className="text-sm">パスワード</label>
           <Input
             type="password"
@@ -83,7 +83,7 @@ export default function Page() {
           />
           {error.password && <p className="text-red-500 text-sm mb-2">{error.password}</p>}
         </div>
-        <div className="space-y-2">
+        <div className="mb-4">
           <label className="text-sm">パスワード（再入力）</label>
           <Input
             type="Password"
@@ -95,9 +95,9 @@ export default function Page() {
           {error.confirmPassword && <p className="text-red-500 text-sm mb-2">{error.confirmPassword}</p>}
         </div>
         {/* ボタンUI */}
-        <div className="my-7">
-                <Button type="submit" className="bg-red-400 hover:bg-rose-500 rounded-full w-full text-xl mt-2">登録</Button>
-            </div>
+        <div>
+          <Button type="submit" className="bg-red-400 hover:bg-rose-500 rounded-full w-full text-xl mt-6">登録</Button>
+        </div>
       </form>
     </div>
   );
