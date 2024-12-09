@@ -46,13 +46,19 @@ export default function InputTag(props: { initialTags: string[], onChangeTags: (
         }
     };
 
+    // タグを削除
+    const removeTag = (removeItem: string) => {
+        setTags((prevItems) => prevItems.filter((item) => item !== removeItem))
+        onChangeTags(tags)
+    }
+
     return (
         <div className="w-full flex flex-col items-start justify-center">
             <Card className="shadow-none">
                 <CardContent className="p-3">
                     <div className="flex flex-wrap items-center gap-2 mb-3">
                         {tags.map((tag, tagIndex) => (
-                            <Tag key={tagIndex} text={tag} />
+                            <Tag key={tagIndex} text={tag} onRemoveTag={(removeItem) => removeTag(removeItem)} />
                         ))}
                         {/* <IoAddCircleOutline style={{ color: "#f87171", fontSize: '35px' }} /> */}
                     </div>

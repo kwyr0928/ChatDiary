@@ -10,7 +10,6 @@ import {
   IoTrashSharp
 } from "react-icons/io5";
 import ResizeTextarea from "~/components/resizeTextarea";
-import Tag from "~/components/tag";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";

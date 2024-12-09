@@ -55,19 +55,21 @@ export default function Page() {
 
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
-      <div className="mx-auto mt-[80px] mb-[130px] w-[85%]">
-        {
-          filteredDiary.length > 0 ? (
-            filteredDiary.map((d, index) => (
-              // 日記カード表示
-              <DiaryCard key={index} d={d} index={index} />
-            ))
-          ) : (
-            <p className="text-center text-gray-400">
-              該当する日記はありません。
-            </p>
-          )
-        }
+      <div className="mx-auto mt-[80px] mb-[140px] w-[85%]">
+        {/* <ScrollArea> */}
+          {
+            filteredDiary.length > 0 ? (
+              filteredDiary.map((d, index) => (
+                // 日記カード表示
+                <DiaryCard key={index} d={d} index={index} />
+              ))
+            ) : (
+              <p className="text-center text-gray-400">
+                該当する日記はありません。
+              </p>
+            )
+          }
+        {/* </ScrollArea> */}
         {/* {filteredDiary.length > 0 ? (
           filteredDiary.map((d, index) => (
             <Link key={index} href={`/diary/detail`}>
