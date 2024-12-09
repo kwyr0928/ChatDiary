@@ -1,12 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import {
   PostgreSqlContainer,
-  StartedPostgreSqlContainer,
+  type StartedPostgreSqlContainer,
 } from "@testcontainers/postgresql";
 import "@testing-library/jest-dom";
 import { execSync } from "child_process";
 import { afterAll, beforeAll } from "vitest";
-import { setTestPrisma } from "./prisma-fortest";
+import { setTestPrisma } from "./prisma-fortest"; //"./"入れないとエラー
 
 let container: StartedPostgreSqlContainer;
 let prisma: PrismaClient;
