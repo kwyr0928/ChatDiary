@@ -151,6 +151,10 @@ export const newTag = z.object({
   userId: z.string(),
 });
 
+export const deleteTagSchema = z.object({
+  names: z.array(z.string()),
+});
+
 /*
   GETデータの構造体
 */

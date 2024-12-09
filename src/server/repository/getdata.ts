@@ -105,8 +105,8 @@ export const getHistoryData = async (diaryId: string) => {
   }
 };
 
-export const getTagByName = async (name: string) => {
-  const data = await db.tags.findFirst({ where: { name } });
+export const getTagByName = async (userId: string, name: string) => {
+  const data = await db.tags.findFirst({ where: { name, userId } });
   if(data == null) {
     return null;
   }

@@ -74,7 +74,7 @@ export async function PUT(req: Request,
 
     //タグの紐づけ
     for (const tag of tags) {
-      const tagData = await getTagByName(tag);
+      const tagData = await getTagByName(tag, userId);
       let tagId = "";
       if(tagData==null){
         // 新しいタグ生成
