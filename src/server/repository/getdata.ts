@@ -1,10 +1,14 @@
+import { Diaries } from '@prisma/client';
 import { z } from 'zod';
-import { analysesSchema, chatsSchema, diariesSchema, diaryTagsSchema, monthlySummariesSchema, safeUserSchema, tagsSchema, userSchema } from '~/lib/schemas';
+import { analysesSchema, chatsSchema, continuationSchema, diariesSchema, diaryTagsSchema, monthlySummariesSchema, safeUserSchema, tagsSchema, userSchema } from '~/lib/schemas';
 import { db } from "../db";
 
-export const getUserByEmail = async (email: string) => {
+export const getVerifiedUserByEmail = async (email: string) => {
   try {
-    const user = await db.user.findUnique({ where: { email } });
+    const user = await db.user.findUnique({
+      where: { email, emailVerified: { not: null } }
+
+    });
     if(user==null) throw new Error("user not found");
     const parsedUser = userSchema.parse(user);
     return parsedUser;
@@ -79,14 +83,13 @@ export const getChatsByDiaryId = async (diaryId: string) => {
 };
 
 export const getOtherUserDiaryData = async (userId: string) => {
-  const data = await db.diaries.findFirst({
-    where: {
-      isPublic: true,
-      NOT: {userId: userId}
-    },
-  });
+  const data = await db.$queryRawUnsafe<Diaries[]>(
+    `SELECT * FROM "Diaries" WHERE "userId" <> $1 AND "isPublic" = $2 ORDER BY RANDOM() LIMIT 1;`,
+    userId,
+    true
+  );
   if(data == null) return null;
-  return diariesSchema.parse(data);
+  return diariesSchema.parse(data[0]);
 };
 
 ////////////////////////////////
@@ -181,6 +184,19 @@ export const getAnalysesFeedBack = async (userId: string) => {
     return analysesSchema.parse(data);
   } catch (error) {
     console.error("Error in getAnalysesFeedBack:", error);
+    return null;
+  }
+};
+
+export const getTodayContinuation = async (userId: string, day: number) => {
+  try {
+    const data = await db.continuation.findFirst({
+      where: { userId, day }
+    });
+    if(data == null) return null;
+    return continuationSchema.parse(data);
+  } catch (error) {
+    console.error("Error in getTodayContinuation:", error);
     return null;
   }
 };

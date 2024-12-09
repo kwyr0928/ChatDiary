@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getOtherUserDiaryData } from "~/server/repository/getdata";
+import { getOtherUserDiary } from "~/server/service/fetch";
 
 // 自分以外の誰かの日記取得 GET
 export async function GET(req: Request) {
@@ -8,7 +8,7 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const userId = z.string().parse(searchParams.get("userId")); //クエリパラメータ
     
-    const share = await getOtherUserDiaryData(userId);
+    const share = await getOtherUserDiary(userId);
 
     return NextResponse.json({
       message: "get share successfully",

@@ -1,5 +1,20 @@
-import { chatsSchema, diariesSchema, tagsSchema } from "~/lib/schemas";
+import { chatsSchema, diariesSchema, tagsSchema, userSchema } from "~/lib/schemas";
 import { db } from "../db";
+
+export async function registerEmail(email: string) {
+  try {
+    if (email == null) throw new Error("Invalid option data");
+    const update = await db.user.update({
+      where: {email: email, emailVerified: null},
+      data: {emailVerified: new Date()},
+    });
+    const parsedUpdata = userSchema.parse(update);
+    return parsedUpdata;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
 
 export async function returnedChat(chatId: string, aiMessage: string) {
   try {

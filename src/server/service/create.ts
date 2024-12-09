@@ -1,6 +1,7 @@
-import { z } from "zod";
-import { analysesSchema, chatsSchema, diariesSchema, diaryTagsSchema, monthlySummariesSchema, newTag, userSchema } from "~/lib/schemas";
-import { insertAnalyses, insertChat, insertDiary, insertDiaryTag, insertMonthlySummaries, insertNewUser, insertTag } from "../repository/insertdata";
+import type { z } from "zod";
+import { type analysesSchema, type chatsSchema, type continuationSchema, type diariesSchema, type diaryTagsSchema, type monthlySummariesSchema, type newTag, userSchema } from "~/lib/schemas";
+import { getTodayContinuation } from "../repository/getdata";
+import { insertAnalyses, insertChat, insertContinuation, insertDiary, insertDiaryTag, insertMonthlySummaries, insertNewUser, insertTag } from "../repository/insertdata";
 
 export async function createNewUser(email: string, hashedPassword: string) {
   try {
@@ -104,16 +105,6 @@ export async function connectDiaryTag(diaryId: string, tagId: string) {
 export async function createMonthlyFB(userId: string, target: number) {
   try {
     if (userId == null || target ==null) throw new Error("Invalid option data");
-    // // month計算
-    // const year = now.getFullYear();
-    // const month = now.getMonth();
-    // // 先月の計算
-    // const prevMonth = month === 0 ? 11 : month - 1; // 12月の場合は11月へ
-    // const prevYear = month === 0 ? year - 1 : year; // 12月の場合は前年へ
-
-    // // YYYYMM形式で返すために結合
-    // const target = prevYear * 100 + (prevMonth + 1); // 月は0ベースなので +1 して調整
-
     // text生成
     const text = "monthly feedback";
     const monthlySummariesData: z.infer<typeof monthlySummariesSchema> = {
@@ -146,6 +137,33 @@ export async function createAnalysesFB(userId: string) {
     if(created==null) throw new Error("err in insertAnalyses");
     
     return created;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function createContinuation(userId: string, today: Date) {
+  try {
+    if (userId == null) throw new Error("Invalid option data");
+
+    const year = today.getFullYear();
+    const month = today.getMonth(); // 月は0ベース
+    const day = today.getDate();
+    // YYYYMMDD形式
+    const target = year*10000 + (month+1)*100 + day; // 月は0ベースなので+1して調整
+    const exist = await getTodayContinuation(userId, target);
+    if(exist==null) {
+      const continuationData: z.infer<typeof continuationSchema> = {
+        userId: userId,
+        day: target,
+        done: true,
+      };
+      const created = await insertContinuation(continuationData);
+      if(created==null) throw new Error("err in insertContinuation");
+      return created;
+    }
+    return exist;
   } catch (error) {
     console.error(error);
     return null;

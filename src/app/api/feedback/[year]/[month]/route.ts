@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAnalysesFeedBack } from "~/server/repository/getdata";
 import { createAnalysesFB, createMonthlyFB } from "~/server/service/create";
-import { getLastMonthFB } from "~/server/service/fetch";
+import { getLastMonthFB, getMonthlyContinuation } from "~/server/service/fetch";
 import { updateAnalysesFB } from "~/server/service/update";
 
 export async function GET(
@@ -47,13 +47,14 @@ export async function GET(
     }
 
     // 継続情報
-
+    const continuation = await getMonthlyContinuation(userId, new Date());
+    if(continuation==null || continuation.length==0) throw new Error("err in getMonthlyContinuation");
 
     return NextResponse.json({
       message: "get "+year+"/"+month+" feedback successfully",
       monthly: lastMonthFB,
       analyses: analysesFB,
-      continuation: null,
+      continuation: continuation,
     });
   } catch (error) {
     console.error("Error in GET feedback request:", error);

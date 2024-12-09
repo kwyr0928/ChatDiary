@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { postSignin } from '~/lib/schemas';
-import { getUserByEmail } from '../repository/getdata';
+import { getVerifiedUserByEmail } from '../repository/getdata';
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -47,7 +47,7 @@ export const authConfig = {
         }
         const { email, password } = parsedCredentials.data;
         //DBチェック
-        const user = await getUserByEmail(email);
+        const user = await getVerifiedUserByEmail(email);
         if (!user) {
           console.log("User not found");
           return null;
