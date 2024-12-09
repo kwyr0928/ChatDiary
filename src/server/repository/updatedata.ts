@@ -1,4 +1,4 @@
-import { chatsSchema, diariesSchema } from "~/lib/schemas";
+import { chatsSchema, diariesSchema, tagsSchema } from "~/lib/schemas";
 import { db } from "../db";
 
 export async function returnedChat(chatId: string, aiMessage: string) {
@@ -43,6 +43,39 @@ export async function updateDiary(diaryId: string, summary: string, isPublic: bo
     });
     const parsedUpdata = diariesSchema.parse(update);
     return parsedUpdata;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function updateRecentTag(tagId: string) {
+  try {
+    if (tagId==null) throw new Error("Invalid option data");
+    const update = await db.tags.update({
+      where: {id: tagId},
+      data: {
+        updated_at: new Date(),
+        },
+    });
+    const parsedUpdata = tagsSchema.parse(update);
+    return parsedUpdata;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function updateAnalyses(userId: string, text: string) {
+  try {
+    if (text==null) throw new Error("Invalid option data");
+    const update = await db.analyses.update({
+      where: { userId: userId },
+      data: {
+        text: text
+      },
+    });
+    return update;
   } catch (error) {
     console.error(error);
     return null;

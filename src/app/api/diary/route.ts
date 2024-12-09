@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { chatLogSchema } from "~/lib/schemas";
 import { getChatsByDiaryId, getDiariesByUserId, getDiaryData, getTagByID, getTagConnectionsByDiary } from "~/server/repository/getdata";
+import { getRecentTagNamesByUserId } from "~/server/service/fetch";
 
 export async function GET(req: Request) {
   try {
@@ -40,9 +41,14 @@ export async function GET(req: Request) {
       diaryDatas.push(diaryData);
     }
 
+    // タグ一覧
+    const getTagNames = await getRecentTagNamesByUserId(userId);
+    if(getTagNames?.length==0) throw new Error("user has no tag")
+
     return NextResponse.json({
       message: "get all diaries successfully",
       diaries: diaryDatas,
+      tagList: getTagNames
     });
   } catch (error) {
     console.error("Error in GET diary request:", error);

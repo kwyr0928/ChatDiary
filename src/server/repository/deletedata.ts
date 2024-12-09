@@ -29,3 +29,18 @@ export async function deleteDiary(diaryId: string) {
     return null;
   }
 }
+
+export async function deleteTag(tagId: string) {
+  try {
+    if (tagId == null) throw new Error("Invalid option data");
+    const deleted = await db.tags.delete({
+      where: {
+        id: tagId,
+      },
+    });
+    return deleted;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}

@@ -54,3 +54,10 @@ afterAll(async () => {
   await container.stop();
   console.log("End Global teardown");
 });
+
+afterEach(async () => {
+    // トランザクションを開始して順番に削除
+    await prisma.$transaction([
+      prisma.$executeRaw`TRUNCATE TABLE "User" RESTART IDENTITY CASCADE`
+    ]);
+})

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { chatsSchema, diariesSchema, diaryTagsSchema, newTag, userSchema } from "~/lib/schemas";
-import { insertChat, insertDiary, insertDiaryTag, insertNewUser, insertTag } from "../repository/insertdata";
+import { analysesSchema, chatsSchema, diariesSchema, diaryTagsSchema, monthlySummariesSchema, newTag, userSchema } from "~/lib/schemas";
+import { insertAnalyses, insertChat, insertDiary, insertDiaryTag, insertMonthlySummaries, insertNewUser, insertTag } from "../repository/insertdata";
 
 export async function createNewUser(email: string, hashedPassword: string) {
   try {
@@ -101,3 +101,53 @@ export async function connectDiaryTag(diaryId: string, tagId: string) {
   }
 }
 
+export async function createMonthlyFB(userId: string, target: number) {
+  try {
+    if (userId == null || target ==null) throw new Error("Invalid option data");
+    // // month計算
+    // const year = now.getFullYear();
+    // const month = now.getMonth();
+    // // 先月の計算
+    // const prevMonth = month === 0 ? 11 : month - 1; // 12月の場合は11月へ
+    // const prevYear = month === 0 ? year - 1 : year; // 12月の場合は前年へ
+
+    // // YYYYMM形式で返すために結合
+    // const target = prevYear * 100 + (prevMonth + 1); // 月は0ベースなので +1 して調整
+
+    // text生成
+    const text = "monthly feedback";
+    const monthlySummariesData: z.infer<typeof monthlySummariesSchema> = {
+      userId: userId,
+      month: target,
+      text: text,
+    };
+    const created = await insertMonthlySummaries(monthlySummariesData);
+    if(created==null) throw new Error("err in insertMonthlySummaries");
+    
+    return created;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function createAnalysesFB(userId: string) {
+  try {
+    if (userId == null) throw new Error("Invalid option data");
+    // text生成
+    // @TODO: にいろ
+    const text = "analyses feedback";
+
+    const analysesData: z.infer<typeof analysesSchema> = {
+      userId: userId,
+      text: text,
+    };
+    const created = await insertAnalyses(analysesData);
+    if(created==null) throw new Error("err in insertAnalyses");
+    
+    return created;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}

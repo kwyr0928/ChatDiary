@@ -5,8 +5,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { postSendChat } from "~/lib/schemas";
 import { getChatCounts, getHistoryData } from "~/server/repository/getdata";
-import { initializeChat } from "~/server/repository/insertdata";
 import { returnedChat, summariedDiary } from "~/server/repository/updatedata";
+import { initializeChat } from "~/server/service/create";
 
 export async function POST(req: Request,
   { params }: { params: { id: string } },
