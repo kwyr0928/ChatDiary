@@ -65,3 +65,19 @@ export async function updateRecentTag(tagId: string) {
     return null;
   }
 }
+
+export async function updateAnalyses(userId: string, text: string) {
+  try {
+    if (text==null) throw new Error("Invalid option data");
+    const update = await db.analyses.update({
+      where: { userId: userId },
+      data: {
+        text: text
+      },
+    });
+    return update;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}

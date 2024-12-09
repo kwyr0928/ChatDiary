@@ -61,7 +61,7 @@ export const monthlySummariesSchema = z.object({
   id: z.string().min(1).optional(),
   userId: z.string().min(1),
   month: z.number(),
-  name: z.string().min(1),
+  text: z.string().min(1),
   created_at: z.date().optional(),
 });
 

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { chatsSchema, diariesSchema, diaryTagsSchema, safeUserSchema, tagsSchema, userSchema } from '~/lib/schemas';
+import { analysesSchema, chatsSchema, diariesSchema, diaryTagsSchema, monthlySummariesSchema, safeUserSchema, tagsSchema, userSchema } from '~/lib/schemas';
 import { db } from "../db";
 
 export const getUserByEmail = async (email: string) => {
@@ -157,6 +157,30 @@ export const getTagConnectionsByDiary = async (diaryId: string) => {
     return z.array(diaryTagsSchema).parse(data);
   } catch (error) {
     console.error("Error in getTagConnectionsByDiary:", error);
+    return null;
+  }
+};
+
+/////////////////////////////
+
+export const getMonthlyFeedBack = async (userId: string, month: number) => {
+  try {
+    const data = await db.monthlySummaries.findFirst({ where: { userId, month } });
+    if(data == null) return null;
+    return monthlySummariesSchema.parse(data);
+  } catch (error) {
+    console.error("Error in getMonthlyFeedBack:", error);
+    return null;
+  }
+};
+
+export const getAnalysesFeedBack = async (userId: string) => {
+  try {
+    const data = await db.analyses.findFirst({ where: { userId } });
+    if(data == null) return null;
+    return analysesSchema.parse(data);
+  } catch (error) {
+    console.error("Error in getAnalysesFeedBack:", error);
     return null;
   }
 };

@@ -82,7 +82,7 @@ model MonthlySummaries {
 
 model Analyses {
   id         String   @id @default(cuid())
-  userId     String
+  userId     String   @unique
   text       String   @db.VarChar(255)
   created_at DateTime @default(now())
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -95,8 +95,8 @@ model Continuation {
   userId String
   day    Int
   done   Boolean
-  
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model DiaryTags {

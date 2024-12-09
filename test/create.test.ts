@@ -1,4 +1,4 @@
-import { createNewUser, createTag, initializeChat, initializeDiary } from "~/server/service/create";
+import { createAnalysesFB, createMonthlyFB, createNewUser, createTag, initializeChat, initializeDiary } from "~/server/service/create";
 
 describe("createNewUser", () => {
   test("正常系", async () => {
@@ -61,5 +61,30 @@ describe("createTag", () => {
     expect(tag).not.toBeNull();
     expect(tag?.id).toMatch(/^c[a-z0-9]{24}$/); //cuidの形式
     expect(tag?.name).toBe(tagName);
+  });
+});
+
+describe("createMonthlyFB", () => {
+  test("正常系", async () => {
+    const email = "xxx@gmail.com";
+    const hashedPassword = "pass";
+    const user = await createNewUser(email, hashedPassword);
+
+    const fb = await createMonthlyFB(user?.id as unknown as string, new Date('2024-12-09T00:00:00'));
+    expect(fb).not.toBeNull();
+    expect(fb?.id).toMatch(/^c[a-z0-9]{24}$/); //cuidの形式
+    expect(fb?.month).toBe(202411);
+  });
+});
+
+describe("createAnalysesFB", () => {
+  test("正常系", async () => {
+    const email = "xxx@gmail.com";
+    const hashedPassword = "pass";
+    const user = await createNewUser(email, hashedPassword);
+
+    const fb = await createAnalysesFB(user?.id as unknown as string);
+    expect(fb).not.toBeNull();
+    expect(fb?.id).toMatch(/^c[a-z0-9]{24}$/); //cuidの形式
   });
 });
