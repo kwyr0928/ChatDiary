@@ -8,6 +8,7 @@ import {
   IoSendSharp,
 } from "react-icons/io5";
 import { Button } from "~/components/ui/button";
+import ChatCard from "~/components/chatCard";
 import { Card, CardContent } from "~/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 import {
@@ -80,31 +81,15 @@ export default function Page() {
         </div>
       </div>
       <div className="mt-[130px] mb-[60px]">
-        {/* カード */}
-        <Card className="mb-5 ml-auto mr-3 w-[70%] text-gray-600 shadow-none">
-          <CardContent className="px-5 py-3">
-            Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
-          </CardContent>
-        </Card>
-        <div className="ml-3 mr-auto flex">
-          <IoPersonCircleSharp
-            size={"35px"}
-            color="gray"
-            className="mr-2 mt-2"
-          />
-          {/* カード */}
-          <Card className="mb-5 w-[70%] text-gray-600 shadow-none">
-            <CardContent className="px-5 py-3">
-              なぜAさんを誘ったのですか？
-            </CardContent>
-          </Card>
-        </div>
-        {/* カード */}
-        <Card className="mb-5 ml-auto mr-3 w-[70%] text-gray-600 shadow-none">
-          <CardContent className="px-5 py-3">
-            Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
-          </CardContent>
-        </Card>
+        <ChatCard isAI={false}>
+          Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
+        </ChatCard>
+        <ChatCard isAI={true}>
+          なぜAさんを誘ったのですか？
+        </ChatCard>
+        <ChatCard isAI={false}>
+          Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
+        </ChatCard>
       </div>
       {/* チャット欄 */}
       <div className="fixed bottom-0 max-w-md w-full flex items-center justify-center space-x-2 pt-3 pb-5 bg-red-50">

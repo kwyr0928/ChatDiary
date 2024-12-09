@@ -31,14 +31,13 @@ const diary = {
 export default function DiaryCard(props: { d: { tag: string[], context: string, date: string }, index: number }) {
     const { d, index } = props
     return (
-        <div>
+        <div className="w-full max-w-md mx-auto">
             <Link href={`/diary/detail`} className="focus-visible:outline-none focus-visible:ring-0 focus:outline-none">
-                <div className="relative w-[317px] h-[92px] mb-3">
+                <div className="relative aspect-[317/92] mb-3">
                     <Image
                         src="/日記カード.png"
                         alt="Diary"
-                        width={317}
-                        height={92}
+                        fill
                     />
                     <div className="absolute inset-0 text-gray-600 px-2 py-1.5 ml-2">
                         <p className="break-words">

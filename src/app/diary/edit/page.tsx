@@ -17,6 +17,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { useToast } from "~/hooks/use-toast";
+import ChatCard from "~/components/chatCard";
+import InputTag from "~/components/inputTag";
 
 export default function Page() {
   const { toast } = useToast()
@@ -25,6 +27,9 @@ export default function Page() {
   const [text, setText] = useState(
     "栗が好きなAさんを誘い、パフェを食べに行った。私はさつまいものアイスが乗ったパフェで、Aさんは栗のパウンドケーキが乗ったパフェだった。私が見つけた店で喜んでくれて嬉しい。彼女が喜ぶ店をまた探したいと思った。"
   );
+  const initialTags: string[] = ["タグ1", "タグ2"]
+  const [nowTags, setTags] = useState<String[]>(initialTags)
+
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
       <div className="fixed top-0 max-w-md flex w-full items-center justify-center pt-5 text-center bg-red-50">
@@ -108,13 +113,14 @@ export default function Page() {
         <ResizeTextarea className="resize-none focus:outline-none w-full text-gray-600  h-36 px-5 py-3 rounded border border-gray-300 p-2" text={text} onChange={setText} />
         <p className="mb-2 mt-5 text-left text-lg">タグ</p>
         <div className="flex gap-3">
-          <Tag text="food" />
+          <InputTag initialTags={initialTags} onChangeTags={setTags} />
+          {/* <Tag text="food" />
           <Tag text="Aちゃん" />
           <IoAddCircleOutline
             color="#f87171"
             size={"30px"}
             className="mt-0.5"
-          />
+          /> */}
         </div>
         <p className="mb-2 mt-5 text-left text-lg">公開範囲</p>
         {/* ラジオボタン */}
@@ -139,27 +145,14 @@ export default function Page() {
           </RadioGroup>
         </div>
         <p className="my-2 text-lg">チャットログ</p>
-        <div className="mb-auto">
-          {/* カード */}
-          <Card className="mb-5 ml-auto w-[70%] text-gray-600 shadow-none">
-            <CardContent className="px-5 py-3">
-              Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
-            </CardContent>
-          </Card>
-          <div className="mr-auto flex">
-            <IoPersonCircleSharp
-              size={"35px"}
-              color="gray"
-              className="mr-2 mt-2"
-            />
-            {/* カード */}
-            <Card className="mb-5 w-[70%] text-gray-600 shadow-none">
-              <CardContent className="px-5 py-3">
-                なぜAさんを誘ったのですか？
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+      </div>
+      <div className="mb-auto">
+        <ChatCard isAI={false}>
+          Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
+        </ChatCard>
+        <ChatCard isAI={true}>
+          なぜAさんを誘ったのですか？
+        </ChatCard>
       </div>
     </div>
   );

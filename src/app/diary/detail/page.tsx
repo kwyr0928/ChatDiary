@@ -15,6 +15,7 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 import { useToast } from "~/hooks/use-toast";
+import ChatCard from "~/components/chatCard";
 
 export default function Page() {
   const { toast } = useToast()
@@ -61,7 +62,7 @@ export default function Page() {
           </DialogContent>
         </Dialog>
       </div>
-      <div className="mt-[60px] mb-[120px] w-[85%]">
+      <div className="mt-[60px] w-[85%]">
         <div className="flex items-center justify-start space-x-5">
           <p className="my-2 text-lg">日記本文</p>
           <Link href={"/diary/edit"}>
@@ -76,27 +77,14 @@ export default function Page() {
           </CardContent>
         </Card>
         <p className="mt-8 mb-2 text-lg">チャットログ</p>
-        <div className="mb-auto">
-          {/* カード */}
-          <Card className="mb-5 ml-auto w-[70%] text-gray-600 shadow-none">
-            <CardContent className="px-5 py-3">
-              Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
-            </CardContent>
-          </Card>
-          <div className="mr-auto flex">
-            <IoPersonCircleSharp
-              size={"35px"}
-              color="gray"
-              className="mr-2 mt-2"
-            />
-            {/* カード */}
-            <Card className="mb-5 w-[70%] text-gray-600 shadow-none">
-              <CardContent className="px-5 py-3">
-                なぜAさんを誘ったのですか？
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+      </div>
+      <div className="mb-[120px]">
+        <ChatCard isAI={false}>
+          Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
+        </ChatCard>
+        <ChatCard isAI={true}>
+          なぜAさんを誘ったのですか？
+        </ChatCard>
       </div>
       <div className="fixed bottom-0 max-w-md flex w-full justify-around bg-white py-5">
         <Link href={"/setting"}>

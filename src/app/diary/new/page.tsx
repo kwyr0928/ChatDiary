@@ -16,8 +16,11 @@ import {
 } from "~/components/ui/dialog";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import InputTag from "~/components/inputTag";
 
 export default function Page() {
+  const initialTags: string[] = ["タグ1", "タグ2"]
+  const [nowTags, setTags] = useState<String[]>(initialTags)
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -67,13 +70,14 @@ export default function Page() {
         </Card>
         <p className="mb-2 mt-5 text-left text-lg">タグ</p>
         <div className="flex gap-3">
-          <Tag text="food" />
+        <InputTag initialTags={initialTags} onChangeTags={setTags} />
+          {/* <Tag text="food" />
           <Tag text="Aちゃん" />
           <IoAddCircleOutline
             color="#f87171"
             size={"30px"}
             className="mt-0.5"
-          />
+          /> */}
         </div>
         <p className="mb-2 mt-5 text-left text-lg">公開範囲</p>
         {/* ラジオボタン */}
