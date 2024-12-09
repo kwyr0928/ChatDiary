@@ -7,7 +7,6 @@ import { Button } from "~/components/ui/button";
 
 
 const user = {
-  id: "nekoneko",
   mail: "〇〇@gmail.com",
   password: "nekochan"
 }
@@ -41,10 +40,6 @@ export default function Page() {
       <div className="flex h-[350px] w-[80%] flex-col items-center justify-center rounded-md bg-white">
         <p className="my-8 text-xl font-bold">確認</p>
         <div className="flex w-[80%] flex-col space-y-5 text-left">
-          <div className="space-y-1">
-            <label className="text-md">ユーザーID</label>
-            <p className="text-xl">{user.id}</p>
-          </div>
           <div className="space-y-1">
             <label className="text-md">メールアドレス</label>
             <p className="text-xl">{user.mail}</p>

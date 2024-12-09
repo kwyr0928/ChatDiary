@@ -55,19 +55,21 @@ export default function Page() {
 
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
-      <div className="mx-auto mt-[80px] mb-[130px] w-[85%]">
-        {
-          filteredDiary.length > 0 ? (
-            filteredDiary.map((d, index) => (
-              // 日記カード表示
-              <DiaryCard key={index} d={d} index={index} />
-            ))
-          ) : (
-            <p className="text-center text-gray-400">
-              該当する日記はありません。
-            </p>
-          )
-        }
+      <div className="mx-auto mt-[80px] mb-[140px] w-[85%]">
+        {/* <ScrollArea> */}
+          {
+            filteredDiary.length > 0 ? (
+              filteredDiary.map((d, index) => (
+                // 日記カード表示
+                <DiaryCard key={index} d={d} index={index} />
+              ))
+            ) : (
+              <p className="text-center text-gray-400">
+                該当する日記はありません。
+              </p>
+            )
+          }
+        {/* </ScrollArea> */}
         {/* {filteredDiary.length > 0 ? (
           filteredDiary.map((d, index) => (
             <Link key={index} href={`/diary/detail`}>
@@ -95,7 +97,7 @@ export default function Page() {
           </p>
         )} */}
       </div>
-      <div className="fixed top-0 pt-5 pb-5 flex items-center w-[85%] max-w-md space-x-3 bg-red-50">
+      <div className="fixed top-0 pt-5 pb-5 flex items-center max-w-sm w-[85%] space-x-3 bg-red-50">
         <IoSearchSharp size={"25px"} />
         <Input
           placeholder="日記を検索"
@@ -103,7 +105,7 @@ export default function Page() {
           onChange={(e) => setKeyword(e.target.value)}
         />
       </div>
-      <Link href={"/diary/chat"} className="fixed bottom-24 right-5 max-w-md">
+      <Link href={"/diary/chat"} className="max-w-md fixed bottom-24 flex w-full justify-end pr-4">
         <IoAddCircleSharp size={"70px"} color="#f87171" />
       </Link>
       <div className="max-w-md fixed bottom-0 flex w-full justify-around bg-white py-5">

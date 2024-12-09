@@ -10,7 +10,6 @@ import {
   IoTrashSharp
 } from "react-icons/io5";
 import ResizeTextarea from "~/components/resizeTextarea";
-import Tag from "~/components/tag";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
@@ -32,9 +31,9 @@ export default function Page() {
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
-      <div className="fixed top-0 max-w-md flex w-full items-center justify-center pt-5 text-center bg-red-50">
+      <div className="fixed top-0 max-w-md flex w-full items-center justify-between pt-5 text-center bg-red-50">
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger onClick={() => setIsOpen(true)} className="fixed left-3">
+          <DialogTrigger onClick={() => setIsOpen(true)} className="pl-3">
             <IoChevronBackSharp color="#f87171" size={"30px"} />
           </DialogTrigger>
           <DialogContent className="w-[80%]">
@@ -65,7 +64,7 @@ export default function Page() {
         </Dialog>
         <p className="text-lg text-gray-700">2024/10/2</p>
         <Dialog open={isOpen2} onOpenChange={setIsOpen2}>
-          <DialogTrigger onClick={() => setIsOpen2(true)} className="fixed right-5">
+          <DialogTrigger onClick={() => setIsOpen2(true)} className="pr-5">
             <IoTrashSharp color="gray" size={"35px"} />
           </DialogTrigger>
           <DialogContent className="w-[80%]">
