@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { IoBarChartSharp, IoCogSharp, IoHomeSharp } from "react-icons/io5";
 import { Button } from "~/components/ui/button";
 import {
@@ -13,30 +14,58 @@ import {
 } from "~/components/ui/dialog";
 
 
-const user = {
+
+const defaultUser = {
   id: "nekoneko",
-  mail: "nekoneko@gmail.com",
+  email: "〇〇@gmail.com",
 };
 
 export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState({ id: '', email: '' })
+  const router = useRouter()
 
-  const getJWT = async () => {
-    const response = await fetch("/api/jwt");
-    if (response.ok) {
-      const data = await response.json();
-      console.log("JSON Web Token", data.token); // JWT 情報を確認
-    } else {
-      console.error("Failed to fetch JWT");
+  useEffect(() => {
+    // idメアド取得 (JWT取得？ api/user/[id]？)
+    const getUser = async () => {
+      const response = await fetch(`/api/user/[id]`);
+      if (response.ok) {
+        const data = await response.json();
+        setUser({ ...user, id: data.id, email: data.email })
+      } else {
+        console.error("Failed to fetch");
+      }
+    };
+    getUser();
+  }, [])
+
+  // 退会処理
+  const handleSignout = async () => {
+    try {
+      const response = await fetch(`/api/user/${user.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: user.id }),
+      })
+
+      if (response.ok) {
+        router.push("/setting/delete/complete")
+      } else {
+        console.error("退会に失敗しました。")
+      }
+    } catch (error) {
+      console.error("エラーが発生しました :", error);
     }
-  };
+  }
 
   return (
     <div className="mx-auto flex min-h-screen max-w-md w-full flex-col items-center bg-red-50 text-gray-600">
       <div className="mr-auto ml-8">
         <p className="mt-12 text-xl font-bold w-full text-left">アカウント情報</p>
         <p className="mt-4 text-md w-full text-left">ユーザーID：{user.id}</p>
-        <p className="mt-2 text-md w-full text-left">メールアドレス：{user.mail}</p>
+        <p className="mt-2 text-md w-full text-left">メールアドレス：{user.email}</p>
       </div>
       <Link href={"/signin"} className="mt-12 w-[60%]">
         <div className="w-full">
@@ -70,13 +99,11 @@ export default function Page() {
                 いいえ
               </Button>
             </div>
-            <Link href={"/setting/delete/complete"}>
-              <div className="my-2">
-                <Button className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500">
-                  はい
-                </Button>
-              </div>
-            </Link>
+            <div className="my-2">
+              <Button onClick={handleSignout} className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500">
+                はい
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
