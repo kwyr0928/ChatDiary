@@ -27,8 +27,8 @@ const diary = {
 };
 
 // 日記カード(/homeに表示するやつ)
-export default function DiaryCard(props: { d: { tag: string[], context: string, date: string }, index: number }) {
-    const { d, index } = props
+export default function DiaryCard(props: { d: { tag: string[], context: string, date: string } }) {
+    const { d } = props
     return (
         <div className="w-full max-w-md mx-auto">
             <div className="relative aspect-[317/92] mb-3">

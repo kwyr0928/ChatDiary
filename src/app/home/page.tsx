@@ -64,8 +64,11 @@ export default function Page() {
           filteredDiary.length > 0 ? (
             filteredDiary.map((d, index) => (
               // 日記カード表示
-              <Link href={`/diary/detail`} className="focus-visible:outline-none focus-visible:ring-0 focus:outline-none">
-                <DiaryCard key={index} d={d} index={index} />
+              <Link
+                key={index}
+                href={`/diary/detail/${d.id}`}
+                className="focus-visible:outline-none focus-visible:ring-0 focus:outline-none">
+                <DiaryCard key={index} d={d} />
               </Link>
             ))
           ) : (

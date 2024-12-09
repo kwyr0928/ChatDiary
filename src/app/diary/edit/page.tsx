@@ -3,21 +3,18 @@
 import Link from "next/link";
 import { useState } from "react";
 import {
-  IoAddCircleOutline,
   IoCheckmarkSharp,
   IoChevronBackSharp,
-  IoPersonCircleSharp,
   IoTrashSharp
 } from "react-icons/io5";
+import ChatCard from "~/components/chatCard";
+import InputTag from "~/components/inputTag";
 import ResizeTextarea from "~/components/resizeTextarea";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent } from "~/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { useToast } from "~/hooks/use-toast";
-import ChatCard from "~/components/chatCard";
-import InputTag from "~/components/inputTag";
 
 export default function Page() {
   const { toast } = useToast()
@@ -113,13 +110,6 @@ export default function Page() {
         <p className="mb-2 mt-5 text-left text-lg">タグ</p>
         <div className="flex gap-3">
           <InputTag initialTags={initialTags} onChangeTags={setTags} />
-          {/* <Tag text="food" />
-          <Tag text="Aちゃん" />
-          <IoAddCircleOutline
-            color="#f87171"
-            size={"30px"}
-            className="mt-0.5"
-          /> */}
         </div>
         <p className="mb-2 mt-5 text-left text-lg">公開範囲</p>
         {/* ラジオボタン */}
