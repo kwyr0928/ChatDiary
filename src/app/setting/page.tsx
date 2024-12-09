@@ -40,7 +40,7 @@ export default function Page() {
   }, [])
 
   // 退会処理
-  const handleSignout = async () => {
+  const handleDeleteUser = async () => {
     try {
       const response = await fetch(`/api/user/${user.id}`, {
         method: 'DELETE',
@@ -100,7 +100,7 @@ export default function Page() {
               </Button>
             </div>
             <div className="my-2">
-              <Button onClick={handleSignout} className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500">
+              <Button onClick={handleDeleteUser} className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500">
                 はい
               </Button>
             </div>
