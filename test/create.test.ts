@@ -70,7 +70,7 @@ describe("createMonthlyFB", () => {
     const hashedPassword = "pass";
     const user = await createNewUser(email, hashedPassword);
 
-    const fb = await createMonthlyFB(user?.id as unknown as string, new Date('2024-12-09T00:00:00'));
+    const fb = await createMonthlyFB(user?.id as unknown as string, 202411);
     expect(fb).not.toBeNull();
     expect(fb?.id).toMatch(/^c[a-z0-9]{24}$/); //cuidの形式
     expect(fb?.month).toBe(202411);

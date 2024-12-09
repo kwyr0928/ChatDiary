@@ -101,18 +101,18 @@ export async function connectDiaryTag(diaryId: string, tagId: string) {
   }
 }
 
-export async function createMonthlyFB(userId: string, now: Date) {
+export async function createMonthlyFB(userId: string, target: number) {
   try {
-    if (userId == null || now ==null) throw new Error("Invalid option data");
-    // month計算
-    const year = now.getFullYear();
-    const month = now.getMonth();
-    // 先月の計算
-    const prevMonth = month === 0 ? 11 : month - 1; // 12月の場合は11月へ
-    const prevYear = month === 0 ? year - 1 : year; // 12月の場合は前年へ
+    if (userId == null || target ==null) throw new Error("Invalid option data");
+    // // month計算
+    // const year = now.getFullYear();
+    // const month = now.getMonth();
+    // // 先月の計算
+    // const prevMonth = month === 0 ? 11 : month - 1; // 12月の場合は11月へ
+    // const prevYear = month === 0 ? year - 1 : year; // 12月の場合は前年へ
 
-    // YYYYMM形式で返すために結合
-    const target = prevYear * 100 + (prevMonth + 1); // 月は0ベースなので +1 して調整
+    // // YYYYMM形式で返すために結合
+    // const target = prevYear * 100 + (prevMonth + 1); // 月は0ベースなので +1 して調整
 
     // text生成
     const text = "monthly feedback";

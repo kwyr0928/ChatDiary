@@ -29,9 +29,9 @@ describe("getLastMonthFB", () => {
     const hashedPassword = "pass";
     const user = await createNewUser(email, hashedPassword);
     
-    const fb = await createMonthlyFB(user?.id as unknown as string, new Date('2024-12-01T00:00:00'));
+    const fb = await createMonthlyFB(user?.id as unknown as string, 202411);
 
-    const getData = await getLastMonthFB(user?.id as unknown as string, new Date('2024-12-09T00:00:00'));
+    const getData = await getLastMonthFB(user?.id as unknown as string, 202411);
     expect(getData).not.toBeNull();
     expect(getData?.id).toBe(fb?.id as unknown as string);
     expect(fb?.month).toBe(202411);

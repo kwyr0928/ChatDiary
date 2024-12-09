@@ -9,22 +9,24 @@ import { updateAnalysesFB } from "~/server/service/update";
 
 export async function GET(
   req: Request,
-  { params }: { params: { year: number, month: number } },
+  { params }: { params: { year: string, month: string } },
 ) {
   try {
     // eslint-disable-next-line @typescript-eslint/await-thenable
     const par = await params;
-    const year = z.number().safeParse(par.year) as unknown as number; //パスパラメータ
-    const month = z.number().safeParse(par.month) as unknown as number; //パスパラメータ
+    const year = parseInt(par.year); //パスパラメータ
+    const month = parseInt(par.month); //パスパラメータ
     const { searchParams } = new URL(req.url);
     const userId = z.string().parse(searchParams.get("userId")); //クエリパラメータ
-
+    if(userId==null) throw new Error("userId query is required");
+    
+    const target = year * 100 + month;
     // 先月のDB
-    let lastMonthFBData = await getLastMonthFB(userId, new Date());
+    let lastMonthFBData = await getLastMonthFB(userId, target);
     let lastMonthFB = lastMonthFBData?.text;
     if(lastMonthFBData==null){
       //FB生成
-      const created = await createMonthlyFB(userId, new Date());
+      const created = await createMonthlyFB(userId, target);
       lastMonthFBData = created;
       lastMonthFB = lastMonthFBData?.text;
     }
@@ -54,7 +56,7 @@ export async function GET(
       continuation: null,
     });
   } catch (error) {
-    console.error("Error in GET xxx request:", error);
+    console.error("Error in GET feedback request:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },
