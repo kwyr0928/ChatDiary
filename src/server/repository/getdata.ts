@@ -1,6 +1,6 @@
 import { Diaries } from '@prisma/client';
 import { z } from 'zod';
-import { analysesSchema, chatsSchema, diariesSchema, diaryTagsSchema, monthlySummariesSchema, safeUserSchema, tagsSchema, userSchema } from '~/lib/schemas';
+import { analysesSchema, chatsSchema, continuationSchema, diariesSchema, diaryTagsSchema, monthlySummariesSchema, safeUserSchema, tagsSchema, userSchema } from '~/lib/schemas';
 import { db } from "../db";
 
 export const getUserByEmail = async (email: string) => {
@@ -181,6 +181,19 @@ export const getAnalysesFeedBack = async (userId: string) => {
     return analysesSchema.parse(data);
   } catch (error) {
     console.error("Error in getAnalysesFeedBack:", error);
+    return null;
+  }
+};
+
+export const getTodayContinuation = async (userId: string, day: number) => {
+  try {
+    const data = await db.continuation.findFirst({
+      where: { userId, day }
+    });
+    if(data == null) return null;
+    return continuationSchema.parse(data);
+  } catch (error) {
+    console.error("Error in getTodayContinuation:", error);
     return null;
   }
 };

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { analysesSchema, chatsSchema, diariesSchema, diaryTagsSchema, monthlySummariesSchema, newTag, userSchema } from "~/lib/schemas";
+import { analysesSchema, chatsSchema, continuationSchema, diariesSchema, diaryTagsSchema, monthlySummariesSchema, newTag, userSchema } from "~/lib/schemas";
 import { db } from "../db";
 
 export async function insertNewUser(userData: z.infer<typeof userSchema>) {
@@ -85,6 +85,19 @@ export async function insertAnalyses(analysesData: z.infer<typeof analysesSchema
     if (analysesData == null) throw new Error("analysesData IS NULL");
     const create = await db.analyses.create({
       data: analysesData,
+    });
+    return create;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function insertContinuation(continuationData: z.infer<typeof continuationSchema>) {
+  try {
+    if (continuationData == null) throw new Error("continuationData IS NULL");
+    const create = await db.continuation.create({
+      data: continuationData,
     });
     return create;
   } catch (error) {

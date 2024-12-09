@@ -1,4 +1,4 @@
-import { getOtherUserDiaryData, getUserByUserID } from "~/server/repository/getdata";
+import { getOtherUserDiaryData } from "~/server/repository/getdata";
 import { updateDiary } from "~/server/repository/updatedata";
 import { createNewUser, initializeDiary } from "~/server/service/create";
 
@@ -7,7 +7,7 @@ describe("getOtherUserDiaryData", () => {
     const email = "aaa@gmail.com";
     const hashedPassword = "pass";
     const user = await createNewUser(email, hashedPassword);
-    const diary = await initializeDiary(user?.id as unknown as string);
+    await initializeDiary(user?.id as unknown as string);
 
     const user1 = await createNewUser("bbb@gmail.com", hashedPassword);
     const diary1 = await initializeDiary(user1?.id as unknown as string);
@@ -32,7 +32,6 @@ describe("getOtherUserDiaryData", () => {
 
     const share = await getOtherUserDiaryData(user?.id as unknown as string);
     expect(share).not.toBeNull();
-    console.log((await getUserByUserID(share?.userId as unknown as string))?.email);
     expect(share?.userId).not.toBe(user?.id) //cuidの形式
     expect(share?.summary).toBe("summary");
 
