@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { chatsSchema, diariesSchema, diaryTagsSchema, safeUserSchema, tagsSchema, userSchema } from '~/lib/schemas';
+import { analysesSchema, chatsSchema, diariesSchema, diaryTagsSchema, monthlySummariesSchema, safeUserSchema, tagsSchema, userSchema } from '~/lib/schemas';
 import { db } from "../db";
 
 export const getUserByEmail = async (email: string) => {
@@ -91,16 +91,6 @@ export const getOtherUserDiaryData = async (userId: string) => {
 
 ////////////////////////////////
 
-export const getTagByUserId = async (diaryId: string) => {
-  try {
-    const data = await db.diaryTags.findMany({ where: { diaryId } });
-    if(data == null) throw new Error("tags not found");
-    return z.array(diaryTagsSchema).parse(data);
-  } catch (error) {
-    console.error("Error in getTagConnectionsByDiary:", error);
-  }
-}
-
 export const getHistoryData = async (diaryId: string) => {
   try {
     const count = await db.chats.findMany({
@@ -115,8 +105,8 @@ export const getHistoryData = async (diaryId: string) => {
   }
 };
 
-export const getTagByName = async (name: string) => {
-  const data = await db.tags.findFirst({ where: { name } });
+export const getTagByName = async (userId: string, name: string) => {
+  const data = await db.tags.findFirst({ where: { name, userId } });
   if(data == null) {
     return null;
   }
@@ -136,6 +126,30 @@ export const getTagByID = async (tagId: string) => {
   }
 };
 
+export const getTagsByUserId = async (userId: string) => {
+  try {
+    const data = await db.tags.findMany({ where: { userId } });
+    if(data == null) throw new Error("tags not found");
+    return z.array(tagsSchema).parse(data);
+  } catch (error) {
+    console.error("Error in getTagsByUserId:", error);
+  }
+}
+
+export const getRecentTagsByUserId = async (userId: string) => {
+  try {
+    const data = await db.tags.findMany({
+      where: { userId },
+      orderBy: { updated_at: 'desc'},
+      take: 3,
+    });
+    if(data == null) throw new Error("tags not found");
+    return z.array(tagsSchema).parse(data);
+  } catch (error) {
+    console.error("Error in getRecentTagsByUserId:", error);
+  }
+}
+
 export const getTagConnectionsByDiary = async (diaryId: string) => {
   try {
     const data = await db.diaryTags.findMany({ where: { diaryId } });
@@ -143,6 +157,30 @@ export const getTagConnectionsByDiary = async (diaryId: string) => {
     return z.array(diaryTagsSchema).parse(data);
   } catch (error) {
     console.error("Error in getTagConnectionsByDiary:", error);
+    return null;
+  }
+};
+
+/////////////////////////////
+
+export const getMonthlyFeedBack = async (userId: string, month: number) => {
+  try {
+    const data = await db.monthlySummaries.findFirst({ where: { userId, month } });
+    if(data == null) return null;
+    return monthlySummariesSchema.parse(data);
+  } catch (error) {
+    console.error("Error in getMonthlyFeedBack:", error);
+    return null;
+  }
+};
+
+export const getAnalysesFeedBack = async (userId: string) => {
+  try {
+    const data = await db.analyses.findFirst({ where: { userId } });
+    if(data == null) return null;
+    return analysesSchema.parse(data);
+  } catch (error) {
+    console.error("Error in getAnalysesFeedBack:", error);
     return null;
   }
 };

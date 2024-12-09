@@ -49,6 +49,7 @@ export const tagsSchema = z.object({
   userId: z.string().min(1),
   name: z.string().min(1),
   created_at: z.date().optional(),
+  updated_at: z.date().optional(),
 });
 
 export const diaryTagsSchema = z.object({
@@ -60,7 +61,7 @@ export const monthlySummariesSchema = z.object({
   id: z.string().min(1).optional(),
   userId: z.string().min(1),
   month: z.number(),
-  name: z.string().min(1),
+  text: z.string().min(1),
   created_at: z.date().optional(),
 });
 
@@ -69,6 +70,13 @@ export const analysesSchema = z.object({
   userId: z.string().min(1),
   text: z.string().min(1),
   created_at: z.date().optional(),
+});
+
+export const continuationSchema = z.object({
+  id: z.string().min(1).optional(),
+  userId: z.string().min(1),
+  day: z.number(),
+  done: z.boolean()
 });
 
 /////////////
@@ -141,6 +149,10 @@ export const putDiary = z.object({
 export const newTag = z.object({
   name: z.string(),
   userId: z.string(),
+});
+
+export const deleteTagSchema = z.object({
+  names: z.array(z.string()),
 });
 
 /*

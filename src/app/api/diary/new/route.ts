@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { postChat } from "~/lib/schemas";
-import { initializeDiary } from "~/server/repository/insertdata";
+import { initializeDiary } from "~/server/service/create";
+
 
 export async function POST(req: Request) {
   try {
