@@ -138,6 +138,11 @@ export const putDiary = z.object({
   isPublic: z.boolean()
 });
 
+export const newTag = z.object({
+  name: z.string(),
+  userId: z.string(),
+});
+
 /*
   GETデータの構造体
 */
