@@ -8,10 +8,10 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { postSignup } from "~/lib/schemas";
 import { z } from "zod";
-// idと再入力パスワードはバリデーションしてない
+// 再入力パスワードはバリデーションしてない
 export default function Page() {
-  const [data, setData] = useState({ email: '', password: '' })
-  const [error, setError] = useState<{ email?: string; password?: string }>({})
+  const [data, setData] = useState({ email: '', password: '', confirmPassword: ''})
+  const [error, setError] = useState<{ email?: string; password?: string; confirmPassword?: string }>({})
   const router = useRouter();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,11 +20,25 @@ export default function Page() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const errorMessage: { email?: string; password?: string; confirmPassword?: string } = {};
 
     try {
+      // 再入力パスワードが未入力かどうか
+      if(data.confirmPassword === ""){
+        errorMessage.confirmPassword = "パスワードを再入力してください。"
+        throw new Error();
+      }
+
+      // パスワードと再入力パスワードが一致するかどうか
+      if(data.confirmPassword !== data.password){
+        errorMessage.confirmPassword = "パスワードが一致しません。"
+        throw new Error();
+      }
+
       // バリデーション
       //postSignup.parse(data);
-      // ページ遷移
+
+      // エラーがない場合ページ遷移
       router.push("/signup/confirm")
 
     } catch (error) {
@@ -35,8 +49,8 @@ export default function Page() {
           if (err.path[0] === 'email') errorMessage.email = err.message;
           if (err.path[0] === 'password') errorMessage.password = err.message;
         });
-        setError(errorMessage);
       }
+      setError(errorMessage);
     }
   };
 
@@ -47,15 +61,6 @@ export default function Page() {
       </Link>
       <p className="text-3xl font-bold my-8">新規登録</p>
       <form className="flex flex-col space-y-4 w-[70%]" onSubmit={onSubmit}>
-        <div className="space-y-2">
-          <label className="text-sm">ユーザーID</label>
-          <Input
-            type="text"
-            name="userId"
-            className="h-12 rounded-full border-gray-200 px-4"
-            placeholder="ユーザーID"
-          />
-        </div>
         <div className="space-y-2">
           <label className="text-sm">メールアドレス</label>
           <Input
@@ -85,7 +90,9 @@ export default function Page() {
             name="confirmPassword"
             className="h-12 rounded-full border-gray-200 px-4"
             placeholder="パスワード（再入力）"
+            onChange={onChange}
           />
+          {error.confirmPassword && <p className="text-red-500 text-sm mb-2">{error.confirmPassword}</p>}
         </div>
         {/* ボタンUI */}
         <div className="my-7">
