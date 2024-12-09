@@ -9,7 +9,9 @@ export async function createNewUser(email: string, hashedPassword: string) {
       email: email,
       password: hashedPassword,
     });
-    const create = insertNewUser(userData);
+    const create = await insertNewUser(userData);
+    if(create==null) throw new Error("err in insertNewUser");
+
     return create;
   } catch (error) {
     console.error(error);
