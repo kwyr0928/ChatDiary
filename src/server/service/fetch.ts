@@ -1,4 +1,5 @@
-import { getMonthlyFeedBack, getRecentTagsByUserId } from "../repository/getdata";
+import { getShare } from "~/lib/schemas";
+import { getMonthlyFeedBack, getOtherUserDiaryData, getRecentTagsByUserId } from "../repository/getdata";
 
 export const getRecentTagNamesByUserId = async (userId: string) => {
   try {
@@ -31,6 +32,18 @@ export const getLastMonthFB = async (userId: string, target: number) => {
     return fb;
   } catch (error) {
     console.error("Error in getRecentTagNamesByUserId:", error);
+    return null;
+  }
+}
+
+export const getOtherUserDiary = async (userId: string) => {
+  try {
+    const diary = await getOtherUserDiaryData(userId);
+    if(diary==null) return null
+
+    return getShare.parse(diary);
+  } catch (error) {
+    console.error("Error in getOtherUserDiary:", error);
     return null;
   }
 }

@@ -1,3 +1,4 @@
+import { Diaries } from '@prisma/client';
 import { z } from 'zod';
 import { analysesSchema, chatsSchema, diariesSchema, diaryTagsSchema, monthlySummariesSchema, safeUserSchema, tagsSchema, userSchema } from '~/lib/schemas';
 import { db } from "../db";
@@ -79,14 +80,13 @@ export const getChatsByDiaryId = async (diaryId: string) => {
 };
 
 export const getOtherUserDiaryData = async (userId: string) => {
-  const data = await db.diaries.findFirst({
-    where: {
-      isPublic: true,
-      NOT: {userId: userId}
-    },
-  });
+  const data = await db.$queryRawUnsafe<Diaries[]>(
+    `SELECT * FROM "Diaries" WHERE "userId" <> $1 AND "isPublic" = $2 ORDER BY RANDOM() LIMIT 1;`,
+    userId,
+    true
+  );
   if(data == null) return null;
-  return diariesSchema.parse(data);
+  return diariesSchema.parse(data[0]);
 };
 
 ////////////////////////////////

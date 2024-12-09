@@ -25,8 +25,7 @@ describe("initializeDiary", () => {
     const hashedPassword = "pass";
     const user = await createNewUser(email, hashedPassword);
     
-    // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-    const diary = await initializeDiary(user?.id as string);
+    const diary = await initializeDiary(user?.id as unknown as string);
     expect(diary).not.toBeNull();
     expect(diary?.id).toMatch(/^c[a-z0-9]{24}$/); //cuidの形式
     expect(diary?.isPublic).toBe(false);

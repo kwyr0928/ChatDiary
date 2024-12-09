@@ -194,7 +194,7 @@ export const getSummary = z.object({
 
 // api/share
 export const getShare = z.object({
-  diary: z.string(),
+  summary: z.string(),
 });
 
 // api/feedback/[year]/[month]
