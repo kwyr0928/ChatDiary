@@ -12,6 +12,11 @@ const globalForPrisma = globalThis as unknown as {
   prisma: ReturnType<typeof createPrismaClient> | undefined;
 };
 
-export const db = globalForPrisma.prisma ?? createPrismaClient();
+export let db = globalForPrisma.prisma ?? createPrismaClient();
+
+export function setTestPrisma(newPrisma: PrismaClient) {
+  globalForPrisma.prisma = newPrisma;
+  db = globalForPrisma.prisma;
+}
 
 if (env.NODE_ENV !== "production") globalForPrisma.prisma = db;
