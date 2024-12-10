@@ -12,20 +12,6 @@ import {
 import DiaryCard from "~/components/diaryCard";
 import { Input } from "~/components/ui/input";
 
-const diary = {
-  diary: [
-      {
-          title: "2024/12/10 10:49",
-          summary:
-              "Aさんと○○へ行き、xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      },
-      {
-          title: "2024/12/10 10:49",
-          summary:
-              "Aさんと○○へ行き、xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      },
-  ],
-};
 
 export default function Page() {
   const [keyword, setKeyword] = useState("");
@@ -39,8 +25,8 @@ export default function Page() {
   useEffect(() => {
     const fetchDiaries = async () => {
       try {
-        const userId = "cm4hw5qr900022sld4wo2jlcb"
-        // TODO
+        // userId書き変え
+        const userId = "cm4i0r0dr000014cn72v3t7j0"
         const response = await fetch(`/api/diary?userId=${userId}`, {
           method: "GET",
           headers: {
@@ -76,9 +62,13 @@ export default function Page() {
                 <DiaryCard key={index} title={d.title} summary={d.summary} />
               </Link>
             ))
+          ) : keyword == "" ? (
+            <p className="text-center text-gray-400">
+              今日はどんなことがありましたか？
+            </p>
           ) : (
             <p className="text-center text-gray-400">
-              該当する日記はありません。
+              該当する日記がありませんでした。
             </p>
           )
         }

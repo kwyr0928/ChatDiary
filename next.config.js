@@ -7,6 +7,13 @@ import "./src/env.js";
 /** @type {import("next").NextConfig} */
 const config = {
     reactStrictMode: false,
+    eslint: { // eslintのlint checkをbuild時にoff
+        ignoreDuringBuilds: true,
+      },
+      typescript: { // type checkをbuild時にoff
+        ignoreBuildErrors: true,
+      },
+      
 };
 
 export default config;

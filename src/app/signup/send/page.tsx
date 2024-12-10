@@ -2,12 +2,20 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { IoChevronBackSharp } from "react-icons/io5";
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/hooks/use-toast";
 
-export default function Page() {
+export default function Send() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+       <Page />
+       </Suspense>
+  )
+}
+
+function Page() {
   const { toast } = useToast()
   const [user, setUser] = useState({
       email: "xxxx@gmail.com",
