@@ -26,19 +26,16 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [count, setCount] = useState(0);
   const router = useRouter();
-  const [messages, setMessages] = useState<{text: string, isAI: boolean}[]>([
-    { text: "Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった", isAI: false },
-    { text: "なぜAさんを誘ったのですか？", isAI: true },
-    { text: "Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった", isAI: false }
-  ]);
-
+  const [messages, setMessages] = useState<{text: string, isAI: boolean}[]>([]);
+  const [mode, setMode] = useState(0);
   useEffect(() => {
     const initializeDiary = async () => {
       if(!isLoading){
         return
       }
         try {
-          const userId = "cm4hw5qr900022sld4wo2jlcb"
+        // userId書き変え
+        const userId = "cm4i0r0dr000014cn72v3t7j0"
           const response = await fetch('/api/diary/new', {
             method: 'POST',
             headers: {
@@ -76,7 +73,7 @@ export default function Page() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          mode: 0,
+          mode: mode,
           text: inputText
         }),
       });
@@ -98,6 +95,11 @@ export default function Page() {
     } catch (err) {
       console.error('メッセージ送信中にエラーが発生しました:', err);
     }
+  };
+
+
+  const handleChange = (value) => {
+    setMode(value === "episode" ? 0 : 1);
   };
 
   return (
@@ -141,16 +143,14 @@ export default function Page() {
         {/* プルダウン */}
         <div className="mx-auto mb-3 w-fit">
           <div className="flex items-center space-x-2">
-            <Select>
+            <Select onValueChange={handleChange}>
               <SelectTrigger className="px-3 focus-visible:ring-0">
-                <SelectValue placeholder="あなたの気持ちを" />
+                <SelectValue placeholder="モードを選択してね" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="one">要素１を</SelectItem>
-                  <SelectItem value="two">要素２を</SelectItem>
-                  <SelectItem value="three">要素３を</SelectItem>
-                  <SelectItem value="four">要素４を</SelectItem>
+                  <SelectItem value="episode">物事掘り下げモード</SelectItem>
+                  <SelectItem value="emotion">感情掘り下げモード</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -175,11 +175,6 @@ export default function Page() {
         />
         <IoSendSharp onClick={handleSend} color="#f87171" size={"25px"} />
       </div>
-      <Link href={"/diary/new"} className="absolute bottom-36">
-        <button type="button" className="bg-red-400 px-3 py-1 text-white">
-          日記作成へ（本来は自動遷移）
-        </button>
-      </Link>
     </div>
   );
 }

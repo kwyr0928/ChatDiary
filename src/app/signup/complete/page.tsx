@@ -2,10 +2,18 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { Button } from "~/components/ui/button";
 
-export default function Page() {
+export default function Complete() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+       <Page />
+       </Suspense>
+  )
+}
+
+function Page() {
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
 

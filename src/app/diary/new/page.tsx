@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { IoChevronBackSharp } from "react-icons/io5";
 import InputTag from "~/components/inputTag";
 import { Button } from "~/components/ui/button";
@@ -18,7 +18,15 @@ import {
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 
-export default function Page() {
+export default function New() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+       <Page />
+       </Suspense>
+  )
+}
+
+function Page() {
   const router = useRouter();
   const initialTags: string[] = ["タグ1", "タグ2"]
   const [nowTags, setTags] = useState<String[]>(initialTags)
