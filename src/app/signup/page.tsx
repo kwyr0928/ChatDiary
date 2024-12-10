@@ -1,13 +1,12 @@
 "use client"
 
 import Link from "next/link";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { IoChevronBackSharp } from "react-icons/io5";
+import { z } from "zod";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { postSignup } from "~/lib/schemas";
-import { z } from "zod";
 // 再入力パスワードはバリデーションしてない
 export default function Page() {
   const [data, setData] = useState({ email: '', password: '', confirmPassword: '' })
@@ -39,7 +38,7 @@ export default function Page() {
       //postSignup.parse(data);
 
       // エラーがない場合ページ遷移
-      router.push("/signup/confirm")
+      router.push(`/signup/confirm?email=${data.email}&password=${data.password}`);
 
     } catch (error) {
       // バリデーションエラーがある場合

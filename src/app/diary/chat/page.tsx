@@ -1,15 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   IoChevronBackSharp,
-  IoPersonCircleSharp,
-  IoSendSharp,
+  IoSendSharp
 } from "react-icons/io5";
-import { Button } from "~/components/ui/button";
 import ChatCard from "~/components/chatCard";
-import { Card, CardContent } from "~/components/ui/card";
+import { Button } from "~/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 import {
   Select,
@@ -22,6 +21,85 @@ import {
 
 export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
+  const [diaryId, setDiaryId] = useState<string | null>(null);
+  const [inputText, setInputText] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [count, setCount] = useState(0);
+  const router = useRouter();
+  const [messages, setMessages] = useState<{text: string, isAI: boolean}[]>([
+    { text: "Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった", isAI: false },
+    { text: "なぜAさんを誘ったのですか？", isAI: true },
+    { text: "Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった", isAI: false }
+  ]);
+
+  useEffect(() => {
+    const initializeDiary = async () => {
+      if(!isLoading){
+        return
+      }
+        try {
+          const userId = "cm4hw5qr900022sld4wo2jlcb"
+          const response = await fetch('/api/diary/new', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId }),
+          });
+          if (response.ok) {
+            setIsLoading(false);
+            const data = await response.json();
+            setDiaryId(data.diaryId);
+            console.log(data.diaryId);
+        }} catch (err) {
+          console.log(err);
+        }
+    };
+    void initializeDiary();
+
+    
+  }, []);
+  
+  const handleSend = async () => {
+    // 入力が空の場合は送信しない
+    if (!inputText.trim() || !diaryId) return;
+
+    try {
+      // ユーザーメッセージをメッセージリストに追加
+      setMessages(prev => [...prev, { text: inputText, isAI: false }]);
+
+      // APIにメッセージ送信
+      console.log(diaryId)
+      const response = await fetch(`/api/chat/${diaryId}/send`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mode: 0,
+          text: inputText
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if(count + 1 >= 5){
+          router.push(`/diary/new?res=${data.response}&diaryId=${diaryId}`);
+        }
+        setCount(count + 1);
+        // AIの返信をメッセージリストに追加
+        setMessages(prev => [...prev, { text: data.response, isAI: true }]);
+      } else {
+        console.error('メッセージ送信に失敗しました');
+      }
+
+      // 入力フィールドをクリア
+      setInputText('');
+    } catch (err) {
+      console.error('メッセージ送信中にエラーが発生しました:', err);
+    }
+  };
+
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
       <div className="fixed top-0 mb-5 max-w-md flex w-full flex-col justify-center bg-white pt-5 text-center">
@@ -81,23 +159,21 @@ export default function Page() {
         </div>
       </div>
       <div className="mt-[130px] mb-[60px]">
-        <ChatCard isAI={false}>
-          Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
-        </ChatCard>
-        <ChatCard isAI={true}>
-          なぜAさんを誘ったのですか？
-        </ChatCard>
-        <ChatCard isAI={false}>
-          Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
-        </ChatCard>
+      {messages.map((message, index) => (
+          <ChatCard key={index} isAI={message.isAI}>
+            {message.text}
+          </ChatCard>
+        ))}
       </div>
       {/* チャット欄 */}
       <div className="fixed bottom-0 max-w-md w-full flex items-center justify-center space-x-2 pt-3 pb-5 bg-red-50">
         <textarea
           rows={1}
+          value={inputText}
           className="w-[300px] resize-none rounded border p-1 focus:outline-none"
+          onChange={(e) => setInputText(e.target.value)}
         />
-        <IoSendSharp color="#f87171" size={"25px"} />
+        <IoSendSharp onClick={handleSend} color="#f87171" size={"25px"} />
       </div>
       <Link href={"/diary/new"} className="absolute bottom-36">
         <button type="button" className="bg-red-400 px-3 py-1 text-white">
