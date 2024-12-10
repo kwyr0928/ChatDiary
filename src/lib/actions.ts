@@ -45,7 +45,7 @@ export async function login(prevState: string | undefined, formData: z.infer<typ
       switch (error.type) {
         case 'CredentialsSignin':
           return NextResponse.json(
-            { error: "Invalid credentials.メールかパスワードが違います." },
+            { error: "Invalid credentials.メールかパスワードが違うか, 登録が完了していません." },
             { status: 500 },
           );
         default:

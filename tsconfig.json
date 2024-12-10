@@ -26,8 +26,10 @@
     /* Path Aliases */
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"]
-    }
+      "~/*": ["./src/*"],
+    },
+
+    "types": ["node", "vitest/globals", "testcontainers"],
   },
   "include": [
     ".eslintrc.cjs",
@@ -36,7 +38,8 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.js",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "test/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

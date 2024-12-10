@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { postChat } from "~/lib/schemas";
-import { initializeDiary } from "~/server/repository/insertdata";
+import { createContinuation, initializeDiary } from "~/server/service/create";
+
 
 export async function POST(req: Request) {
   try {
@@ -8,6 +9,9 @@ export async function POST(req: Request) {
 
     const newDiary = await initializeDiary(userId);
     if(newDiary==null) throw new Error("err in initializeDiary");
+
+    // 継続登録処理
+    await createContinuation(userId, new Date());
 
     return NextResponse.json({
       message: "start chat successfully",

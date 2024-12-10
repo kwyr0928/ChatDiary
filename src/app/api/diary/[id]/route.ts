@@ -3,8 +3,9 @@ import { z } from "zod";
 import { chatLogSchema, putDiary } from "~/lib/schemas";
 import { deleteDiary } from "~/server/repository/deletedata";
 import { getChatsByDiaryId, getDiaryData, getTagByID, getTagByName, getTagConnectionsByDiary } from "~/server/repository/getdata";
-import { connectDiaryTag, createTag } from "~/server/repository/insertdata";
-import { updateDiary } from "~/server/repository/updatedata";
+import { updateDiary, updateRecentTag } from "~/server/repository/updatedata";
+import { connectDiaryTag, createTag } from "~/server/service/create";
+import { getRecentTagNamesByUserId } from "~/server/service/fetch";
 
 // 特定の日記の詳細GET
 export async function GET(req: Request,
@@ -14,6 +15,8 @@ export async function GET(req: Request,
     // eslint-disable-next-line @typescript-eslint/await-thenable
     const par = await params;
     const diaryId = z.string().parse(par.id); //パスパラメータ
+    const { searchParams } = new URL(req.url);
+    const userId = z.string().parse(searchParams.get("userId")); //クエリパラメータ
     const diaryData = await getDiaryData(diaryId);
     if(diaryData==null) throw new Error("err in getDiaryData");
     
@@ -36,10 +39,14 @@ export async function GET(req: Request,
       chatLog.push(chatLogSchema.parse(chat));
     }
 
+    // タグ一覧
+    const getTagNames = await getRecentTagNamesByUserId(userId);
+
     return NextResponse.json({
       message: "get diary successfully",
       diaryData: diaryData,
       tags: tags,
+      tagList: getTagNames,
       chatLog: chatLog,
     });
   } catch (error) {
@@ -66,7 +73,7 @@ export async function PUT(req: Request,
 
     //タグの紐づけ
     for (const tag of tags) {
-      const tagData = await getTagByName(tag);
+      const tagData = await getTagByName(tag, userId);
       let tagId = "";
       if(tagData==null){
         // 新しいタグ生成
@@ -74,13 +81,16 @@ export async function PUT(req: Request,
         if(newTag==null) throw new Error("err in createTag");
         tagId = newTag.id;
       } else {
+        // 既にあるのでupdate更新
+        const updateTag = await updateRecentTag(tagData.id!);
+        if(updateTag==null) throw new Error("err in updateRecentTag");
         tagId = tagData.id!;
       }
       //紐づけ
       const newConnection = await connectDiaryTag(diaryId, tagId);
     }
     return NextResponse.json({
-      message: "updaate diary successfully",
+      message: "update diary successfully",
       diaryData: updatedDiary,
     });
   } catch (error) {

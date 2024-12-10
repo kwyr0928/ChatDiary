@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { chatsSchema, diariesSchema, diaryTagsSchema, userSchema } from "~/lib/schemas";
+import { analysesSchema, chatsSchema, continuationSchema, diariesSchema, diaryTagsSchema, monthlySummariesSchema, newTag, userSchema } from "~/lib/schemas";
 import { db } from "../db";
 
 export async function insertNewUser(userData: z.infer<typeof userSchema>) {
@@ -15,24 +15,9 @@ export async function insertNewUser(userData: z.infer<typeof userSchema>) {
   }
 }
 
-export async function initializeDiary(userId: string) {
+export async function insertDiary(diaryData: z.infer<typeof diariesSchema>) {
   try {
-    if (userId == null) throw new Error("Invalid option data");
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1; // 月は0始まりなので+1する
-    const day = now.getDate();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-
-    // フォーマットした日時文字列を返す
-    const dateString = `${year}/${month}/${day} ${hours}:${minutes}`;
-    const diaryData: z.infer<typeof diariesSchema> = {
-      userId: userId,
-      title: dateString,
-      summary: "出力結果",
-      isPublic: false,
-    };
+    if (diaryData == null) throw new Error("diaryData IS NULL");
     const create = await db.diaries.create({
       data: diaryData,
     });
@@ -43,14 +28,9 @@ export async function initializeDiary(userId: string) {
   }
 }
 
-export async function initializeChat(diaryId: string, mode: number, userMessage: string) {
+export async function insertChat(chatData: z.infer<typeof chatsSchema>) {
   try {
-    if (diaryId == null || userMessage ==null) throw new Error("Invalid option data");
-    const chatData: z.infer<typeof chatsSchema> = {
-      diaryId: diaryId,
-      mode: mode,
-      message: userMessage,
-    };
+    if (chatData == null) throw new Error("chatData IS NULL");
     const create = await db.chats.create({
       data: chatData,
     });
@@ -61,11 +41,11 @@ export async function initializeChat(diaryId: string, mode: number, userMessage:
   }
 }
 
-export async function createTag(name: string, userId: string) {
+export async function insertTag(tagData: z.infer<typeof newTag>) {
   try {
-    if (name ==null) throw new Error("Invalid option data");
+    if (tagData ==null) throw new Error("tagData IS NULL");
     const create = await db.tags.create({
-      data: { name: name, userId: userId },
+      data: tagData,
     });
     return create;
   } catch (error) {
@@ -74,15 +54,50 @@ export async function createTag(name: string, userId: string) {
   }
 }
 
-export async function connectDiaryTag(diaryId: string, tagId: string) {
+export async function insertDiaryTag(diaryTagsData: z.infer<typeof diaryTagsSchema>) {
   try {
-    if (diaryId == null || tagId ==null) throw new Error("Invalid option data");
-    const tagData: z.infer<typeof diaryTagsSchema> = {
-      diaryId: diaryId,
-      tagId: tagId
-    };
+    if (diaryTagsData == null) throw new Error("tagData IS NULL");
     const create = await db.diaryTags.create({
-      data: tagData,
+      data: diaryTagsData,
+    });
+    return create;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function insertMonthlySummaries(monthlyData: z.infer<typeof monthlySummariesSchema>) {
+  try {
+    if (monthlyData == null) throw new Error("monthlyData IS NULL");
+    const create = await db.monthlySummaries.create({
+      data: monthlyData,
+    });
+    return create;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function insertAnalyses(analysesData: z.infer<typeof analysesSchema>) {
+  try {
+    if (analysesData == null) throw new Error("analysesData IS NULL");
+    const create = await db.analyses.create({
+      data: analysesData,
+    });
+    return create;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function insertContinuation(continuationData: z.infer<typeof continuationSchema>) {
+  try {
+    if (continuationData == null) throw new Error("continuationData IS NULL");
+    const create = await db.continuation.create({
+      data: continuationData,
     });
     return create;
   } catch (error) {
