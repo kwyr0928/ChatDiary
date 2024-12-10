@@ -41,7 +41,6 @@ export async function GET(req: Request,
 
     // タグ一覧
     const getTagNames = await getRecentTagNamesByUserId(userId);
-    if(getTagNames?.length==0) throw new Error("user has no tag")
 
     return NextResponse.json({
       message: "get diary successfully",
