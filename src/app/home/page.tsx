@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   IoAddCircleSharp,
   IoBarChartSharp,
@@ -14,45 +14,50 @@ import { Input } from "~/components/ui/input";
 
 const diary = {
   diary: [
-    {
-      id: [1],
-      tag: ["A", "お出かけ"],
-      context:
-        "Aさんと○○へ行き、xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      date: "2024-11-21",
-    },
-    {
-      id: [2],
-      tag: ["B", "旅行"],
-      context: "Bさんと△△へ行き、xxxxxxxxxxxxxxxxxxxxx",
-      date: "2024-11-01",
-    },
-    {
-      id: [3],
-      tag: ["C", "仕事"],
-      context: "Cさんと□□へ行き、xxxx",
-      date: "2024-10-10",
-    },
-    {
-      id: [4],
-      tag: ["D", "ねむい"],
-      context: "ねむいでござんす",
-      date: "2024-10-9",
-    },
-    {
-      id: [5],
-      tag: ["E", "スイーツ"],
-      context: "栗が好きなAさんを誘い、パフェを食べに行った。私はさつまいものアイスが乗ったパフェで、Aさんは栗のパウンドケーキが乗ったパフェだった。",
-      date: "2024-10-14",
-    },
+      {
+          title: "2024/12/10 10:49",
+          summary:
+              "Aさんと○○へ行き、xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      },
+      {
+          title: "2024/12/10 10:49",
+          summary:
+              "Aさんと○○へ行き、xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      },
   ],
 };
 
 export default function Page() {
   const [keyword, setKeyword] = useState("");
-  const filteredDiary = diary.diary.filter((d) =>
-    JSON.stringify(d).includes(keyword),
-  );
+  const [diaryList, setDiaryList] = useState(null);
+  const filteredDiary = diaryList
+  ? diaryList.diaries.filter((d) =>
+      JSON.stringify(d).toLowerCase().includes(keyword.toLowerCase())
+    )
+  : [];
+
+  useEffect(() => {
+    const fetchDiaries = async () => {
+      try {
+        const userId = "cm4hw5qr900022sld4wo2jlcb"
+        // TODO
+        const response = await fetch(`/api/diary?userId=${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to fetch diaries: ${response.status}`);
+        }
+        setDiaryList(await response.json());
+      } catch (error) {
+        console.error("エラーが発生しました:", error);
+      }
+    };
+  
+    void fetchDiaries();
+  }, []);
 
 
 
@@ -68,7 +73,7 @@ export default function Page() {
                 key={index}
                 href={`/diary/detail/${d.id}`}
                 className="focus-visible:outline-none focus-visible:ring-0 focus:outline-none">
-                <DiaryCard key={index} d={d} />
+                <DiaryCard key={index} title={d.title} summary={d.summary} />
               </Link>
             ))
           ) : (

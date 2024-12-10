@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoBarChartSharp, IoCogSharp, IoHomeSharp } from "react-icons/io5";
 import { Button } from "~/components/ui/button";
 import {
@@ -13,31 +13,24 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 
-
-
-const defaultUser = {
-  id: "nekoneko",
-  email: "〇〇@gmail.com",
-};
-
 export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState({ id: '', email: '' })
+  const [user, setUser] = useState({ id: 'cm4hw5qr900022sld4wo2jlcb', email: 'xxxx@gmail.com' })
   const router = useRouter()
 
-  useEffect(() => {
+  // useEffect(() => {
     // idメアド取得 (JWT取得？ api/user/[id]？)
-    const getUser = async () => {
-      const response = await fetch(`/api/user/[id]`);
-      if (response.ok) {
-        const data = await response.json();
-        setUser({ ...user, id: data.id, email: data.email })
-      } else {
-        console.error("Failed to fetch");
-      }
-    };
-    getUser();
-  }, [])
+    // const getUser = async () => {
+    //   const response = await fetch(`/api/user/[id]`);
+    //   if (response.ok) {
+    //     const data = await response.json();
+    //     setUser({ ...user, id: data.id, email: data.email })
+    //   } else {
+    //     console.error("Failed to fetch");
+    //   }
+    // };
+    // getUser();
+  // }, [])
 
   // 退会処理
   const handleDeleteUser = async () => {
@@ -60,6 +53,26 @@ export default function Page() {
     }
   }
 
+  const handleSignOut = async () => {
+    try {
+      const response = await fetch(`/api/user/signout?${user.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: user.id }),
+      })
+
+      if (response.ok) {
+        router.push("/signin")
+      } else {
+        console.error("ログアウトに失敗しました。")
+      }
+    } catch (error) {
+      console.error("エラーが発生しました :", error);
+    }
+  }
+
   return (
     <div className="mx-auto flex min-h-screen max-w-md w-full flex-col items-center bg-red-50 text-gray-600">
       <div className="mr-auto ml-8">
@@ -67,13 +80,11 @@ export default function Page() {
         <p className="mt-4 text-md w-full text-left">ユーザーID：{user.id}</p>
         <p className="mt-2 text-md w-full text-left">メールアドレス：{user.email}</p>
       </div>
-      <Link href={"/signin"} className="mt-12 w-[60%]">
-        <div className="w-full">
-          <Button className="rounded-full bg-gray-400 hover:bg-gray-500 w-full">
+        <div className="mt-12 w-[60%]">
+          <Button onClick={handleSignOut} className="rounded-full bg-gray-400 hover:bg-gray-500 w-full">
             ログアウトする
           </Button>
         </div>
-      </Link>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <div className="mt-6 mb-auto w-[60%]">
           <Button
