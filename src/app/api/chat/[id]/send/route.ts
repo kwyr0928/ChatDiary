@@ -69,9 +69,7 @@ export async function POST(req: Request,
       if (res == null) throw new Error("err in returnedChat");
       aiResponse = res.response!;
     } else {
-      // TODO: @にいろ 要約を生成する処理
-
-
+      // 要約を生成する処理
       // Gemini APIキーを設定
       const apiKey = process.env.GEMINI_API_KEY;
 
