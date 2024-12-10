@@ -38,7 +38,7 @@ export const getDiariesByUserId = async (userId: string) => {
       where: { userId: userId },
       orderBy: { created_at: 'asc' },
     });
-    if(data == null) throw new Error("diary not found");
+    if(data == null) return [];
     return z.array(diariesSchema).parse(data);
   } catch (error) {
     console.error("Error in getDiariesByUserId:", error);
@@ -74,7 +74,7 @@ export const getChatsByDiaryId = async (diaryId: string) => {
       where: { diaryId: diaryId },
       orderBy: { created_at: 'asc' },
     });
-    if(data == null) throw new Error("chats not found");
+    if(data == null) return [];
     return z.array(chatsSchema).parse(data);
   } catch (error) {
     console.error("Error in getChatsByDiaryId:", error);
@@ -156,7 +156,7 @@ export const getRecentTagsByUserId = async (userId: string) => {
 export const getTagConnectionsByDiary = async (diaryId: string) => {
   try {
     const data = await db.diaryTags.findMany({ where: { diaryId } });
-    if(data == null) throw new Error("tags not found");
+    if(data == null) return [];
     return z.array(diaryTagsSchema).parse(data);
   } catch (error) {
     console.error("Error in getTagConnectionsByDiary:", error);
