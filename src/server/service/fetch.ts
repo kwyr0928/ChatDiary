@@ -4,7 +4,7 @@ import { getMonthlyFeedBack, getOtherUserDiaryData, getRecentTagsByUserId, getTo
 export const getRecentTagNamesByUserId = async (userId: string) => {
   try {
     const diaryTagDatas = await getRecentTagsByUserId(userId);
-    if(diaryTagDatas==null) throw new Error("err in getRecentTagsByUserId");
+    if(diaryTagDatas==null) return [];
     const tagNames: string[] = [];
     for(const tag of diaryTagDatas){
       tagNames.push(tag.name);
