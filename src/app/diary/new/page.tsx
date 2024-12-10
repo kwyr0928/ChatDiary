@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { IoAddCircleOutline, IoChevronBackSharp } from "react-icons/io5";
-import Tag from "~/components/tag";
+import { IoChevronBackSharp } from "react-icons/io5";
+import InputTag from "~/components/inputTag";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import {
@@ -16,12 +17,43 @@ import {
 } from "~/components/ui/dialog";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
-import InputTag from "~/components/inputTag";
 
 export default function Page() {
+  const router = useRouter();
   const initialTags: string[] = ["タグ1", "タグ2"]
   const [nowTags, setTags] = useState<String[]>(initialTags)
   const [isOpen, setIsOpen] = useState(false);
+  const [isPublic, setIsPublic] = useState("private");
+  const searchParams = useSearchParams();
+  const res = searchParams.get("res");
+  const diaryId = searchParams.get("diaryId");
+
+  const handleCreateDiary = async () => {
+    try {
+      const response = await fetch(`/api/diary/${diaryId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: "cm4hw5qr900022sld4wo2jlcb",
+          summary: res,
+          tags: nowTags,
+          isPublic: isPublic === 'public'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create diary');
+      }
+
+      const data = await response.json();
+      console.log(data);
+      router.push('/home');
+    } catch (error) {
+      console.error('Error creating diary:', error);
+    }
+  };
 
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
@@ -65,7 +97,7 @@ export default function Page() {
         {/* カード */}
         <Card className="text-gray-600 shadow-none">
           <CardContent className="px-5 py-3">
-            栗が好きなAさんを誘い、パフェを食べに行った。私はさつまいものアイスが乗ったパフェで、Aさんは栗のパウンドケーキが乗ったパフェだった。私が見つけた店で喜んでくれて嬉しい。彼女が喜ぶ店をまた探したいと思った。
+           {res}
           </CardContent>
         </Card>
         <p className="mb-2 mt-5 text-left text-lg">タグ</p>
@@ -82,9 +114,14 @@ export default function Page() {
         <p className="mb-2 mt-5 text-left text-lg">公開範囲</p>
         {/* ラジオボタン */}
         <div className="mb-5">
-          <RadioGroup defaultValue="private" className="space-y-2">
+        <RadioGroup 
+            defaultValue="private" 
+            value={isPublic}
+            onValueChange={(value: "public" | "private") => setIsPublic(value)}
+            className="space-y-2"
+          >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem
+            <RadioGroupItem
                 value="public"
                 id="public"
                 className="border-red-400"
@@ -104,7 +141,9 @@ export default function Page() {
         <Link href={"/home"}>
           {/* ボタンUI */}
           <div className="flex justify-center my-10">
-            <Button className="bg-red-400 hover:bg-rose-500 rounded-full w-[80%] text-xl">作成する！</Button>
+            <Button 
+            onClick={handleCreateDiary}
+            className="bg-red-400 hover:bg-rose-500 rounded-full w-[80%] text-xl">作成する！</Button>
           </div>
         </Link>
       </div>
