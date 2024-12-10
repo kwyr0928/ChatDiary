@@ -35,6 +35,7 @@ export default function DiaryCard(props: { d: { tag: string[], context: string, 
                 <Image
                     src="/日記カード.png"
                     alt="Diary"
+                    priority={true}
                     fill
                 />
                 <div className="absolute inset-0 text-gray-600 px-2 py-1.5 ml-2">
