@@ -30,18 +30,26 @@ export async function POST(req: Request,
     if (diaryCounts < chatLimit) {
       // Gemini APIキーを設定
       const apiKey = process.env.GEMINI_API_KEY;
-
+      
       if (!apiKey) {
         return NextResponse.json({ error: 'API key not found' }, { status: 500 });
       }
       const genAI = new GoogleGenerativeAI(apiKey);
       // モデルの取得
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });  // 使用モデル指定
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig:{temperature: 2,}, });  // 使用モデル指定
       //過去のログの生成
+      // TODO:モード選択の変数を作る場所をきく @うゆう
+      // if (chatMode == feeling){    // 感情モード
       const historyArray = [
-        { role: "user", parts: [{ text: "回答する場合は、「だよ~。」を語尾につけてください。" }] },
-        { role: "model", parts: [{ text: 'はい、「だよ~。」を語尾につけて回答いたします。' }] },
+        { role: "user", parts: [{ text: "あなたは感情を深掘りする質問を得意とするアシスタントです。ユーザーが書いた文章に基づいて、そのときの感情や体験の背景を詳しく引き出し、価値観、強みを見つけ出すことにつながるような質問を1つしてください。質問は親しみやすく、ユーザーがリラックスして答えやすいトーンで作成してください。" }] },
+        { role: "model", parts: [{ text: 'はい、私は感情を深掘りする質問を得意とするアシスタントです。リラックスしたトーンで、ユーザーが答えやすい簡単な質問を作成します。' }] },
       ];
+      // }else{
+      //   const historyArray = [     // 物事モード
+      //     { role: "user", parts: [{ text: "あなたは物事について深掘りする質問を得意とするアシスタントです。ユーザーが書いた文章に基づいて、その出来事や状況の背景、関連する要素、起こった結果について詳しく引き出し、それを深く理解する手助けをする質問を1つしてください。質問は親しみやすく、ユーザーが考えを整理しやすいトーンで作成してください。" }] },
+      //     { role: "model", parts: [{ text: 'はい、私は物事を深掘りする質問を得意とするアシスタントです。リラックスしたトーンで、ユーザーが答えやすい簡単な質問を1つ作成します。' }] },
+      //   ];
+      // }
       const historyData = await getHistoryData(diaryId);
       if (historyData == null) throw new Error("err in getHistoryData");
       for (const data of historyData) {
@@ -66,6 +74,39 @@ export async function POST(req: Request,
       aiResponse = res.response!;
     } else {
       // TODO: @にいろ 要約を生成する処理
+//       // Gemini APIキーを設定
+//       const apiKey = process.env.GEMINI_API_KEY;
+
+//       if (!apiKey) {
+//         return NextResponse.json({ error: 'API key not found' }, { status: 500 });
+//       }
+//       const genAI = new GoogleGenerativeAI(apiKey);
+//       // モデルの取得
+//       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });  // 使用モデル指定
+//       //過去のログの生成
+//       const historyArray = [
+//         { role: "user", parts: [{ text: "回答する場合は、「だよ~。」を語尾につけてください。" }] },
+//         { role: "model", parts: [{ text: 'はい、「だよ~。」を語尾につけて回答いたします。' }] },
+//       ];
+//       const historyData = await getHistoryData(diaryId);
+//       if (historyData == null) throw new Error("err in getHistoryData");
+//       for (const data of historyData) {
+//         if (data?.message && data?.response) {
+//           historyArray.push({ role: "user", parts: [{ text: data.message }] });
+//           historyArray.push({ role: "model", parts: [{ text: data.response }] });
+//         }
+//       }
+
+//       // テキスト生成
+//       const chat = model.startChat({
+//         history: historyArray
+//       })
+
+//       // レスポンスの取得
+//       const result = await chat.sendMessage(text);
+//       const response = result.response;
+//       const responseText = response.text();
+// // 調整中
 
       const dummysummary = "こういう一日を送りました。楽しいね。";
       const updatedDiary = await summariedDiary(diaryId, dummysummary);
