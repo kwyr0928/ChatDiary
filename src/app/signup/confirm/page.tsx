@@ -56,7 +56,7 @@ export default function Page() {
             <label className="text-md">メールアドレス</label>
             <p className="text-xl">{user.email}</p>
           </div>
-          <Link href={"/signup/send"}>
+          <Link href={`/signup/send?email=${user.email}`}>
           {/* ボタンUI */}
           <div className="my-7">
             <Button className="rounded-full w-full bg-red-400 text-xl hover:bg-rose-500" onClick={handleSignup}>

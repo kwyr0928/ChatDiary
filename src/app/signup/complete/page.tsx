@@ -19,7 +19,6 @@ export default function Page() {
           },
           body: JSON.stringify({ email }),
         });
-        console.log(email);
         if (!response.ok) {
           throw new Error(`Failed to fetch diaries: ${response.status}`);
         }
@@ -30,7 +29,7 @@ export default function Page() {
     };
   
     void fetchDiaries();
-  }, [email]);
+  }, []);
   
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
