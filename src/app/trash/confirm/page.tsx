@@ -1,5 +1,7 @@
 "use client"
 
+// 削除予定かも
+
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
