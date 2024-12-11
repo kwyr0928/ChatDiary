@@ -13,7 +13,6 @@ const config = {
       typescript: { // type checkをbuild時にoff
         ignoreBuildErrors: true,
       },
-      
 };
 
 export default config;
