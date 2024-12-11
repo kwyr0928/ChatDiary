@@ -1,78 +1,120 @@
-"use client"
+"use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { IoDocumentTextSharp } from "react-icons/io5";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { toast } from "~/hooks/use-toast";
 
 export default function Page() {
-  const [signinResponse, setSigninResponse] = useState(null)
-  const [data, setData] = useState({ email: '', password: '' });
-  const router = useRouter()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const isError = emailError || passwordError || !email || !password; // ボタンが押せるかどうか
+  const router = useRouter();
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setData({ ...data, [e.target.name]: e.target.value });
+  const validateEmail = (value: string) => {
+    // メールアドレス バリデーション
+    setEmail(value);
+    const emailCheck = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 形式が正しいかどうか
+    if (!emailCheck.test(value)) {
+      setEmailError("正しいメールアドレスを入力してください。");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  const validatePassword = (value: string) => {
+    // パスワード バリデーション
+    setPassword(value);
+    const length8 = value.length >= 8;
+    if (!length8) {
+      setPasswordError("パスワードは8文字以上である必要があります。");
+    } else {
+      setPasswordError("");
+    }
   };
 
   const handleSignin = async (e: React.FormEvent) => {
+    // ログインボタン
     e.preventDefault();
-
     try {
-      const response = await fetch('/api/user/signin', {
-        method: 'POST',
+      const response = await fetch("/api/user/signin", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: data.email, password: data.password }),
-      })
-
-      setSigninResponse(await response.json())
-      console.log(signinResponse);
-      if(response.ok){
-        router.push("/home")
-      } else{
-        console.error("ログインに失敗しました")
+        body: JSON.stringify({ email: email, password: password }),
+      });
+      const responseData = await response.json();
+      console.log(responseData);
+      if (response.ok) {
+        router.push("/home");
+      } else {
+        throw new Error(responseData);
       }
-      // TODO: 入力エラーメッセージ表示
     } catch (error) {
-      console.error("エラーが発生しました :", error);
+      // 入力エラーメッセージ表示
+      toast({
+        variant: "destructive",
+        description: "メールアドレスかパスワードが間違っています",
+      });
     }
-  }
+  };
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
       <IoDocumentTextSharp color="gray" size={"70px"} />
-      <p className="text-3xl font-bold my-8">ログイン</p>
-      <form className="flex flex-col space-y-4 w-[70%]" onSubmit={handleSignin}>
-        <div>
-          <label className="text-sm">メールアドレス</label>
+      <p className="my-8 text-3xl font-bold">ログイン</p>
+      <form className="flex w-[70%] flex-col space-y-7" onSubmit={handleSignin}>
+        <div className="space-y-2">
+          <label className="text-sm">メールアドレス </label>
           <Input
             name="email"
             type="text"
             className="h-12 rounded-full border-gray-200 px-4"
             placeholder="メールアドレス"
-            onChange={onChange}
+            value={email}
+            onChange={(e) => validateEmail(e.target.value)}
           />
+          {emailError && <p className="text-xs text-red-500">{emailError}</p>}
         </div>
 
-        <div className="mb-2">
-          <label className="text-sm">パスワード</label>
+        <div className="mb-2 space-y-2">
+          <div className="flex items-center">
+            <label className="text-sm">
+              パスワード<span className="ml-2 text-xs">※8文字以上</span>
+            </label>
+          </div>
           <Input
             name="password"
             type="password"
             className="h-12 rounded-full border-gray-200 px-4"
             placeholder="パスワード"
-            onChange={onChange}
+            value={password}
+            onChange={(e) => validatePassword(e.target.value)}
           />
+          {passwordError && (
+            <p className="text-xs text-red-500">{passwordError}</p>
+          )}
         </div>
         {/* ボタンUI */}
         <div>
-          <Button type="submit" className="bg-red-400 hover:bg-rose-500 rounded-full　w-full text-xl mt-6 mb-2">ログイン</Button>
+          <Button
+            type="submit"
+            disabled={!!isError}
+            className="rounded-full　w-full mb-2 mt-6 bg-red-400 text-xl hover:bg-rose-500"
+          >
+            ログイン
+          </Button>
         </div>
       </form>
-      <Link href={"/signup"} className="border-b">新規登録へ</Link>
+      <Link href={"/signup"} className="mt-2 border-b">
+        新規登録へ
+      </Link>
     </div>
   );
 }

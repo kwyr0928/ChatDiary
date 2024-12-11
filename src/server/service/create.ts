@@ -105,7 +105,12 @@ export async function connectDiaryTag(diaryId: string, tagId: string) {
 export async function createMonthlyFB(userId: string, target: number) {
   try {
     if (userId == null || target ==null) throw new Error("Invalid option data");
-    // text生成
+    // text生成    
+
+
+
+
+    
     const text = "monthly feedback";
     const monthlySummariesData: z.infer<typeof monthlySummariesSchema> = {
       userId: userId,
@@ -127,6 +132,10 @@ export async function createAnalysesFB(userId: string) {
     if (userId == null) throw new Error("Invalid option data");
     // text生成
     // @TODO: にいろ
+
+    // 一か月の日記の本文を取得 
+    // 全文＋要約の文章をGeminiに送る（チャットじゃなくてgenerateContents？）
+
     const text = "analyses feedback";
 
     const analysesData: z.infer<typeof analysesSchema> = {

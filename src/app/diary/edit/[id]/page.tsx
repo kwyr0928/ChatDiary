@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   IoCheckmarkSharp,
   IoChevronBackSharp,
@@ -16,8 +16,9 @@ import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { useToast } from "~/hooks/use-toast";
 
-export default function Page() {
+export default function Page({ params }: { params: { id: number } }) {
   const { toast } = useToast()
+  const [isPublic, setIsPublic] = useState("private");
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
   const [text, setText] = useState(
@@ -25,6 +26,75 @@ export default function Page() {
   );
   const initialTags: string[] = ["タグ1", "タグ2"]
   const [nowTags, setTags] = useState<String[]>(initialTags)
+  const [diaryDetail, setDiaryDetail] = useState({
+    message: "get diary successfully",
+    diaryData: {
+      id: "cm4gxss8m0001foh9fxoz0d8v",
+      userId: "cm4gtat1h0000rrm4ibketejy",
+      title: "2024/12/9 20:16",
+      summary: "修正した要約",
+      isPublic: true,
+      created_at: "2024-12-09T11:16:08.566Z",
+    },
+    tags: ["food", "donuts"],
+    tagList: ["food", "donuts", "fi"],
+    chatLog: [
+      {
+        message: "ドーナツ食べた",
+        response: "ドーナツ食べたんだね~。\n",
+      },
+      {
+        message: "おいしかった",
+        response: "おいしかったんだね~。\n",
+      },
+      {
+        message: "にいろとなずなとたべた",
+        response: "三人で食べたんだね~。\n",
+      },
+      {
+        message: "ぴょんすけにもらった",
+        response: "ぴょんすけにもらったんだね~。\n",
+      },
+      {
+        message: "楽しかった！",
+        response: null,
+      },
+    ],
+  });
+
+  useEffect(() => {
+    const fetchDiaries = async () => {
+      try {
+        // userId書き変え
+        const userId = "cm4i0r0dr000014cn72v3t7j0";
+        const response = await fetch(
+          `/api/diary/${params.id}?userId=${userId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+        if (!response.ok) {
+          throw new Error(`Failed to fetch diaries: ${response.status}`);
+        }
+        setDiaryDetail(await response.json());
+        console.log(diaryDetail);
+        setText(diaryDetail.diaryData.summary);
+        setTags(diaryDetail.tags);
+        if(diaryDetail.diaryData.isPublic === true){
+          setIsPublic("public");
+        }else{
+          setIsPublic("private");
+        }
+      } catch (error) {
+        console.error("エラーが発生しました:", error);
+      }
+    };
+
+    void fetchDiaries();
+  }, []);
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
@@ -59,7 +129,7 @@ export default function Page() {
             </div>
           </DialogContent>
         </Dialog>
-        <p className="text-lg text-gray-700">2024/10/2</p>
+        <p className="text-lg text-gray-700">{diaryDetail.diaryData.title}</p>
         <Dialog open={isOpen2} onOpenChange={setIsOpen2}>
           <DialogTrigger onClick={() => setIsOpen2(true)} className="pr-5">
             <IoTrashSharp color="gray" size={"35px"} />
@@ -98,13 +168,13 @@ export default function Page() {
       <div className="mt-[60px] mb-auto w-[85%]">
         <div className="flex items-center justify-start space-x-5">
           <p className="my-2 text-lg">日記本文</p>
-          <Link href={"/diary/detail"}>
+          <Button onClick={handleSave}>
             <IoCheckmarkSharp size={"23px"} color="#f87171" onClick={() => {
               toast({
                 title: "保存しました。",
               })
             }} />
-          </Link>
+          </Button>
         </div>
         <ResizeTextarea className="resize-none focus:outline-none w-full text-gray-600  h-36 px-5 py-3 rounded border border-gray-300 p-2" text={text} onChange={setText} />
         <p className="mb-2 mt-5 text-left text-lg">タグ</p>
@@ -114,7 +184,10 @@ export default function Page() {
         <p className="mb-2 mt-5 text-left text-lg">公開範囲</p>
         {/* ラジオボタン */}
         <div className="mb-8">
-          <RadioGroup defaultValue="private" className="space-y-2">
+          <RadioGroup  defaultValue="private" 
+            value={isPublic}
+            onValueChange={(value: "public" | "private") => setIsPublic(value)}
+            className="space-y-2">
             <div className="flex items-center space-x-2">
               <RadioGroupItem
                 value="public"
@@ -136,12 +209,12 @@ export default function Page() {
         <p className="my-2 text-lg">チャットログ</p>
       </div>
       <div className="mb-auto">
-        <ChatCard isAI={false}>
-          Aさんとパフェを食べに行った。 先週私が誘ったやつ。美味しかった
-        </ChatCard>
-        <ChatCard isAI={true}>
-          なぜAさんを誘ったのですか？
-        </ChatCard>
+      {diaryDetail.chatLog.map((chat, index) => (
+          <div key={index}>
+            <ChatCard isAI={false}>{chat.message}</ChatCard>
+            {chat.response && <ChatCard isAI={true}>{chat.response}</ChatCard>}
+          </div>
+        ))}
       </div>
     </div>
   );

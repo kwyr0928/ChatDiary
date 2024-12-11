@@ -1,12 +1,22 @@
 "use client"
 
+// 削除予定かも
+
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { IoChevronBackSharp } from "react-icons/io5";
 import { Button } from "~/components/ui/button";
 
-export default function Page() {
+export default function Confirm() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+       <Page />
+       </Suspense>
+  )
+}
+
+function Page() {
   const [signupResponse, setSignupResponse] = useState(null)
   const [user, setUser] = useState({
     email: "",
