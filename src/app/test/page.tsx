@@ -1,15 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { IoSendSharp } from "react-icons/io5";
-import DiaryCard from "~/components/diaryCard";
+import { IoSendSharp, IoTrashSharp } from "react-icons/io5";
 import InputTag from "~/components/inputTag";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
+import { Checkbox } from "~/components/ui/checkbox";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle
+} from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import { Separator } from "~/components/ui/separator";
 
 const diary = {
     diary: [
@@ -42,8 +50,18 @@ export default function Page() {
     const filteredDiary = diary.diary.filter((d) =>
         JSON.stringify(d).includes(""),
     );
-    const initialTags: string[] = ["タグ1", "タグ2"] // 変更前タグ(編集内容を取り消す際に返す)
-    const [nowTags, setTags] = useState<String[]>(initialTags)//変更後タグ配列(タグ増減するたびに更新し、修正確定されたときにDB変更)
+    const initialTags: string[] = ["タグ1", "タグ2", "タグ3", "タグ4", "タグ5", "タグ6", "タグ7"] // 変更前タグ(編集内容を取り消す際に返す)
+    const [nowTags, setTags] = useState<string[]>(initialTags)//変更後タグ配列(タグ増減するたびに更新し、修正確定されたときにDB変更)
+    const [deleteTags, setDeleteTags] = useState<string[]>([]) // 削除するタグとして選択しているかどうか
+    const [isOpen, setIsOpen] = useState(false);
+    const [error, setError] = useState("");
+
+    const deleteTag = () => {
+        setTags(() =>
+            nowTags.filter((tag) => (!deleteTags.includes(tag))))
+        // deleteTagsをサーバーに送る
+        setIsOpen(false)
+    }
 
     return (
         // 背景: bg-red-50
@@ -80,7 +98,7 @@ export default function Page() {
                 {/* タグ(見た目のみ) */}
                 <div className="mb-5">
                     <Label className="text-lg block">タグ</Label>
-                    <InputTag initialTags={initialTags} onChangeTags={setTags} />
+                    <InputTag initialTags={nowTags} onChangeTags={setTags} />
                 </div>
 
                 {/* ラジオボタン */}
@@ -109,6 +127,74 @@ export default function Page() {
                     </Card>
                 </div>
 
+                {/* タグ履歴編集 */}
+                <div className="mb-5 rounded-lg border h-48 w-48 bg-white flex flex-col">
+                    <div className="flex items-center justify-between pr-3 py-2">
+                        <span className="text-base font-bold pl-3">タグ一覧</span>
+                        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                            <button
+                                onClick={() => {
+                                    if (deleteTags.length !== 0) {
+                                        setIsOpen(true);
+                                        setError("");
+                                    } else {
+                                        setIsOpen(false);
+                                        setError("タグを選択してください"); // 条件が false のときに実行
+                                    }
+                                }}
+                                className="pl-5"
+                            >
+                                <IoTrashSharp color="#9ca3af" size="25px" />
+                            </button>
+                            {isOpen && (
+                            <DialogContent className="w-[80%]">
+                                <DialogHeader>
+                                    <DialogTitle className="mt-5">チェックしたタグを削除しますか？</DialogTitle>
+                                </DialogHeader>
+                                <div className="flex justify-around">
+                                    <div className="my-2">
+                                        <Button
+                                            className="w-[100px] rounded-full bg-white hover:bg-red-400 text-red-400 hover:text-white border border-red-400 hover:border-transparent"
+                                            onClick={() => setIsOpen(false)}
+                                        >
+                                            いいえ
+                                        </Button>
+                                    </div>
+                                    <div className="my-2">
+                                        <Button
+                                            className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500"
+                                            onClick={deleteTag}
+                                        >
+                                            はい
+                                        </Button>
+                                    </div>
+                                </div>
+                            </DialogContent>
+                            )}
+                        </Dialog>
+                    </div>
+                    {error && <p className="text-red-500 text-sm mb-2 pl-2">{error}</p>}
+                    <ScrollArea className="flex-1 overflow-auto">
+                        {nowTags.map((tag, tagIndex) => (
+                            <div key={tagIndex}>
+                                <div className="py-1 space-x-1 pl-2 flex items-center">
+                                    <Checkbox
+                                        checked={deleteTags?.includes(tag)}
+                                        onCheckedChange={(checked) => {
+                                            return checked
+                                                ? setDeleteTags((prevDeleteTags) => [...prevDeleteTags, tag])
+                                                : setDeleteTags(deleteTags.filter((deleteTag) => (deleteTag !== tag)))
+                                        }}
+                                        className="border-red-600  data-[state=checked]:bg-red-400 data-[state=checked]:border-red-400"
+                                    />
+                                    <label className="text-base text-gray-600 pl-1">{tag}</label>
+                                </div>
+                                <Separator />
+                            </div>
+                        ))}
+                    </ScrollArea>
+                </div>
+
                 {/* プルダウン */}
                 <div className="mb-5">
                     <Label className="text-lg block">プルダウン</Label>
@@ -131,7 +217,7 @@ export default function Page() {
                 </div>
 
                 {/* 日記カード */}
-                <div className="mb-5">
+                {/* <div className="mb-5">
                     <Label className="text-lg block">日記カード</Label>
                     {
                         filteredDiary.length > 0 ? (
@@ -145,7 +231,7 @@ export default function Page() {
                             </p>
                         )
                     }
-                </div>
+                </div> */}
             </div>
         </div >
     )
