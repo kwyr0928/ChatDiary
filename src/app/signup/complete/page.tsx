@@ -1,8 +1,9 @@
 "use client";
 
+import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { toast } from "~/hooks/use-toast";
 
@@ -15,6 +16,7 @@ export default function Complete() {
 }
 
 function Page() {
+  const [isLoading, setIsLoading] = useState(true);
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
 
@@ -45,10 +47,20 @@ function Page() {
             </div>
           ),
         });
+      } finally {
+        setIsLoading(false); // ローディング完了
       }
     };
     void fetchCertification();
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+        <LoaderCircle className="animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">

@@ -1,8 +1,9 @@
 "use client";
 
+import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import { useToast } from "~/hooks/use-toast";
 
 export default function Send() {
@@ -15,19 +16,13 @@ export default function Send() {
 
 function Page() {
   const { toast } = useToast();
-  const [email, setEmail] = useState<string>();
+  const [isSending, setIsSending] = useState(false); // 送信中かどうか
   const params = useSearchParams();
-  const paramsEmail = params.get("email");
-
-  useEffect(() => {
-    // 読み込み時
-    if (!paramsEmail) {
-      return;
-    }
-    setEmail(paramsEmail);
-  }, []);
-
+  const email = params.get("email");
+  
   const handleRemail = async () => {
+    if (isSending) return;
+    setIsSending(true); // 送信中に設定
     // メール再送
     try {
       const response = await fetch("/api/user/remail", {
@@ -56,6 +51,8 @@ function Page() {
         variant: "destructive",
         description: errorMessage,
       });
+    } finally {
+      setIsSending(false); // 送信完了
     }
   };
 
@@ -72,9 +69,13 @@ function Page() {
           <br />
           開いて登録を完了させてください。
         </p>
-        <div className="border-b" onClick={handleRemail}>
-          メールを再送
-        </div>
+        {isSending ? (
+        <LoaderCircle className="w-[300px] animate-spin" />
+      ) :
+      <div className="border-b" onClick={handleRemail}>
+      メールを再送
+    </div>
+      }
       </div>
       {/* 実装完了次第削除予定 */}
       <div className="absolute bottom-0 flex flex-col">
