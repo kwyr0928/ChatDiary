@@ -14,7 +14,7 @@ import { Separator } from "~/components/ui/separator";
 import { Button } from "./ui/button";
 
 export default function TagListSetting(props: { initialList: string[], onDeleteTags: (updatedTags: string[]) => void }) {
-    const { initialList, onDeleteTags = () => { }} = props
+    const { initialList, onDeleteTags = () => { } } = props
     const [tagList, setTagList] = useState<string[]>(initialList) // タグリスト
     const [deleteTags, setDeleteTags] = useState<string[]>([]) // 削除するタグ
     const [isOpen, setIsOpen] = useState(false); // タグ削除確認ダイアログ
@@ -76,23 +76,29 @@ export default function TagListSetting(props: { initialList: string[], onDeleteT
             </div>
             {error && <p className="text-red-500 text-sm mb-2 pl-2">{error}</p>}
             <ScrollArea className="flex-1 overflow-auto">
-                {tagList.map((tag, tagIndex) => (
-                    <div key={tagIndex}>
-                        <div className="py-2 space-x-1 pl-3 flex items-center">
-                            <Checkbox
-                                checked={deleteTags?.includes(tag)}
-                                onCheckedChange={(checked) => {
-                                    return checked
-                                        ? setDeleteTags((prevDeleteTags) => [...prevDeleteTags, tag])
-                                        : setDeleteTags(deleteTags.filter((deleteTag) => (deleteTag !== tag)))
-                                }}
-                                className="border-red-600  data-[state=checked]:bg-red-400 data-[state=checked]:border-red-400"
-                            />
-                            <label className="text-base text-gray-600 pl-1">{tag}</label>
+                {tagList.length !== 0 ?
+                    (tagList.map((tag, tagIndex) => (
+                        <div key={tagIndex}>
+                            <div className="py-2 space-x-1 pl-3 flex items-center">
+                                <Checkbox
+                                    checked={deleteTags?.includes(tag)}
+                                    onCheckedChange={(checked) => {
+                                        return checked
+                                            ? setDeleteTags((prevDeleteTags) => [...prevDeleteTags, tag])
+                                            : setDeleteTags(deleteTags.filter((deleteTag) => (deleteTag !== tag)))
+                                    }}
+                                    className="border-red-600  data-[state=checked]:bg-red-400 data-[state=checked]:border-red-400"
+                                />
+                                <label className="text-base text-gray-600 pl-1">{tag}</label>
+                            </div>
+                            <Separator />
                         </div>
-                        <Separator />
+                    )))
+                    : (<div className="py-2 space-x-1 pl-3 flex items-center">
+                        <label className="text-base text-gray-600 pl-1">タグがまだ登録されていません</label>
                     </div>
-                ))}
+                    )
+                }
             </ScrollArea>
         </div>
     )

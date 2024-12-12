@@ -3,7 +3,7 @@
 import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import InputTag from "~/components/inputTag";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
@@ -28,6 +28,40 @@ function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const res = searchParams.get("res");
   const diaryId = searchParams.get("diaryId");
+
+  useEffect(() => {
+    const fetchTagNames = async () => {
+      try {
+        // userId書き変え
+        const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
+        const response = await fetch(`/api/diary/tag?userId=${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        const responseData = await response.json();
+        console.log(responseData.message);
+        if (response.ok) {
+          setTagList(responseData.tagList);
+        } else {
+          throw new Error(responseData);
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "予期しないエラーが発生しました";
+        // エラーメッセージ表示　普通は出ないはず
+        toast({
+          variant: "destructive",
+          description: errorMessage,
+        });
+
+      }
+    }
+    void fetchTagNames();
+  }, [])
 
   const handleCreateDiary = async () => {
     try {
@@ -122,13 +156,6 @@ function Page() {
         <p className="mb-2 mt-7 text-left text-lg">タグ</p>
         <div className="flex justify-center">
           <InputTag initialTags={tags} initialTagList={tagList} onChangeTags={setTags} />
-          {/* <Tag text="food" />
-          <Tag text="Aちゃん" />
-          <IoAddCircleOutline
-            color="#f87171"
-            size={"30px"}
-            className="mt-0.5"
-          /> */}
         </div>
         <p className="mb-2 mt-7 text-left text-lg">公開範囲</p>
         {/* ラジオボタン */}

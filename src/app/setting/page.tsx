@@ -3,7 +3,7 @@
 import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoBarChartSharp, IoCogSharp, IoHomeSharp } from "react-icons/io5";
 import TagListSetting from "~/components/tagListSetting";
 import { Button } from "~/components/ui/button";
@@ -17,8 +17,7 @@ import {
 import { toast } from "~/hooks/use-toast";
 
 export default function Page() {
-  const initialTags: string[] = ["タグ1", "タグ2", "タグ3", "タグ4", "タグ5", "タグ6", "タグ7"] // 仮
-  const [tags, setTags] = useState<string[]>(initialTags)
+  const [tags, setTags] = useState<string[]>([])
   const [isOpen, setIsOpen] = useState(false); // 退会確認ダイアログ
   // TODO セッション実装でき次第変更
   const [user, setUser] = useState({
@@ -28,34 +27,39 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  // useEffect(() => {
-  //   const fetchTagNames = async () => {
-  //     try {
-  //       // userId書き変え
-  //       const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
-  //       const response = await fetch(`/api/diary/1?userId=${userId}`, {
-  //         method: "GET",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       })
-  //       const responseData = await response.json();
-  //       console.log(responseData);
-  //       if (response.ok) {
-  //         setTags(responseData.tagList);
-  //       } else {
-  //         throw new Error(responseData);
-  //       }
-  //     } catch (error) {
-  //       const errorMessage =
-  //         error instanceof Error
-  //           ? error.message
-  //           : "予期しないエラーが発生しました";
-  //       // エラーメッセージ表示　普通は出ないはず
+  useEffect(() => {
+    const fetchTagNames = async () => {
+      try {
+        // userId書き変え
+        const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
+        const response = await fetch(`/api/diary/tag?userId=${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        const responseData = await response.json();
+        console.log(responseData.message);
+        if (response.ok) {
+          setTags(responseData.tagList);
+        } else {
+          throw new Error(responseData);
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "予期しないエラーが発生しました";
+        // エラーメッセージ表示　普通は出ないはず
+        toast({
+          variant: "destructive",
+          description: errorMessage,
+        });
 
-  //     }
-  //   }
-  // }, [])
+      }
+    }
+    void fetchTagNames();
+  }, [])
 
   // useEffect(() => {
   // idメアド取得 (JWT取得？ api/user/[id]？)
@@ -119,6 +123,43 @@ export default function Page() {
       console.log(responseData);
       if (response.ok) {
         router.push("/signin");
+      } else {
+        throw new Error(responseData);
+      }
+    } catch (error) {
+      // 入力エラーメッセージ表示
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "予期しないエラーが発生しました";
+      // エラーメッセージ表示　普通は出ないはず
+      toast({
+        variant: "destructive",
+        description: errorMessage,
+      });
+    } finally {
+      setIsLoading(false); // ローディングを終了
+    }
+  };
+
+  // タグ消去
+  const handleDeleteTag = async (deleteTags: string[]) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/diary/tag/${user.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ names: deleteTags }),
+      });
+      const responseData = await response.json();
+      console.log(responseData);
+      if (response.ok) {
+        setTags((prevItems) => prevItems.filter((item) => !deleteTags.includes(item)))
+        toast({
+          description: "タグを削除しました。",
+        });
       } else {
         throw new Error(responseData);
       }
@@ -210,7 +251,7 @@ export default function Page() {
           </p>
         </div>
         <div className="w-[65%]">
-          <TagListSetting initialList={tags} onDeleteTags={setTags} />
+          <TagListSetting initialList={tags} onDeleteTags={handleDeleteTag} />
         </div>
       </div>
 
