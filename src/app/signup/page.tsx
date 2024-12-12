@@ -1,56 +1,100 @@
-"use client"
+"use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { IoChevronBackSharp } from "react-icons/io5";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { postSignup } from "~/lib/schemas";
-import { z } from "zod";
-// 再入力パスワードはバリデーションしてない
+import { toast } from "~/hooks/use-toast";
+
 export default function Page() {
-  const [data, setData] = useState({ email: '', password: '', confirmPassword: '' })
-  const [error, setError] = useState<{ email?: string; password?: string; confirmPassword?: string }>({})
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rePassword, setRePassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState(""); // パスワード強度
+  const [rePasswordError, setRePasswordError] = useState("");
+  const isError =
+    emailError ||
+    passwordError ||
+    rePasswordError ||
+    !email ||
+    !password ||
+    !rePassword; // ボタンが押せるかどうか
   const router = useRouter();
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setData({ ...data, [e.target.name]: e.target.value });
+  const validateEmail = (value: string) => {
+    // メールアドレス バリデーション
+    setEmail(value);
+    const emailCheck = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 形式が正しいかどうか
+    if (!emailCheck.test(value)) {
+      setEmailError("正しいメールアドレスを入力してください。");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  const validatePassword = (value: string) => {
+    // パスワード バリデーション
+    setPassword(value);
+    const length8 = value.length >= 8; // 8文字以上
+    const length15 = value.length >= 15; // 15文字以上
+    const strengthCheck =
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/.test(
+        value,
+      ); // 英数字記号が入っているかどうか
+    const strength = !length8 ? "弱" : strengthCheck || length15 ? "強" : "中";
+    setPasswordStrength(strength);
+    // 8文字未満＝弱　英数字記号含むまたは15文字以上＝強　その他＝中
+    if (!length8) {
+      setPasswordError("パスワードは8文字以上である必要があります。");
+    } else {
+      setPasswordError("");
+    }
+    if (rePassword != value) {
+      // 再入力パスワードと一致するかどうか
+      setRePasswordError("パスワードが一致しません。");
+    } else {
+      setRePasswordError("");
+    }
+  };
+
+  const validateRePassword = (value: string) => {
+    // 再入力パスワード バリデーション
+    setRePassword(value);
+    if (password != value) {
+      setRePasswordError("パスワードが一致しません。");
+    } else {
+      setRePasswordError("");
+    }
   };
 
   const onSubmit = async (e: React.FormEvent) => {
+    // 登録ボタン
     e.preventDefault();
-    const errorMessage: { email?: string; password?: string; confirmPassword?: string } = {};
-
     try {
-      // 再入力パスワードが未入力かどうか
-      if (data.confirmPassword === "") {
-        errorMessage.confirmPassword = "パスワードを再入力してください。"
-        throw new Error();
+      const response = await fetch("/api/user/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email, password: password }),
+      });
+      const responseData = await response.json();
+      console.log(responseData);
+      if (response.ok) {
+        router.push(`/signup/send?email=${email}&password=${password}`);
+      } else {
+        throw new Error(responseData);
       }
-
-      // パスワードと再入力パスワードが一致するかどうか
-      if (data.confirmPassword !== data.password) {
-        errorMessage.confirmPassword = "パスワードが一致しません。"
-        throw new Error();
-      }
-
-      // バリデーション
-      //postSignup.parse(data);
-
-      // エラーがない場合ページ遷移
-      router.push("/signup/confirm")
-
     } catch (error) {
-      // バリデーションエラーがある場合
-      if (error instanceof z.ZodError) {
-        const errorMessage: { email?: string; password?: string } = {};
-        error.errors.forEach((err) => {
-          if (err.path[0] === 'email') errorMessage.email = err.message;
-          if (err.path[0] === 'password') errorMessage.password = err.message;
-        });
-      }
-      setError(errorMessage);
+      // 入力エラーメッセージ表示
+      toast({
+        variant: "destructive",
+        description: "このメールアドレスは既に登録されています",
+      });
     }
   };
 
@@ -59,44 +103,85 @@ export default function Page() {
       <Link href={"/signin"} className="absolute left-7 top-9">
         <IoChevronBackSharp color="#f87171" size={"30px"} />
       </Link>
-      <p className="text-3xl font-bold my-8">新規登録</p>
-      <form className="flex flex-col space-y-6 w-[70%]" onSubmit={onSubmit}>
-        <div>
+      <p className="my-8 text-3xl font-bold">新規登録</p>
+      <form className="flex w-[70%] flex-col space-y-6" onSubmit={onSubmit}>
+        <div className="space-y-2">
           <label className="text-sm">メールアドレス</label>
           <Input
             type="text"
             name="email"
             className="h-12 rounded-full border-gray-200 px-4"
             placeholder="メールアドレス"
-            onChange={onChange}
+            value={email}
+            onChange={(e) => validateEmail(e.target.value)}
           />
-          {error.email && <p className="text-red-500 text-sm mb-2">{error.email}</p>}
+          {emailError && <p className="text-xs text-red-500">{emailError}</p>}
         </div>
-        <div className="mb-4">
-          <label className="text-sm">パスワード</label>
+        <div className="mb-2 space-y-2">
+          <div className="flex items-center">
+            <label className="text-sm">
+              パスワード<span className="ml-2 text-xs">※8文字以上</span>
+            </label>
+            {passwordStrength && (
+              <div className="mt-1 flex items-center">
+                <div
+                  className={`ml-4 h-2 w-4 rounded-full ${
+                    passwordStrength === "強"
+                      ? "bg-green-500"
+                      : passwordStrength === "中"
+                        ? "bg-yellow-500"
+                        : "bg-red-500"
+                  }`}
+                ></div>
+                <p
+                  className={`ml-1 text-xs ${
+                    passwordStrength === "強"
+                      ? "text-green-500"
+                      : passwordStrength === "中"
+                        ? "text-yellow-500"
+                        : "text-red-500"
+                  }`}
+                >
+                  {passwordStrength}
+                </p>
+              </div>
+            )}
+          </div>
           <Input
             type="password"
             name="password"
             className="h-12 rounded-full border-gray-200 px-4"
             placeholder="パスワード"
-            onChange={onChange}
+            value={password}
+            onChange={(e) => validatePassword(e.target.value)}
           />
-          {error.password && <p className="text-red-500 text-sm mb-2">{error.password}</p>}
+          {passwordError && (
+            <p className="text-xs text-red-500">{passwordError}</p>
+          )}
         </div>
-        <div className="mb-4">
+        <div className="space-y-2">
           <label className="text-sm">パスワード（再入力）</label>
           <Input
             type="Password"
             name="confirmPassword"
             className="h-12 rounded-full border-gray-200 px-4"
             placeholder="パスワード（再入力）"
-            onChange={onChange}
+            value={rePassword}
+            onChange={(e) => validateRePassword(e.target.value)}
           />
-          {error.confirmPassword && <p className="text-red-500 text-sm mb-2">{error.confirmPassword}</p>}
+          {rePasswordError && (
+            <p className="text-xs text-red-500">{rePasswordError}</p>
+          )}
         </div>
         {/* ボタンUI */}
         <div>
-          <Button type="submit" className="bg-red-400 hover:bg-rose-500 rounded-full w-full text-xl mt-6">登録</Button>
+          <Button
+            type="submit"
+            disabled={!!isError}
+            className="mt-6 w-full rounded-full bg-red-400 text-xl hover:bg-rose-500"
+          >
+            登録
+          </Button>
         </div>
       </form>
     </div>

@@ -6,6 +6,7 @@ interface EmailTemplateProps {
 export const EmailTemplate = ({ mail, url }: EmailTemplateProps) => (
   <div>
     <h1>Welcome, {mail}!</h1>
-    <p>{url}</p>
+    <a href={`http://localhost:3000/signup/complete?email=${mail}`}>
+    </a>
   </div>
 );

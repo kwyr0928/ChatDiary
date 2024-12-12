@@ -1,6 +1,8 @@
 "use client";
 
+import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { IoBarChartSharp, IoCogSharp, IoHomeSharp } from "react-icons/io5";
 import { Button } from "~/components/ui/button";
@@ -11,44 +13,132 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-
-
-const user = {
-  id: "nekoneko",
-  mail: "nekoneko@gmail.com",
-};
+import { toast } from "~/hooks/use-toast";
 
 export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
+  // TODO セッション実装でき次第変更
+  const [user, setUser] = useState({
+    id: "cm4ko75er0000eb00x6x4byn7",
+    email: "example@example.com",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const getJWT = async () => {
-    const response = await fetch("/api/jwt");
-    if (response.ok) {
-      const data = await response.json();
-      console.log("JSON Web Token", data.token); // JWT 情報を確認
-    } else {
-      console.error("Failed to fetch JWT");
+  // useEffect(() => {
+  // idメアド取得 (JWT取得？ api/user/[id]？)
+  // const getUser = async () => {
+  //   const response = await fetch(`/api/user/[id]`);
+  //   if (response.ok) {
+  //     const data = await response.json();
+  //     setUser({ ...user, id: data.id, email: data.email })
+  //   } else {
+  //     console.error("Failed to fetch");
+  //   }
+  // };
+  // getUser();
+  // }, [])
+
+  // 退会処理
+  const handleDeleteUser = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/user/${user.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: user.id }),
+      });
+      const responseData = await response.json();
+      console.log(responseData);
+      if (response.ok) {
+        router.push("/setting/delete/complete");
+      } else {
+        throw new Error(responseData);
+      }
+    } catch (error) {
+      // 入力エラーメッセージ表示
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "予期しないエラーが発生しました";
+      // エラーメッセージ表示　普通は出ないはず
+      toast({
+        variant: "destructive",
+        description: errorMessage,
+      });
+    } finally {
+      setIsLoading(false); // ローディングを終了
     }
   };
 
-  return (
-    <div className="mx-auto flex min-h-screen max-w-md w-full flex-col items-center bg-red-50 text-gray-600">
-      <div className="mr-auto ml-8">
-        <p className="mt-12 text-xl font-bold w-full text-left">アカウント情報</p>
-        <p className="mt-4 text-md w-full text-left">ユーザーID：{user.id}</p>
-        <p className="mt-2 text-md w-full text-left">メールアドレス：{user.mail}</p>
+  const handleSignOut = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/user/signout?${user.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: user.id }),
+      });
+      const responseData = await response.json();
+      console.log(responseData);
+      if (response.ok) {
+        router.push("/signin");
+      } else {
+        throw new Error(responseData);
+      }
+    } catch (error) {
+      // 入力エラーメッセージ表示
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "予期しないエラーが発生しました";
+      // エラーメッセージ表示　普通は出ないはず
+      toast({
+        variant: "destructive",
+        description: errorMessage,
+      });
+    } finally {
+      setIsLoading(false); // ローディングを終了
+    }
+  };
+
+  
+  if (isLoading) {
+    return (
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+        <LoaderCircle className="animate-spin" />
       </div>
-      <Link href={"/signin"} className="mt-12 w-[60%]">
-        <div className="w-full">
-          <Button className="rounded-full bg-gray-400 hover:bg-gray-500 w-full">
-            ログアウトする
-          </Button>
-        </div>
-      </Link>
+    );
+  }
+
+  return (
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
+      <div className="ml-8 mr-auto">
+        <p className="mt-12 w-full text-left text-xl font-bold">
+          アカウント情報
+        </p>
+        <p className="text-md mt-4 w-full text-left">ユーザーID：{user.id}</p>
+        <p className="text-md mt-2 w-full text-left">
+          メールアドレス：{user.email}
+        </p>
+      </div>
+      <div className="mt-12 w-[60%]">
+        <Button
+          onClick={handleSignOut}
+          className="w-full rounded-full bg-gray-400 hover:bg-gray-500"
+        >
+          ログアウトする
+        </Button>
+      </div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <div className="mt-6 mb-auto w-[60%]">
+        <div className="mb-auto mt-6 w-[60%]">
           <Button
-            className="rounded-full bg-red-400 hover:bg-rose-500 w-full"
+            disabled={true} // TODO セッション実装され次第削除
+            className="w-full rounded-full bg-red-400 hover:bg-rose-500"
             onClick={() => setIsOpen(true)}
           >
             アカウントを削除する
@@ -64,19 +154,20 @@ export default function Page() {
           <div className="flex justify-around">
             <div className="my-2">
               <Button
-                className="w-[100px] rounded-full bg-white hover:bg-red-400 text-red-400 hover:text-white border border-red-400 hover:border-transparent"
+                className="w-[100px] rounded-full border border-red-400 bg-white text-red-400 hover:border-transparent hover:bg-red-400 hover:text-white"
                 onClick={() => setIsOpen(false)}
               >
                 いいえ
               </Button>
             </div>
-            <Link href={"/setting/delete/complete"}>
-              <div className="my-2">
-                <Button className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500">
-                  はい
-                </Button>
-              </div>
-            </Link>
+            <div className="my-2">
+              <Button
+                onClick={handleDeleteUser}
+                className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500"
+              >
+                はい
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

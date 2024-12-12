@@ -1,18 +1,40 @@
 "use client"
 
+// 削除予定かも
+
 import Link from "next/link";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import { IoChevronBackSharp } from "react-icons/io5";
 import { Button } from "~/components/ui/button";
 
-
-const user = {
-  mail: "〇〇@gmail.com",
-  password: "nekochan"
+export default function Confirm() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+       <Page />
+       </Suspense>
+  )
 }
 
-export default function Page() {
+function Page() {
   const [signupResponse, setSignupResponse] = useState(null)
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  })
+  const params = useSearchParams();
+  const email = params.get('email');
+  const password = params.get('password');
+
+  useEffect (() => {
+    if(!email || !password){
+      return;
+    }
+    setUser({
+      email: email,
+      password: password,
+    })
+  },[]);
 
   const handleSignup = async () => {
     try {
@@ -21,7 +43,7 @@ export default function Page() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: user.mail, password: user.password }),
+        body: JSON.stringify({ email: user.email, password: user.password }),
       })
 
       setSignupResponse(await response.json())
@@ -42,9 +64,9 @@ export default function Page() {
         <div className="flex w-[80%] flex-col space-y-5 text-left">
           <div className="space-y-1">
             <label className="text-md">メールアドレス</label>
-            <p className="text-xl">{user.mail}</p>
+            <p className="text-xl">{user.email}</p>
           </div>
-          <Link href={"/signup/send"}>
+          <Link href={`/signup/send?email=${user.email}`}>
           {/* ボタンUI */}
           <div className="my-7">
             <Button className="rounded-full w-full bg-red-400 text-xl hover:bg-rose-500" onClick={handleSignup}>

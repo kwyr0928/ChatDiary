@@ -36,7 +36,7 @@ model Diaries {
   id         String      @id @default(cuid())
   userId     String
   title      String      @db.VarChar(255)
-  summary    String?     @db.VarChar(255)
+  summary    String?     
   isPublic   Boolean     @default(false)
   created_at DateTime    @default(now())
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)

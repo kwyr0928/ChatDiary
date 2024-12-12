@@ -46,6 +46,26 @@ export const getDiariesByUserId = async (userId: string) => {
   }
 };
 
+export const getDateDiariesByUserId = async (userId: string, start: Date, end: Date) => {
+  try {
+    const data = await db.diaries.findMany({
+      where: { 
+        userId: userId,
+        created_at: {
+          gte: start, // 開始日以上
+          lte: end,   // 終了日以下
+        },
+      },
+      orderBy: { created_at: 'asc' },
+    });
+    if(data == null) return [];
+    return z.array(diariesSchema).parse(data);
+  } catch (error) {
+    console.error("Error in getDiariesByUserId:", error);
+    return null;
+  }
+};
+
 export const getDiaryData = async (diaryId: string) => {
   try {
     const data = await db.diaries.findUnique({ where: { id: diaryId } });
