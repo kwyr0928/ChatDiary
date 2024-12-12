@@ -8,7 +8,6 @@ import { getLastMonthFB, getMonthlyContinuation } from "~/server/service/fetch";
 import { updateAnalysesFB } from "~/server/service/update";
 
 export async function GET(
-  req: Request,
   { params }: { params: { year: string, month: string } },
 ) {
   try {

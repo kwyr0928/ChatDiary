@@ -3,7 +3,7 @@ import { auth } from "~/server/auth";
 import { createContinuation, initializeDiary } from "~/server/service/create";
 
 
-export async function POST(req: Request) {
+export async function POST() {
   try {
     const session = await auth();
     if(session==null) {

@@ -3,7 +3,7 @@ import { auth } from "~/server/auth";
 import { getOtherUserDiary } from "~/server/service/fetch";
 
 // 自分以外の誰かの日記取得 GET
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const session = await auth();
     if(session==null) {

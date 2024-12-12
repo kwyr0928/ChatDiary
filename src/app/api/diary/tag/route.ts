@@ -7,7 +7,6 @@ import { getRecentTagNamesByUserId } from "~/server/service/fetch";
 
 export async function DELETE(req: Request) {
   try {
-    const { searchParams } = new URL(req.url);
     const session = await auth();
     if(session==null) {
       return NextResponse.json(
@@ -19,7 +18,7 @@ export async function DELETE(req: Request) {
     const { names } = deleteTagSchema.parse(await req.json()); //body
 
     const nameArray = z.array(z.string()).parse(names);
-    const deleted = await deleteTags(userId, nameArray);
+    await deleteTags(userId, nameArray);
     
     return NextResponse.json({
       message: "delete tag successfully",
@@ -33,10 +32,16 @@ export async function DELETE(req: Request) {
   }
 }
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(req.url);
-    const userId = z.string().parse(searchParams.get("userId")); //クエリパラメータ
+    const session = await auth();
+    if(session==null) {
+      return NextResponse.json(
+        { error: "can't get login session." },
+        { status: 401 },
+      );
+    }
+    const userId = session?.user.id;
 
     // タグ一覧取得
     const getTagNames = await getRecentTagNamesByUserId(userId);
