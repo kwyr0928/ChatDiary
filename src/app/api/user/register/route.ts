@@ -1,12 +1,51 @@
+import { JWTPayload, jwtVerify } from "jose";
 import { NextResponse } from "next/server";
-import { postReEmail } from "~/lib/schemas";
+import { getUserByUserID } from "~/server/repository/getdata";
 import { registerEmail } from "~/server/repository/updatedata";
+
+const secret = process.env.JWT_SECRET;
 
 export async function PUT(req: Request) {
   try {
-    const { email } = postReEmail.parse(await req.json()); //body
+    // ヘッダーから取り出し
+    const authHeader = req.headers.get("authorization");
 
-    const registered = await registerEmail(email);
+    const headToken = authHeader!.substring(4); // "JWT "を除いたトークン部分
+    console.log(headToken);
+    // トークンからメアド取り出し
+    const secretKey = new TextEncoder().encode(secret);
+    let token: JWTPayload;
+
+    try {
+      const verified = await jwtVerify(headToken, secretKey);
+      token = verified.payload;
+    } catch (err) {
+      if (err.code === "ERR_JWT_EXPIRED") {
+        return NextResponse.json(
+          { error: "Token expired" },
+          { status: 401 }
+        );
+      }
+      throw err; // 他のエラーは再スロー
+    }
+    const email = token.email;
+    const userData = await getUserByUserID(token.id as string);
+    // ユーザーが登録できてないなら
+    if(userData==null){
+      return NextResponse.json(
+        { error: "not found user" },
+        { status: 404 },
+      );
+    }
+    // 認証済みなら
+    if(userData.emailVerified!=null){
+      return NextResponse.json(
+        { error: "already authenticated" },
+        { status: 401 },
+      );
+    }
+    // 認証タイムスタンプ
+    const registered = await registerEmail(email as string);
     if(registered==null) throw new Error("err in registerEmail");
 
     return NextResponse.json({

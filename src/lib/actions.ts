@@ -37,22 +37,16 @@ export async function login(prevState: string | undefined, formData: z.infer<typ
       password: formData.password,
       redirect: false, // リダイレクトを無効化
     });
-    return NextResponse.json({
-      message: "successfully logined",
-    });
+    return true;
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
-          return NextResponse.json(
-            { error: "Invalid credentials.メールかパスワードが違うか, 登録が完了していません." },
-            { status: 500 },
-          );
+          console.log("Invalid credentials.メールかパスワードが違うか, 登録が完了していません.");
+          return false;
         default:
-          return NextResponse.json(
-            { error: "Something went wrong." },
-            { status: 500 },
-          );
+          console.log("Something went wrong.");
+          return false;
       }
     }
     throw error;
