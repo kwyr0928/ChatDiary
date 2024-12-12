@@ -2,13 +2,14 @@ import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import { registerEmail } from "~/server/repository/updatedata";
 
-const secret = process.env.AUTH_SECRET;
+const secret = process.env.JWT_SECRET;
 
 export async function PUT(req: Request) {
   try {
     // トークンからメアド取り出し
     const token = await getToken({ req, secret });
     if(token==null) throw new Error("err in getToken");
+    console.log(token);
     const email = token.email!;
     const registered = await registerEmail(email);
     if(registered==null) throw new Error("err in registerEmail");
