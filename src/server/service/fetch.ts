@@ -39,8 +39,6 @@ export const getMonthlyContinuation = async (userId: string, today: Date) => {
     for (let i = 1; i <= day; i++) {
       const target = year * 10000 + month * 100 + i;
       const continuation = await getTodayContinuation(userId, target);
-      console.log("!!!" + target);
-      console.log("!!!" + continuation?.done);
       if (continuation == null) {
         ret.push(false);
       } else {

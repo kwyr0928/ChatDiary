@@ -29,7 +29,7 @@ export async function POST(req: Request) {
         email: email,
     }
     const token = await new SignJWT(payload).setProtectedHeader({alg:"HS256"})
-    .setExpirationTime(300000) //5min
+    .setExpirationTime("5m") //5min
     .sign(key);
     console.log("signup token: "+token);
 
