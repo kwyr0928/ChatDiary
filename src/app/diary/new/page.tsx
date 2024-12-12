@@ -1,73 +1,84 @@
 "use client";
 
+import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
-import { IoChevronBackSharp } from "react-icons/io5";
 import InputTag from "~/components/inputTag";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/components/ui/dialog";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { toast } from "~/hooks/use-toast";
 
 export default function New() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-       <Page />
-       </Suspense>
-  )
+    <Suspense>
+      <Page />
+    </Suspense>
+  );
 }
 
 function Page() {
   const router = useRouter();
-  const initialTags: string[] = ["タグ1", "タグ2"]
-  const [nowTags, setTags] = useState<String[]>(initialTags)
-  const [isOpen, setIsOpen] = useState(false);
+  const initialTags: string[] = ["タグ1", "タグ2"];
+  const [nowTags, setTags] = useState<String[]>(initialTags);
   const [isPublic, setIsPublic] = useState("private");
   const searchParams = useSearchParams();
+  const [isLoading, setIsLoading] = useState(false);
   const res = searchParams.get("res");
   const diaryId = searchParams.get("diaryId");
 
   const handleCreateDiary = async () => {
     try {
       const response = await fetch(`/api/diary/${diaryId}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: "cm4hw5qr900022sld4wo2jlcb",
+          userId: "cm4ko75er0000eb00x6x4byn7", // TODO セッション実装され次第変更
           summary: res,
           tags: nowTags,
-          isPublic: isPublic === 'public'
-        })
+          isPublic: isPublic === "public",
+        }),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to create diary');
-      }
-
-      const data = await response.json();
-      console.log(data);
-      router.push('/home');
-    } catch (error) {
-      console.error('Error creating diary:', error);
+      const responseData = await response.json();
+      console.log(responseData);
+      if (response.ok) {
+      router.push("/home");
+    } else {
+      throw new Error(responseData);
     }
-  };
+    } catch (error) {
+      // 入力エラーメッセージ表示
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "予期しないエラーが発生しました";
+      // エラーメッセージ表示　普通は出ないはず
+      toast({
+        variant: "destructive",
+        description: errorMessage,
+      });
+    } finally {
+      setIsLoading(false); // ローディングを終了
+    }
+    };
+
+    if (isLoading) {
+      return (
+        <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+          <LoaderCircle className="animate-spin" />
+        </div>
+      );
+    }
 
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
-      <div className="fixed top-0 max-w-md mb-5 flex w-full flex-col justify-around bg-white pt-5 text-center">
+      <div className="fixed top-0 mb-5 flex w-full max-w-md flex-col justify-around bg-white pt-5 text-center">
         <div className="mb-3 flex">
-          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          {/* <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5">
               <IoChevronBackSharp color="#f87171" size={"30px"} />
             </DialogTrigger>
@@ -96,21 +107,21 @@ function Page() {
                 </Link>
               </div>
             </DialogContent>
-          </Dialog>
-          <p className="my-auto mr-12 w-[95%] text-lg">2024/10/2</p>
+          </Dialog> */}
+          <p className="mx-auto my-auto text-lg">
+            {new Date().toLocaleDateString("ja-JP")}
+          </p>
         </div>
       </div>
-      <div className="w-[85%] mt-[70px] mb-auto">
+      <div className="mb-auto mt-[70px] w-[85%]">
         <p className="my-2 text-center text-lg">出力された日記</p>
         {/* カード */}
         <Card className="text-gray-600 shadow-none">
-          <CardContent className="px-5 py-3">
-           {res}
-          </CardContent>
+          <CardContent className="px-5 py-3">{res}</CardContent>
         </Card>
-        <p className="mb-2 mt-5 text-left text-lg">タグ</p>
-        <div className="flex gap-3">
-        <InputTag initialTags={initialTags} onChangeTags={setTags} />
+        <p className="mb-2 mt-7 text-left text-lg">タグ</p>
+        <div className="flex justify-center">
+          <InputTag initialTags={initialTags} onChangeTags={setTags} />
           {/* <Tag text="food" />
           <Tag text="Aちゃん" />
           <IoAddCircleOutline
@@ -119,39 +130,52 @@ function Page() {
             className="mt-0.5"
           /> */}
         </div>
-        <p className="mb-2 mt-5 text-left text-lg">公開範囲</p>
+        <p className="mb-2 mt-7 text-left text-lg">公開範囲</p>
         {/* ラジオボタン */}
-        <div className="mb-5">
-        <RadioGroup 
-            defaultValue="private" 
-            value={isPublic}
-            onValueChange={(value: "public" | "private") => setIsPublic(value)}
-            className="space-y-2"
-          >
-            <div className="flex items-center space-x-2">
-            <RadioGroupItem
-                value="public"
-                id="public"
-                className="border-red-400"
-              />
-              <Label htmlFor="public">公開</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem
-                value="private"
-                id="private"
-                className="border-red-400"
-              />
-              <Label htmlFor="private">非公開</Label>
-            </div>
-          </RadioGroup>
+        <div className="mb-5 flex justify-center">
+          <Card className="text-gray-600 shadow-none">
+            <CardContent className="px-5 py-3">
+              <RadioGroup
+                defaultValue="private"
+                value={isPublic}
+                onValueChange={(value: "public" | "private") =>
+                  setIsPublic(value)
+                }
+                className="space-y-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem
+                    value="public"
+                    id="public"
+                    className="border-red-400"
+                  />
+                  <Label htmlFor="public">
+                    公開（他の人も見ることができます）
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem
+                    value="private"
+                    id="private"
+                    className="border-red-400"
+                  />
+                  <Label htmlFor="private">
+                    非公開（外部には公開されません）
+                  </Label>
+                </div>
+              </RadioGroup>
+            </CardContent>
+          </Card>
         </div>
         <Link href={"/home"}>
           {/* ボタンUI */}
-          <div className="flex justify-center my-10">
-            <Button 
-            onClick={handleCreateDiary}
-            className="bg-red-400 hover:bg-rose-500 rounded-full w-[80%] text-xl">作成する！</Button>
+          <div className="my-10 flex justify-center">
+            <Button
+              onClick={handleCreateDiary}
+              className="w-[80%] rounded-full bg-red-400 text-xl hover:bg-rose-500"
+            >
+              作成する！
+            </Button>
           </div>
         </Link>
       </div>
