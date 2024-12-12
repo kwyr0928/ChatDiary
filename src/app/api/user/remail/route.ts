@@ -3,6 +3,7 @@ import { SignJWT } from "jose";
 import { NextResponse } from "next/server";
 import { postReEmail } from "~/lib/schemas";
 import { sendEmail } from "~/server/mail/sendEmail";
+import { updateUserCreated } from "~/server/repository/updatedata";
 
 export async function POST(req: Request) {
   try {
@@ -21,6 +22,9 @@ export async function POST(req: Request) {
     .sign(key);
     console.log("signup token: "+token);
     
+    // created_atを更新
+    await updateUserCreated(userId);
+
     // メール送信
     await sendEmail(email, token);
 

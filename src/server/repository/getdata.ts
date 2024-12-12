@@ -13,6 +13,21 @@ export const getVerifiedUserByEmail = async (email: string) => {
     const parsedUser = userSchema.parse(user);
     return parsedUser;
   } catch (error) {
+    console.error("Error in getVerifiedUserByEmail:", error);
+    return null;
+  }
+};
+
+export const getUserByEmail = async (email: string) => {
+  try {
+    const user = await db.user.findUnique({
+      where: { email }
+
+    });
+    if(user==null) throw new Error("user not found");
+    const parsedUser = userSchema.parse(user);
+    return parsedUser;
+  } catch (error) {
     console.error("Error in getUserByEmail:", error);
     return null;
   }
