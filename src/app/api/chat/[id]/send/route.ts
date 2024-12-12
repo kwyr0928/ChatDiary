@@ -68,6 +68,7 @@ export async function POST(req: Request,
       const res = await returnedChat(sendChat?.id, responseText);
       if (res == null) throw new Error("err in returnedChat");
       aiResponse = res.response!;
+      
     } else {
       // 要約を生成する処理
       // Gemini APIキーを設定
