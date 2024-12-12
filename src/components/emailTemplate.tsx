@@ -6,7 +6,6 @@ interface EmailTemplateProps {
 export const EmailTemplate = ({ mail, token }: EmailTemplateProps) => (
   <div>
     <h1>Welcome, {mail}!</h1>
-    <a href={`http://localhost:3000/signup/complete?token=${token}`}>
-    </a>
+    <a href={`http://localhost:3000/signup/complete?token=${token}`}>こちらをクリックで認証</a>
   </div>
 );
