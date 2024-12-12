@@ -1,5 +1,6 @@
 "use client";
 
+import { Eye, EyeClosed } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -16,6 +17,8 @@ export default function Page() {
   const [passwordError, setPasswordError] = useState("");
   const [passwordStrength, setPasswordStrength] = useState(""); // パスワード強度
   const [rePasswordError, setRePasswordError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRePassword, setShowRePassword] = useState(false);
   const isError =
     emailError ||
     passwordError ||
@@ -147,28 +150,46 @@ export default function Page() {
               </div>
             )}
           </div>
-          <Input
-            type="password"
-            name="password"
-            className="h-12 rounded-full border-gray-200 px-4"
-            placeholder="パスワード"
-            value={password}
-            onChange={(e) => validatePassword(e.target.value)}
-          />
+          <div className="relative w-full">
+            <Input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              className="h-12 rounded-full border-gray-200 px-4"
+              placeholder="パスワード"
+              value={password}
+              onChange={(e) => validatePassword(e.target.value)}
+            />
+            <button
+               type="button"
+               onClick={()=>{setShowPassword(!showPassword)}}
+               className="absolute inset-y-0 right-4 flex items-center text-gray-500"
+             >
+              {showPassword ? <Eye /> : <EyeClosed />}
+             </button>
+          </div>
           {passwordError && (
             <p className="text-xs text-red-500">{passwordError}</p>
           )}
         </div>
         <div className="space-y-2">
           <label className="text-sm">パスワード（再入力）</label>
-          <Input
-            type="Password"
-            name="confirmPassword"
-            className="h-12 rounded-full border-gray-200 px-4"
-            placeholder="パスワード（再入力）"
-            value={rePassword}
-            onChange={(e) => validateRePassword(e.target.value)}
-          />
+        <div className="relative w-full">
+            <Input
+              type={showRePassword ? "text" : "password"}
+              name="confirmPassword"
+              className="h-12 rounded-full border-gray-200 px-4"
+              placeholder="パスワード（再入力）"
+              value={rePassword}
+              onChange={(e) => validateRePassword(e.target.value)}
+            />
+            <button
+                 type="button"
+                 onClick={()=>{setShowRePassword(!showRePassword)}}
+                 className="absolute inset-y-0 right-4 flex items-center text-gray-500"
+               >
+                {showRePassword ? <Eye /> : <EyeClosed />}
+               </button>
+        </div>
           {rePasswordError && (
             <p className="text-xs text-red-500">{rePasswordError}</p>
           )}
