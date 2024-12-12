@@ -17,13 +17,8 @@ export async function POST(req: Request) {
 
     if(exist!=null){
       if(exist.emailVerified==null){
-        // 未認証 & token切れてたら
-        const created = exist.created_at;
-        const nowTime = new Date().getTime();
-        if(created! < new Date(nowTime - 5 * 60 * 1000)){
-          // ユーザー削除して登録処理へ
-          await deleteUser(exist.id!);
-        }
+        // ユーザー削除して登録処理へ
+        await deleteUser(exist.id!);
       } else {
         // 認証済みの既存ユーザー
         return NextResponse.json(
