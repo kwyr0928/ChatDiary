@@ -1,6 +1,6 @@
 // 新規登録処理POST
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { SignJWT } from "jose";
 import { NextResponse } from "next/server";
 import { postSignup, userSchema } from "~/lib/schemas";
 import { sendEmail } from "~/server/mail/sendEmail";
@@ -22,16 +22,19 @@ export async function POST(req: Request) {
 
     // トークン生成
     const secret = process.env.JWT_SECRET;
+    const key = new TextEncoder().encode(secret);
 
     const payload = {
         id: user.id,
         email: email,
     }
-    const token = jwt.sign(payload, secret!, { expiresIn: 120 }); //2分以内
+    const token = await new SignJWT(payload).setProtectedHeader({alg:"HS256"})
+    .setExpirationTime(300000) //5min
+    .sign(key);
     console.log("signup token: "+token);
 
     // メール送信
-    await sendEmail(email, token as string);
+    await sendEmail(email, token);
 
     return NextResponse.json({
       message: "create User successfully! email: " + email,

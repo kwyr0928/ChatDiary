@@ -119,6 +119,7 @@ export const postSignout = z.object({
 
 // api/user/remail
 export const postReEmail = z.object({
+  userId: z.string(),
   email: z.string().email(),
 });
 
