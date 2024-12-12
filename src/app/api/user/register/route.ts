@@ -1,4 +1,4 @@
-import { JWTPayload, jwtVerify } from "jose";
+import { type JWTPayload, jwtVerify } from "jose";
 import { NextResponse } from "next/server";
 import { getUserByUserID } from "~/server/repository/getdata";
 import { registerEmail } from "~/server/repository/updatedata";

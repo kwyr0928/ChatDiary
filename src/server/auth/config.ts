@@ -15,7 +15,7 @@ declare module "next-auth" {
     user: {
       id: string;
       email: string;
-      emailVerified: Date;
+      emailVerified: Date | null;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
@@ -76,6 +76,13 @@ export const authConfig = {
         token.email = user.email;
       }
       return token;
+    },
+    async session({ session, token }) {
+      // トークン情報をセッションに反映
+      if (token) {
+        session.user.id = token.id as string;
+      }
+      return session;
     },
     authorized({ auth, request: { nextUrl } }) {
       console.log("authorized");
