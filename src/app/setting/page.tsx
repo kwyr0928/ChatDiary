@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { IoBarChartSharp, IoCogSharp, IoHomeSharp } from "react-icons/io5";
+import TagListSetting from "~/components/tagListSetting";
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
@@ -16,7 +17,8 @@ import {
 import { toast } from "~/hooks/use-toast";
 
 export default function Page() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [tag, setTag] = useState<string[]>(["タグ1", "タグ2", "タグ3", "タグ4", "タグ5", "タグ6", "タグ7"])
+  const [isOpen, setIsOpen] = useState(false); // 退会確認ダイアログ
   // TODO セッション実装でき次第変更
   const [user, setUser] = useState({
     id: "cm4ko75er0000eb00x6x4byn7",
@@ -106,7 +108,7 @@ export default function Page() {
     }
   };
 
-  
+
   if (isLoading) {
     return (
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
@@ -116,63 +118,74 @@ export default function Page() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
-      <div className="ml-8 mr-auto">
-        <p className="mt-12 w-full text-left text-xl font-bold">
-          アカウント情報
-        </p>
-        <p className="text-md mt-4 w-full text-left">ユーザーID：{user.id}</p>
-        <p className="text-md mt-2 w-full text-left">
-          メールアドレス：{user.email}
-        </p>
-      </div>
-      <div className="mt-12 w-[60%]">
-        <Button
-          onClick={handleSignOut}
-          className="w-full rounded-full bg-gray-400 hover:bg-gray-500"
-        >
-          ログアウトする
-        </Button>
-      </div>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <div className="mb-auto mt-6 w-[60%]">
+    <div className="min-h-screen w-full max-w-md bg-red-50 text-gray-600">
+      <div className="mx-auto mb-[140px] flex flex-col items-center">
+        <div className="ml-8 mr-auto">
+          <p className="mt-8 w-full text-left text-xl font-bold">
+            アカウント情報
+          </p>
+          <p className="text-md mt-4 w-full text-left">ユーザーID：{user.id}</p>
+          <p className="text-md mt-2 w-full text-left">
+            メールアドレス：{user.email}
+          </p>
+        </div>
+        <div className="mt-6 w-[60%]">
           <Button
-            disabled={true} // TODO セッション実装され次第削除
-            className="w-full rounded-full bg-red-400 hover:bg-rose-500"
-            onClick={() => setIsOpen(true)}
+            onClick={handleSignOut}
+            className="w-full rounded-full bg-gray-400 hover:bg-gray-500"
           >
-            アカウントを削除する
+            ログアウトする
           </Button>
         </div>
-        <DialogContent className="w-[80%]">
-          <DialogHeader>
-            <DialogTitle className="mt-3">本当に退会しますか？</DialogTitle>
-          </DialogHeader>
-          <DialogDescription className="text-center text-gray-500">
-            作成した日記はすべて削除されます
-          </DialogDescription>
-          <div className="flex justify-around">
-            <div className="my-2">
-              <Button
-                className="w-[100px] rounded-full border border-red-400 bg-white text-red-400 hover:border-transparent hover:bg-red-400 hover:text-white"
-                onClick={() => setIsOpen(false)}
-              >
-                いいえ
-              </Button>
-            </div>
-            <div className="my-2">
-              <Button
-                onClick={handleDeleteUser}
-                className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500"
-              >
-                はい
-              </Button>
-            </div>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <div className="mt-6 w-[60%]">
+            <Button
+              disabled={true} // TODO セッション実装され次第削除
+              className="w-full rounded-full bg-red-400 hover:bg-rose-500"
+              onClick={() => setIsOpen(true)}
+            >
+              アカウントを削除する
+            </Button>
           </div>
-        </DialogContent>
-      </Dialog>
+          <DialogContent className="w-[80%]">
+            <DialogHeader>
+              <DialogTitle className="mt-3">本当に退会しますか？</DialogTitle>
+            </DialogHeader>
+            <DialogDescription className="text-center text-gray-500">
+              作成した日記はすべて削除されます
+            </DialogDescription>
+            <div className="flex justify-around">
+              <div className="my-2">
+                <Button
+                  className="w-[100px] rounded-full border border-red-400 bg-white text-red-400 hover:border-transparent hover:bg-red-400 hover:text-white"
+                  onClick={() => setIsOpen(false)}
+                >
+                  いいえ
+                </Button>
+              </div>
+              <div className="my-2">
+                <Button
+                  onClick={handleDeleteUser}
+                  className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500"
+                >
+                  はい
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
-      <div className="flex w-full justify-around bg-white py-5">
+        <div className="mt-12 ml-8 mr-auto">
+          <p className="mb-4 w-full text-left text-xl font-bold">
+            タグの編集
+          </p>
+        </div>
+        <div className="w-[65%]">
+          <TagListSetting initialList={tag} onDeleteTags={setTag} />
+        </div>
+      </div>
+
+      <div className="fixed bottom-0 flex w-full max-w-md justify-around bg-white py-5">
         <Link href={"/setting"}>
           <IoCogSharp size={"50px"} color="#f87171" />
         </Link>
