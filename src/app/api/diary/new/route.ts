@@ -1,11 +1,18 @@
 import { NextResponse } from "next/server";
-import { postChat } from "~/lib/schemas";
+import { auth } from "~/server/auth";
 import { createContinuation, initializeDiary } from "~/server/service/create";
 
 
 export async function POST(req: Request) {
   try {
-    const { userId } = postChat.parse(await req.json()); //body
+    const session = await auth();
+    if(session==null) {
+      return NextResponse.json(
+        { error: "can't get login session." },
+        { status: 401 },
+      );
+    }
+    const userId = session?.user.id;
 
     const newDiary = await initializeDiary(userId);
     if(newDiary==null) throw new Error("err in initializeDiary");

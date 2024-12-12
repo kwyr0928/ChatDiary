@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { chatLogSchema, putDiary } from "~/lib/schemas";
+import { auth } from "~/server/auth";
 import { deleteDiary } from "~/server/repository/deletedata";
 import { getChatsByDiaryId, getDiaryData, getTagByID, getTagByName, getTagConnectionsByDiary } from "~/server/repository/getdata";
 import { updateDiary, updateRecentTag } from "~/server/repository/updatedata";
@@ -15,8 +16,14 @@ export async function GET(req: Request,
     // eslint-disable-next-line @typescript-eslint/await-thenable
     const par = await params;
     const diaryId = z.string().parse(par.id); //パスパラメータ
-    const { searchParams } = new URL(req.url);
-    const userId = z.string().parse(searchParams.get("userId")); //クエリパラメータ
+    const session = await auth();
+    if(session==null) {
+      return NextResponse.json(
+        { error: "can't get login session." },
+        { status: 401 },
+      );
+    }
+    const userId = session?.user.id;
     const diaryData = await getDiaryData(diaryId);
     if(diaryData==null) throw new Error("err in getDiaryData");
     

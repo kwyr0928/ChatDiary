@@ -1,13 +1,21 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { deleteTagSchema } from "~/lib/schemas";
+import { auth } from "~/server/auth";
 import { deleteTags } from "~/server/service/delete";
 import { getRecentTagNamesByUserId } from "~/server/service/fetch";
 
 export async function DELETE(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const userId = z.string().parse(searchParams.get("userId")); //クエリパラメータ
+    const session = await auth();
+    if(session==null) {
+      return NextResponse.json(
+        { error: "can't get login session." },
+        { status: 401 },
+      );
+    }
+    const userId = session?.user.id;
     const { names } = deleteTagSchema.parse(await req.json()); //body
 
     const nameArray = z.array(z.string()).parse(names);
