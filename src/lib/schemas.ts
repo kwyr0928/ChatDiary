@@ -119,12 +119,18 @@ export const postSignout = z.object({
 
 // api/user/remail
 export const postReEmail = z.object({
+  userId: z.string(),
   email: z.string().email(),
 });
 
 /*
   POST/PUTデータの構造体 - 日記関連
 */
+
+// api/user/register
+export const putResister = z.object({
+  token: z.string(),
+});
 
 // api/chat
 export const postChat = z.object({

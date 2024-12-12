@@ -35,7 +35,7 @@ export async function DELETE(
     // eslint-disable-next-line @typescript-eslint/await-thenable
     const par = await params;
     const userId = z.string().parse(par.id); //パスパラメータ
-    console.log("userId: "+userId);
+
     const deleted = await deleteUser(userId);
     return NextResponse.json({
       message: "delete user successfully. email:" + deleted?.email,

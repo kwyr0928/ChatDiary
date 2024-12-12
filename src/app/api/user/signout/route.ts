@@ -10,8 +10,8 @@ const secret = process.env.AUTH_SECRET
 export const POST = async (req: NextRequest) => {
   const ret = await logout();
   
-  const tokenaf = await getToken({ req, secret })
-  console.log("JSON Web Token", tokenaf)
+  const token = await getToken({ req, secret, raw: true })
+  console.log("JWT@signout", token)
   
   return ret;
 };

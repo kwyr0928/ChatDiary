@@ -13,6 +13,21 @@ export const getVerifiedUserByEmail = async (email: string) => {
     const parsedUser = userSchema.parse(user);
     return parsedUser;
   } catch (error) {
+    console.error("Error in getVerifiedUserByEmail:", error);
+    return null;
+  }
+};
+
+export const getUserByEmail = async (email: string) => {
+  try {
+    const user = await db.user.findUnique({
+      where: { email }
+
+    });
+    if(user==null) throw new Error("user not found");
+    const parsedUser = userSchema.parse(user);
+    return parsedUser;
+  } catch (error) {
     console.error("Error in getUserByEmail:", error);
     return null;
   }
@@ -49,7 +64,7 @@ export const getDiariesByUserId = async (userId: string) => {
 export const getDateDiariesByUserId = async (userId: string, start: Date, end: Date) => {
   try {
     const data = await db.diaries.findMany({
-      where: { 
+      where: {
         userId: userId,
         created_at: {
           gte: start, // 開始日以上
