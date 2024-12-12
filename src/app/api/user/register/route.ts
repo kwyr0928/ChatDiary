@@ -1,5 +1,6 @@
 import { JWTPayload, jwtVerify } from "jose";
 import { NextResponse } from "next/server";
+import { getUserByUserID } from "~/server/repository/getdata";
 import { registerEmail } from "~/server/repository/updatedata";
 
 const secret = process.env.JWT_SECRET;
@@ -28,7 +29,22 @@ export async function PUT(req: Request) {
       throw err; // 他のエラーは再スロー
     }
     const email = token.email;
-    console.log(email);
+    const userData = await getUserByUserID(token.id as string);
+    // ユーザーが登録できてないなら
+    if(userData==null){
+      return NextResponse.json(
+        { error: "not found user" },
+        { status: 404 },
+      );
+    }
+    // 認証済みなら
+    if(userData.emailVerified!=null){
+      return NextResponse.json(
+        { error: "already authenticated" },
+        { status: 401 },
+      );
+    }
+    // 認証タイムスタンプ
     const registered = await registerEmail(email as string);
     if(registered==null) throw new Error("err in registerEmail");
 

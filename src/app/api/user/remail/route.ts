@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     console.log("signup token: "+token);
     
     // メール送信
-    const emailSended = await sendEmail(email, token);
+    await sendEmail(email, token);
 
     return NextResponse.json({
       message: "resend Email successfully! email: " + email,
