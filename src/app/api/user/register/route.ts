@@ -9,7 +9,7 @@ export async function PUT(req: Request) {
     // ヘッダーから取り出し
     const authHeader = req.headers.get("authorization");
 
-    const headToken = authHeader!.substring(4); // "Bearer "を除いたトークン部分
+    const headToken = authHeader!.substring(4); // "JWT "を除いたトークン部分
     console.log(headToken);
     // トークンからメアド取り出し
     const secretKey = new TextEncoder().encode(secret);
