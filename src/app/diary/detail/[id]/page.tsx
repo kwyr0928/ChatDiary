@@ -1,101 +1,147 @@
 "use client";
 
+import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
 import { GoPencil } from "react-icons/go";
 import {
-    IoBarChartSharp,
-    IoChevronBackSharp,
-    IoCogSharp,
-    IoHomeSharp,
-    IoTrashSharp,
+  IoBarChartSharp,
+  IoChevronBackSharp,
+  IoCogSharp,
+  IoHomeSharp,
+  IoTrashSharp,
 } from "react-icons/io5";
 import ChatCard from "~/components/chatCard";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "~/components/ui/dialog";
 import { useToast } from "~/hooks/use-toast";
 
-export default function Page({ params }: { params: { id: number } }) {
-  const [diaryDetail, setDiaryDetail] = useState({
-    message: "get diary successfully",
-    diaryData: {
-      id: "cm4gxss8m0001foh9fxoz0d8v",
-      userId: "cm4gtat1h0000rrm4ibketejy",
-      title: "2024/12/9 20:16",
-      summary: "修正した要約",
-      isPublic: true,
-      created_at: "2024-12-09T11:16:08.566Z",
-    },
-    tags: ["food", "donuts"],
-    tagList: ["food", "donuts", "fi"],
-    chatLog: [
-      {
-        message: "ドーナツ食べた",
-        response: "ドーナツ食べたんだね~。\n",
-      },
-      {
-        message: "おいしかった",
-        response: "おいしかったんだね~。\n",
-      },
-      {
-        message: "にいろとなずなとたべた",
-        response: "三人で食べたんだね~。\n",
-      },
-      {
-        message: "ぴょんすけにもらった",
-        response: "ぴょんすけにもらったんだね~。\n",
-      },
-      {
-        message: "楽しかった！",
-        response: null,
-      },
-    ],
-  });
+type ChatLogEntry = {
+  message: string;
+  response: string | null;
+};
 
-  useEffect(() => {
-    const fetchDiaries = async () => {
-      try {
-        // userId書き変え
-        const userId = "cm4i0r0dr000014cn72v3t7j0";
-        const response = await fetch(
-          `/api/diary/${params.id}?userId=${userId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
-        );
-        if (!response.ok) {
-          throw new Error(`Failed to fetch diaries: ${response.status}`);
-        }
-        setDiaryDetail(await response.json());
-        console.log(diaryDetail)
-      } catch (error) {
-        console.error("エラーが発生しました:", error);
-      }
-    };
+type DiaryData = {
+  id: string;
+  userId: string;
+  title: string;
+  summary: string;
+  isPublic: boolean;
+  created_at: string;
+};
 
-    void fetchDiaries();
-  }, []);
+type ApiResponse = {
+  message: string;
+  diaryData: DiaryData;
+  tags: string[];
+  tagList: string[];
+  chatLog: ChatLogEntry[];
+};
 
+export default function Page({ params }: { params: Promise<{ id: number }> }) {
+  const [diaryDetail, setDiaryDetail] = useState<ApiResponse>();
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const diary = use(params);
+  const diaryId = diary.id;
+
+  useEffect(() => {
+    const fetchDiaryDetails = async () => {
+      try {
+        // userId書き変え
+        const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
+        const response = await fetch(`/api/diary/${diaryId}?userId=${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const responseData = await response.json();
+        console.log(responseData);
+        if (response.ok) {
+          setDiaryDetail(responseData);
+        } else {
+          throw new Error(responseData);
+        }
+      } catch (error) {
+        // 入力エラーメッセージ表示
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "予期しないエラーが発生しました";
+        // エラーメッセージ表示　普通は出ないはず
+        toast({
+          variant: "destructive",
+          description: errorMessage,
+        });
+      } finally {
+        setIsLoading(false); // ローディングを終了
+      }
+    };
+    void fetchDiaryDetails();
+  }, []);
+
+  const handleDelete = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/diary/${diaryId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const responseData = await response.json();
+      console.log(responseData);
+      if (response.ok) {
+        toast({
+          description: "日記を削除しました。",
+        });
+        router.push("/home");
+      } else {
+        throw new Error(responseData);
+      }
+    } catch (error) {
+      // 入力エラーメッセージ表示
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "予期しないエラーが発生しました";
+      // エラーメッセージ表示　普通は出ないはず
+      toast({
+        variant: "destructive",
+        description: errorMessage,
+      });
+    } finally {
+      setIsLoading(false); // ローディングを終了
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+        <LoaderCircle className="animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
       <div className="fixed top-0 flex w-full max-w-md items-center justify-between bg-red-50 pb-3 pt-5 text-center">
         <Link href={"/home"} className="pl-4">
           <IoChevronBackSharp color="#f87171" size={"30px"} />
         </Link>
-        <p className="text-lg text-gray-700">{diaryDetail.diaryData.title}</p>
+        <p className="text-lg text-gray-700">{diaryDetail?.diaryData.title}</p>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger onClick={() => setIsOpen(true)} className="pr-4">
             <IoTrashSharp color="gray" size={"35px"} />
@@ -120,11 +166,7 @@ export default function Page({ params }: { params: { id: number } }) {
                 <div className="my-2">
                   <Button
                     className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500"
-                    onClick={() => {
-                      toast({
-                        title: "日記を削除しました。",
-                      });
-                    }}
+                    onClick={handleDelete}
                   >
                     はい
                   </Button>
@@ -135,27 +177,31 @@ export default function Page({ params }: { params: { id: number } }) {
         </Dialog>
       </div>
       <div className="mt-[60px] w-[85%]">
-        <div className="flex items-center justify-start space-x-5">
+        <div className="flex items-center justify-center space-x-5">
           <p className="my-2 text-lg">日記本文</p>
-          <Link href={`/diary/edit/${params.id}`}>
+          <Link href={`/diary/edit/${diaryId}`}>
             <GoPencil size={"23px"} color="gray" />
           </Link>
         </div>
         {/* カード */}
         <Card className="text-gray-600 shadow-none">
           <CardContent className="px-5 py-3">
-            <p className="pb-2 pt-1 text-red-400">
-              {diaryDetail.tagList.map((tag, index) => (
-                <div key={index}>{tag}</div>
-              ))}
-            </p>
-            {diaryDetail.diaryData.summary}
+            {diaryDetail?.tags && diaryDetail.tags.length > 0 && (
+              <div className="pb-2 pt-1 text-red-400">
+                {diaryDetail.tags.map((tag, index) => (
+                  <span className="mr-4" key={index}>
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
+            {diaryDetail?.diaryData.summary}
           </CardContent>
         </Card>
         <p className="mb-2 mt-8 text-lg">チャットログ</p>
       </div>
       <div className="mb-[120px]">
-        {diaryDetail.chatLog.map((chat, index) => (
+        {diaryDetail?.chatLog.map((chat, index) => (
           <div key={index}>
             <ChatCard isAI={false}>{chat.message}</ChatCard>
             {chat.response && <ChatCard isAI={true}>{chat.response}</ChatCard>}

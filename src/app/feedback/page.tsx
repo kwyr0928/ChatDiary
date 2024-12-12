@@ -1,82 +1,102 @@
+"use client";
+
+import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { IoBarChartSharp, IoCogSharp, IoHomeSharp } from "react-icons/io5";
 import { Card, CardContent } from "~/components/ui/card";
+import { toast } from "~/hooks/use-toast";
 
-const keep = {
-  keep: [
-    {
-      date: "2024-11-1",
-      keep: true
-    },
-    {
-      date: "2024-11-2",
-      keep: false
-    },
-    {
-      date: "2024-11-3",
-      keep: true
-    },
-    {
-      date: "2024-11-4",
-      keep: true
-    },
-    {
-      date: "2024-11-5",
-      keep: true
-    },
-    {
-      date: "2024-11-6",
-      keep: false
-    }
-  ]
-}
+type FeedbackResponse = {
+  message: string;
+  monthly: string;
+  analyses: string;
+  continuation: boolean[];
+};
 
+export default function Page() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [feedback, setFeedback] = useState<FeedbackResponse>();
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
 
-export default async function Page() {
-  const today = new Date().toISOString().split("T")[0];
+  useEffect(() => {
+    const fetchFeedBack = async () => {
+      try {
+        // userId書き変え
+        const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
+        const response = await fetch(`/api/feedback/${year}/${month}?userId=${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const responseData = await response.json();
+        console.log(responseData);
+        if (response.ok) {
+          setFeedback(responseData);
+        } else {
+          throw new Error(responseData);
+        }
+      } catch (error) {
+        // 入力エラーメッセージ表示
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "予期しないエラーが発生しました";
+        // エラーメッセージ表示　普通は出ないはず
+        toast({
+          variant: "destructive",
+          description: errorMessage,
+        });
+      } finally {
+        setIsLoading(false); // ローディングを終了
+      }
+    };
+    void fetchFeedBack();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+        <LoaderCircle className="animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
-      <div className="mb-[110px] mx-auto w-[85%]">
-        <p className="mt-5 mb-3 w-full text-left text-xl font-bold">
-          2024年11月の継続状況
+      <div className="mx-auto mb-[110px] w-[85%]">
+        <p className="mb-3 mt-5 w-full text-left text-xl font-bold">
+        {year}年{month}月の継続状況
         </p>
-        <div className="grid grid-cols-7 gap-1 aspect-[3/2] place-items-center">
-          {Array.from({ length: 31 }).map((_, index) => {
-            const date = `2024-11-${index + 1}`;
-            const keepData = keep.keep.find((k) => k.date === date);
-            const isToday = today === date;
-            const bgColor = keepData
-              ? keepData.keep
-                ? "bg-lime-400"
-                : "bg-gray-300"
-              : "bg-gray-300";
-
-            return (
+        <div className="grid grid-cols-7 items-center gap-3">
+            {feedback?.continuation.map((isActive, index) => (
               <div
                 key={index}
-                className={`rounded-xl px-4 py-4 ${bgColor} ${isToday ? "bg-blue-300" : ""
-                  }`}
-              ></div>
-            );
-          })}
+                className={`h-4 w-4 rounded-full ${
+                  isActive ? "bg-green-500" : "bg-gray-300"
+                } `}
+              />
+            ))}
         </div>
-        <p className="mt-5 mb-3 w-full text-left text-xl font-bold">
-          先月のまとめ
+        <p className="mb-3 mt-5 w-full text-left text-xl font-bold">
+          今月のまとめ
         </p>
         {/* カード */}
-        <Card className=" shadow-none">
-          <CardContent className="px-5 py-3">あなたは...</CardContent>
+        <Card className="shadow-none">
+          <CardContent className="px-5 py-3">{feedback?.monthly}</CardContent>
         </Card>
-        <p className="mt-5 mb-3 w-full text-left text-xl font-bold">
+        <p className="mb-3 mt-5 w-full text-left text-xl font-bold">
           あなたの分析
         </p>
         {/* カード */}
         <Card className="mb-auto shadow-none">
-          <CardContent className="px-5 py-3">あなたは積極的に友人を誘ったり手助けできる人ですね。一方で自分から人に頼れない場面が多く、弱みを見せたくないというプライドの高さを感じます。</CardContent>
+          <CardContent className="px-5 py-3">{feedback?.analyses}</CardContent>
         </Card>
       </div>
-      <div className="fixed bottom-0 max-w-md flex w-full justify-around bg-white py-5">
+      <div className="fixed bottom-0 flex w-full max-w-md justify-around bg-white py-5">
         <Link href={"/setting"}>
           <IoCogSharp size={"50px"} color="gray" />
         </Link>
