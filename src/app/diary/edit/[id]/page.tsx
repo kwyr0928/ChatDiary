@@ -56,8 +56,8 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
   const diary = use(params);
   const diaryId = diary.id;
   const [text, setText] = useState<string>("");
-  const initialTags: string[] = ["タグ1", "タグ2"];
-  const [nowTags, setTags] = useState<string[]>(initialTags);
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagList, setTagList] = useState<string[]>([]);
   const [diaryDetail, setDiaryDetail] = useState<ApiResponse>();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -81,6 +81,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           setDiaryDetail(responseData);
           setText(responseData.diaryData.summary);
           setTags(responseData.tags);
+          setTagList(responseData.tagList);
           if (responseData.diaryData.isPublic === true) {
             setIsPublic("public");
           } else {
@@ -118,7 +119,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         body: JSON.stringify({
           userId: userId,
           summary: text,
-          tags: nowTags, // TODO　バグ
+          tags: tags, // TODO　バグ
           isPublic: isPublic === "public",
         }),
       });
@@ -292,7 +293,8 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         <div className="flex justify-center">
         {!isSaving ? (
           <InputTag
-            initialTags={nowTags}
+            initialTags={tags}
+            initialTagList={tagList}
             onChangeTags={(newTags) => {
               setTags(newTags);
               setIsChanged(true);
