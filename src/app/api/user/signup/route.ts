@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     const { email, password } = postSignup.parse(await req.json()); //body
 
     // ハッシュ化
-    const hashedPassword = await bcrypt.hash(password, 10) as string;
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // DB挿入
     const user = await insertNewUser(userSchema.parse({
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     console.log("signup token: "+token);
 
     // メール送信
-    await sendEmail(email, token);
+    await sendEmail(email, token as string);
 
     return NextResponse.json({
       message: "create User successfully! email: " + email,

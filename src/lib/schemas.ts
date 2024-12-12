@@ -126,6 +126,11 @@ export const postReEmail = z.object({
   POST/PUTデータの構造体 - 日記関連
 */
 
+// api/user/register
+export const putResister = z.object({
+  token: z.string(),
+});
+
 // api/chat
 export const postChat = z.object({
   userId: z.string(),

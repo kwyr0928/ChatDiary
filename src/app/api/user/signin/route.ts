@@ -6,7 +6,7 @@ import { postSignin } from "~/lib/schemas";
 import { handlers } from "~/server/auth";
 
 export const { GET } = handlers;
-const secret = process.env.AUTH_SECRET
+const secret = process.env.AUTH_SECRET;
 
 export const POST = async (req: NextRequest) => {
   try {
