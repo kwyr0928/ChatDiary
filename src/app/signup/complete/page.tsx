@@ -18,7 +18,7 @@ export default function Complete() {
 function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const searchParams = useSearchParams();
-  const email = searchParams.get("email");
+  const token = searchParams.get("token");
 
   useEffect(() => {
     // 認証
@@ -28,8 +28,8 @@ function Page() {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
+            "authorization": `JWT ${token}`,
+          }
         });
         const responseData = await response.json();
         console.log(responseData);

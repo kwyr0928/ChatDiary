@@ -85,7 +85,7 @@ export default function Page() {
       const responseData = await response.json();
       console.log(responseData);
       if (response.ok) {
-        router.push(`/signup/send?email=${email}&password=${password}`);
+        router.push(`/signup/send?email=${email}&userId=${responseData.userId}`);
       } else {
         throw new Error(responseData);
       }
