@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { IoSendSharp, IoTrashSharp } from "react-icons/io5";
-import InputTag from "~/components/inputTag";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Checkbox } from "~/components/ui/checkbox";
@@ -96,10 +95,10 @@ export default function Page() {
                 </div> */}
 
                 {/* タグ(見た目のみ) */}
-                <div className="mb-5">
+                {/* <div className="mb-5">
                     <Label className="text-lg block">タグ</Label>
                     <InputTag initialTags={nowTags} onChangeTags={setTags} />
-                </div>
+                </div> */}
 
                 {/* ラジオボタン */}
                 <div className="mb-5">
