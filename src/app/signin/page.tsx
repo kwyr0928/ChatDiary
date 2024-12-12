@@ -1,5 +1,6 @@
 "use client";
 
+import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -13,6 +14,7 @@ export default function Page() {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const isError = emailError || passwordError || !email || !password; // ボタンが押せるかどうか
   const router = useRouter();
 
@@ -41,6 +43,7 @@ export default function Page() {
   const handleSignin = async (e: React.FormEvent) => {
     // ログインボタン
     e.preventDefault();
+    setIsLoading(true);
     try {
       const response = await fetch("/api/user/signin", {
         method: "POST",
@@ -62,8 +65,18 @@ export default function Page() {
         variant: "destructive",
         description: "メールアドレスかパスワードが間違っています",
       });
+    } finally {
+      setIsLoading(false); // ローディングを終了
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+        <LoaderCircle className="animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">

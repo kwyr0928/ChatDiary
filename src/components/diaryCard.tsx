@@ -1,22 +1,12 @@
 import Image from "next/image";
 
-const diary = {
-    diary: [
-        {
-            title: "2024/12/10 10:49",
-            summary:
-                "Aさんと○○へ行き、xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-        },
-        {
-            title: "2024/12/10 10:49",
-            summary:
-                "Aさんと○○へ行き、xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-        },
-    ],
-  };
+type PropTypes = {
+    title: string,
+    summary: string,
+}
 
 // 日記カード(/homeに表示するやつ)
-export default function DiaryCard({title, summary}) {
+export default function DiaryCard({title, summary}: PropTypes) {
     return (
         <div className="w-full max-w-md mx-auto">
             <div className="relative aspect-[317/92] mb-3">
