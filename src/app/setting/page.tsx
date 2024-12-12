@@ -17,7 +17,8 @@ import {
 import { toast } from "~/hooks/use-toast";
 
 export default function Page() {
-  const [tag, setTag] = useState<string[]>(["タグ1", "タグ2", "タグ3", "タグ4", "タグ5", "タグ6", "タグ7"])
+  const initialTags: string[] = ["タグ1", "タグ2", "タグ3", "タグ4", "タグ5", "タグ6", "タグ7"] // 仮
+  const [tags, setTags] = useState<string[]>(initialTags)
   const [isOpen, setIsOpen] = useState(false); // 退会確認ダイアログ
   // TODO セッション実装でき次第変更
   const [user, setUser] = useState({
@@ -26,6 +27,35 @@ export default function Page() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  // useEffect(() => {
+  //   const fetchTagNames = async () => {
+  //     try {
+  //       // userId書き変え
+  //       const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
+  //       const response = await fetch(`/api/diary/1?userId=${userId}`, {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       })
+  //       const responseData = await response.json();
+  //       console.log(responseData);
+  //       if (response.ok) {
+  //         setTags(responseData.tagList);
+  //       } else {
+  //         throw new Error(responseData);
+  //       }
+  //     } catch (error) {
+  //       const errorMessage =
+  //         error instanceof Error
+  //           ? error.message
+  //           : "予期しないエラーが発生しました";
+  //       // エラーメッセージ表示　普通は出ないはず
+
+  //     }
+  //   }
+  // }, [])
 
   // useEffect(() => {
   // idメアド取得 (JWT取得？ api/user/[id]？)
@@ -108,7 +138,6 @@ export default function Page() {
     }
   };
 
-
   if (isLoading) {
     return (
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
@@ -181,7 +210,7 @@ export default function Page() {
           </p>
         </div>
         <div className="w-[65%]">
-          <TagListSetting initialList={tag} onDeleteTags={setTag} />
+          <TagListSetting initialList={tags} onDeleteTags={setTags} />
         </div>
       </div>
 

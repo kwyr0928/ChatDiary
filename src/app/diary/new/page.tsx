@@ -21,8 +21,8 @@ export default function New() {
 
 function Page() {
   const router = useRouter();
-  const initialTags: string[] = ["タグ1", "タグ2"];
-  const [nowTags, setTags] = useState<String[]>(initialTags);
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagList, setTagList] = useState<string[]>([])
   const [isPublic, setIsPublic] = useState("private");
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +39,7 @@ function Page() {
         body: JSON.stringify({
           userId: "cm4ko75er0000eb00x6x4byn7", // TODO セッション実装され次第変更
           summary: res,
-          tags: nowTags,
+          tags: tags,
           isPublic: isPublic === "public",
         }),
       });
@@ -121,7 +121,7 @@ function Page() {
         </Card>
         <p className="mb-2 mt-7 text-left text-lg">タグ</p>
         <div className="flex justify-center">
-          <InputTag initialTags={initialTags} onChangeTags={setTags} />
+          <InputTag initialTags={tags} initialTagList={tagList} onChangeTags={setTags} />
           {/* <Tag text="food" />
           <Tag text="Aちゃん" />
           <IoAddCircleOutline

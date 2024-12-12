@@ -21,13 +21,13 @@ import {
 import { Separator } from "./ui/separator";
 
 // タグ編集フォームUI
-export default function InputTag(props: { initialTags: string[], onChangeTags: (updatedTags: string[]) => void }) {
+export default function InputTag(props: { initialTags: string[], initialTagList: string[], onChangeTags: (updatedTags: string[]) => void }) {
     const maxTagLength: number = 12
-    const { initialTags, onChangeTags = () => { } } = props
+    const { initialTags, initialTagList, onChangeTags = () => { } } = props
     const [tags, setTags] = useState<string[]>(initialTags)
     const [text, setText] = useState<string>("")
     const [error, setError] = useState("")
-    const [tagList, setTagList] = useState(initialTags)
+    const [tagList, setTagList] = useState(initialTagList)
     const [open, setOpen] = useState(false)
     // 入力されている状態でenterキーが押されたとき実行
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -76,10 +76,6 @@ export default function InputTag(props: { initialTags: string[], onChangeTags: (
                     <Tag key={tagIndex} text={tag} onRemoveTag={(removeItem) => removeTag(removeItem)} />
                 ))}
             </div>
-            {/* <div className="flex items-center mb-2">
-                <Input className="w-3/4 pl-4 mr-3 border-red-400" placeholder={`タグを追加（最大${maxTagLength}文字） `} onChange={(e) => setText(e.target.value)} onKeyDown={handleKeyDown} value={text} />
-                <Button className="bg-red-400 hover:bg-rose-500" onClick={() => addTags(text)} >追加</Button>
-            </div> */}
             {/* タグ一覧リスト */}
             <div className="flex items-center w-full mb-2">
                 <div className="flex h-10 rounded-md border border-input bg-background text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none md:text-sm w-4/5 mr-3 border-red-400">
