@@ -49,7 +49,7 @@ export const getDiariesByUserId = async (userId: string) => {
 export const getDateDiariesByUserId = async (userId: string, start: Date, end: Date) => {
   try {
     const data = await db.diaries.findMany({
-      where: { 
+      where: {
         userId: userId,
         created_at: {
           gte: start, // 開始日以上

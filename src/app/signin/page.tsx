@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderCircle } from "lucide-react";
+import { Eye, EyeClosed, LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -15,6 +15,7 @@ export default function Page() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const isError = emailError || passwordError || !email || !password; // ボタンが押せるかどうか
   const router = useRouter();
 
@@ -102,17 +103,26 @@ export default function Page() {
               パスワード<span className="ml-2 text-xs">※8文字以上</span>
             </label>
           </div>
-          <Input
-            name="password"
-            type="password"
-            className="h-12 rounded-full border-gray-200 px-4"
-            placeholder="パスワード"
-            value={password}
-            onChange={(e) => validatePassword(e.target.value)}
-          />
-          {passwordError && (
-            <p className="text-xs text-red-500">{passwordError}</p>
-          )}
+         <div className="relative w-full">
+           <Input
+             name="password"
+             type={showPassword ? "text" : "password"}
+             className="h-12 w-full rounded-full border-gray-200 px-4 pr-12"
+             placeholder="パスワード"
+             value={password}
+             onChange={(e) => validatePassword(e.target.value)}
+            />
+           <button
+             type="button"
+             onClick={()=>{setShowPassword(!showPassword)}}
+             className="absolute inset-y-0 right-4 flex items-center text-gray-500"
+           >
+            {showPassword ? <Eye /> : <EyeClosed />}
+           </button>
+         </div>
+           {passwordError && (
+             <p className="text-xs text-red-500">{passwordError}</p>
+           )}
         </div>
         {/* ボタンUI */}
         <div>

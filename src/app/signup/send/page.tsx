@@ -1,7 +1,6 @@
 "use client";
 
 import { LoaderCircle } from "lucide-react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { useToast } from "~/hooks/use-toast";
@@ -19,6 +18,7 @@ function Page() {
   const [isSending, setIsSending] = useState(false); // 送信中かどうか
   const params = useSearchParams();
   const email = params.get("email");
+  const userId = params.get("userId");
   
   const handleRemail = async () => {
     if (isSending) return;
@@ -30,7 +30,10 @@ function Page() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: email }),
+        body: JSON.stringify({ 
+          userId: userId,
+          email: email
+         }),
       });
       const responseData = await response.json();
       console.log(responseData);
@@ -78,7 +81,7 @@ function Page() {
       }
       </div>
       {/* 実装完了次第削除予定 */}
-      <div className="absolute bottom-0 flex flex-col">
+      {/* <div className="absolute bottom-0 flex flex-col">
         <Link href={`/signup/complete?email=${email}`}>
           <button type="button" className="bg-red-400 px-3 py-1 text-white">
             メール内URLをクリック
@@ -89,7 +92,7 @@ function Page() {
             メール内URLをクリック（期限切れ）
           </button>
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 }
