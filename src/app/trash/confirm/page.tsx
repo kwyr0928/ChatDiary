@@ -1,12 +1,22 @@
 "use client"
 
+// 削除予定かも
+
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { IoChevronBackSharp } from "react-icons/io5";
 import { Button } from "~/components/ui/button";
 
-export default function Page() {
+export default function Confirm() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+       <Page />
+       </Suspense>
+  )
+}
+
+function Page() {
   const [signupResponse, setSignupResponse] = useState(null)
   const [user, setUser] = useState({
     email: "",
@@ -56,7 +66,7 @@ export default function Page() {
             <label className="text-md">メールアドレス</label>
             <p className="text-xl">{user.email}</p>
           </div>
-          <Link href={"/signup/send"}>
+          <Link href={`/signup/send?email=${user.email}`}>
           {/* ボタンUI */}
           <div className="my-7">
             <Button className="rounded-full w-full bg-red-400 text-xl hover:bg-rose-500" onClick={handleSignup}>

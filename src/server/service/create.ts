@@ -28,7 +28,7 @@ export async function initializeDiary(userId: string) {
     const month = now.getMonth() + 1; // 月は0始まりなので+1する
     const day = now.getDate();
     const hours = now.getHours();
-    const minutes = now.getMinutes();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
 
     // フォーマットした日時文字列を返す
     const dateString = `${year}/${month}/${day} ${hours}:${minutes}`;
