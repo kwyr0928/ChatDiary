@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { getEmail } from "~/lib/schemas";
 import { auth } from "~/server/auth";
 import { deleteUser } from "~/server/repository/deletedata";
 import { getUserByUserID } from "~/server/repository/getdata";
@@ -15,11 +14,11 @@ export async function GET() {
       );
     }
     const userId = session?.user.id;
+    console.log("userId"+userId);
     const userData = await getUserByUserID(userId);
-    const ret = getEmail.parse(userData);
     return NextResponse.json({
       message: "get user successfully",
-      email: ret,
+      email: userData?.email,
     });
   } catch (error) {
     console.error("Error in GET user request:", error);
