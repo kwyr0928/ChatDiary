@@ -52,7 +52,7 @@ export default function Page() {
       const emailResponseData = await emailResponse.json();
       console.log(emailResponseData);
       if (emailResponse.ok) {
-        setEmail(emailResponseData.email.email);
+        setEmail(emailResponseData.email);
       } else {
         throw new Error(emailResponseData.message || "メールアドレスの取得に失敗しました");
       }
