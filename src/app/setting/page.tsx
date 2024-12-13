@@ -30,9 +30,7 @@ export default function Page() {
   useEffect(() => {
     const fetchTagNames = async () => {
       try {
-        // userId書き変え
-        const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
-        const response = await fetch(`/api/diary/tag?userId=${userId}`, {
+        const response = await fetch(`/api/diary/tag`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -210,7 +208,6 @@ export default function Page() {
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <div className="mt-6 w-[60%]">
             <Button
-              disabled={true} // TODO セッション実装され次第削除
               className="w-full rounded-full bg-red-400 hover:bg-rose-500"
               onClick={() => setIsOpen(true)}
             >

@@ -63,13 +63,12 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const router = useRouter();
-  // userId書き変え
-  const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
+
 
   useEffect(() => {
     const fetchDiaryDetails = async () => {
       try {
-        const response = await fetch(`/api/diary/${diaryId}?userId=${userId}`, {
+        const response = await fetch(`/api/diary/${diaryId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -117,7 +116,6 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: userId,
           summary: text,
           tags: tags, // TODO　バグ
           isPublic: isPublic === "public",

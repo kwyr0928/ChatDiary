@@ -24,9 +24,7 @@ export default function Page() {
   useEffect(() => {
     const fetchFeedBack = async () => {
       try {
-        // userId書き変え
-        const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
-        const response = await fetch(`/api/feedback/${year}/${month}?userId=${userId}`, {
+        const response = await fetch(`/api/feedback/${year}/${month}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
