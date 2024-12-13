@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import {
+  IoBarChartSharp,
   IoChevronBackSharp,
-  IoTrashSharp
+  IoCogSharp,
+  IoHomeSharp
 } from "react-icons/io5";
 import { RiSave3Line } from "react-icons/ri";
 import ChatCard from "~/components/chatCard";
@@ -233,46 +235,13 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           </Link>
         )}
         <p className="text-lg text-gray-700">{diaryDetail?.diaryData.title}</p>
-        <Dialog open={isOpen2} onOpenChange={setIsOpen2}>
-          <DialogTrigger onClick={() => setIsOpen2(true)} className="pr-5">
-            <IoTrashSharp color="gray" size={"35px"} />
-          </DialogTrigger>
-          <DialogContent className="w-[80%]">
-            <DialogHeader>
-              <DialogTitle className="mt-5">日記を削除しますか？</DialogTitle>
-            </DialogHeader>
-            <DialogDescription className="text-center text-gray-500">
-              この操作は元に戻せません
-            </DialogDescription>
-            <div className="flex justify-around">
-              <div className="my-2">
-                <Button
-                  className="w-[100px] rounded-full border border-red-400 bg-white text-red-400 hover:border-transparent hover:bg-red-400 hover:text-white"
-                  onClick={() => setIsOpen2(false)}
-                >
-                  いいえ
-                </Button>
-              </div>
-              <Link href={"/home"}>
-                <div className="my-2">
-                  <Button
-                    className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500"
-                    onClick={handleDelete}
-                  >
-                    はい
-                  </Button>
-                </div>
-              </Link>
-            </div>
-          </DialogContent>
-        </Dialog>
+          <div onClick={handleSave}>
+            <RiSave3Line size={"35px"} color="#f87171" className="mr-5" />
+          </div>
       </div>
       <div className="mb-auto mt-[60px] w-[85%]">
         <div className="flex items-center justify-center space-x-5">
           <p className="my-2 ml-7 text-lg">日記本文</p>
-          <div onClick={handleSave}>
-            <RiSave3Line size={"35px"} color="#f87171" />
-          </div>
         </div>
         {!isSaving ? (
           <ResizeTextarea
@@ -358,6 +327,52 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             {chat.response && <ChatCard isAI={true}>{chat.response}</ChatCard>}
           </div>
         ))}
+        <Dialog open={isOpen2} onOpenChange={setIsOpen2}>
+          <div className="w-[60%] mt-5 mx-auto">
+            <Button onClick={() => setIsOpen2(true)} className="w-full rounded-full bg-red-400 hover:bg-rose-500">
+              日記を削除
+            </Button>
+          </div>
+          <DialogContent className="w-[80%]">
+            <DialogHeader>
+              <DialogTitle className="mt-5">日記を削除しますか？</DialogTitle>
+            </DialogHeader>
+            <DialogDescription className="text-center text-gray-500">
+              この操作は元に戻せません
+            </DialogDescription>
+            <div className="flex justify-around">
+              <div className="my-2">
+                <Button
+                  className="w-[100px] rounded-full border border-red-400 bg-white text-red-400 hover:border-transparent hover:bg-red-400 hover:text-white"
+                  onClick={() => setIsOpen2(false)}
+                >
+                  いいえ
+                </Button>
+              </div>
+              <Link href={"/home"}>
+                <div className="my-2">
+                  <Button
+                    className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500"
+                    onClick={handleDelete}
+                  >
+                    はい
+                  </Button>
+                </div>
+              </Link>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+      <div className="fixed bottom-0 flex w-full max-w-md justify-around bg-white py-5">
+        <Link href={"/setting"}>
+          <IoCogSharp size={"50px"} color="gray" />
+        </Link>
+        <Link href={"/home"}>
+          <IoHomeSharp size={"50px"} color="gray" />
+        </Link>
+        <Link href={"/feedback"}>
+          <IoBarChartSharp size={"50px"} color="gray" />
+        </Link>
       </div>
     </div>
   );
