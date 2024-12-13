@@ -63,19 +63,11 @@ export async function POST(req: Request,
       console.timeEnd("start");
 
       // レスポンスの取得
-      console.time("Gemini API");
       const result = await chat.sendMessage(text);
-      console.timeEnd("Gemini API");
-      console.time("resp");
       const response = result.response;
-      console.timeEnd("resp");
-      console.time("restx");
       const responseText = response.text();
-      console.timeEnd("restx");
 
-      console.time("return");
       const res = await returnedChat(sendChat?.id, responseText);
-      console.timeEnd("return");
 
       if (res == null) throw new Error("err in returnedChat");
       aiResponse = res.response!;
