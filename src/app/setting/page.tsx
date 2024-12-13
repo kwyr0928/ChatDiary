@@ -220,7 +220,7 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="mt-12 mx-auto w-[60%]">
+      <div className="mt-5 mx-auto w-[60%]">
           <Button
             onClick={handleSignOut}
             className="w-full rounded-full bg-gray-400 hover:bg-gray-500"
