@@ -184,7 +184,7 @@ function Page() {
           <div className="flex items-center space-x-2">
             <Select onValueChange={handleChange}>
               <SelectTrigger className="px-3 focus-visible:ring-0">
-                <SelectValue placeholder="モードを選択してね" />
+                <SelectValue placeholder="物事掘り下げモード" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
