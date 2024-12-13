@@ -158,3 +158,8 @@ export const deleteTagSchema = z.object({
 export const getSummary = z.object({
   summary: z.string(),
 });
+
+// api/user/[id]
+export const getEmail = z.object({
+  email: z.string().email(),
+});
