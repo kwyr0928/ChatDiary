@@ -45,9 +45,7 @@ export default function Page() {
     const fetchDiaries = async () => {
       // 日記一覧取得
       try {
-        // userId書き変え
-        const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
-        const response = await fetch(`/api/diary?userId=${userId}`, {
+        const response = await fetch(`/api/diary`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -83,14 +81,11 @@ export default function Page() {
       // 日記作成
       setIsLoading(true);
       try {
-        // userId書き変え
-        const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
         const response = await fetch("/api/diary/new", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ userId }),
         });
         const responseData = await response.json();
         console.log(responseData);

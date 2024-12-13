@@ -32,9 +32,7 @@ function Page() {
   useEffect(() => {
     const fetchTagNames = async () => {
       try {
-        // userId書き変え
-        const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
-        const response = await fetch(`/api/diary/tag?userId=${userId}`, {
+        const response = await fetch(`/api/diary/tag`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -71,7 +69,6 @@ function Page() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: "cm4ko75er0000eb00x6x4byn7", // TODO セッション実装され次第変更
           summary: res,
           tags: tags,
           isPublic: isPublic === "public",

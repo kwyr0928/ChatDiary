@@ -9,20 +9,12 @@ import {
   IoBarChartSharp,
   IoChevronBackSharp,
   IoCogSharp,
-  IoHomeSharp,
-  IoTrashSharp,
+  IoHomeSharp
 } from "react-icons/io5";
 import ChatCard from "~/components/chatCard";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "~/components/ui/dialog";
 import { useToast } from "~/hooks/use-toast";
 
 type ChatLogEntry = {
@@ -59,9 +51,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
   useEffect(() => {
     const fetchDiaryDetails = async () => {
       try {
-        // userId書き変え
-        const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
-        const response = await fetch(`/api/diary/${diaryId}?userId=${userId}`, {
+        const response = await fetch(`/api/diary/${diaryId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -142,10 +132,45 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           <IoChevronBackSharp color="#f87171" size={"30px"} />
         </Link>
         <p className="text-lg text-gray-700">{diaryDetail?.diaryData.title}</p>
+        <Link href={`/diary/edit/${diaryId}`}>
+            <GoPencil size={"33px"} color="#f87171" className="mr-5" />
+          </Link>
+      </div>
+      <div className="mt-[60px] w-[85%]">
+        <div className="flex items-center space-x-5">
+          <p className="my-2 text-left text-lg">日記本文</p>
+          
+        </div>
+        {/* カード */}
+        <Card className="text-gray-600 shadow-none">
+          <CardContent className="px-5 py-3">
+            {diaryDetail?.tags && diaryDetail.tags.length > 0 && (
+              <div className="pb-2 pt-1 text-red-400">
+                {diaryDetail.tags.map((tag, index) => (
+                  <span className="mr-4" key={index}>
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
+            {diaryDetail?.diaryData.summary}
+          </CardContent>
+        </Card>
+        <p className="mb-2 mt-8 text-lg">チャットログ</p>
+      </div>
+      <div className="mb-[120px]">
+        {diaryDetail?.chatLog.map((chat, index) => (
+          <div key={index}>
+            <ChatCard isAI={false}>{chat.message}</ChatCard>
+            {chat.response && <ChatCard isAI={true}>{chat.response}</ChatCard>}
+          </div>
+        ))}
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger onClick={() => setIsOpen(true)} className="pr-4">
-            <IoTrashSharp color="gray" size={"35px"} />
-          </DialogTrigger>
+          <div className="w-[60%] mt-5 mx-auto">
+            <Button onClick={() => setIsOpen(true)} className="w-full rounded-full bg-red-400 hover:bg-rose-500">
+              日記を削除
+            </Button>
+          </div>
           <DialogContent className="w-[80%]">
             <DialogHeader>
               <DialogTitle className="mt-5">日記を削除しますか？</DialogTitle>
@@ -175,38 +200,6 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             </div>
           </DialogContent>
         </Dialog>
-      </div>
-      <div className="mt-[60px] w-[85%]">
-        <div className="flex items-center justify-center">
-          <p className="pr-2 text-center my-2 text-xl font-bold">日記本文</p>
-          <Link href={`/diary/edit/${diaryId}`}>
-            <GoPencil size={"23px"} color="gray" />
-          </Link>
-        </div>
-        {/* カード */}
-        <Card className="text-gray-600 shadow-none">
-          <CardContent className="px-5 py-3">
-            {diaryDetail?.tags && diaryDetail.tags.length > 0 && (
-              <div className="pb-2 pt-1 text-red-400">
-                {diaryDetail.tags.map((tag, index) => (
-                  <span className="mr-4" key={index}>
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
-            {diaryDetail?.diaryData.summary}
-          </CardContent>
-        </Card>
-        <p className="mb-2 mt-8 text-lg">チャットログ</p>
-      </div>
-      <div className="mb-[120px]">
-        {diaryDetail?.chatLog.map((chat, index) => (
-          <div key={index}>
-            <ChatCard isAI={false}>{chat.message}</ChatCard>
-            {chat.response && <ChatCard isAI={true}>{chat.response}</ChatCard>}
-          </div>
-        ))}
       </div>
       <div className="fixed bottom-0 flex w-full max-w-md justify-around bg-white py-5">
         <Link href={"/setting"}>

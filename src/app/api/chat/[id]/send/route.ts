@@ -8,7 +8,8 @@ import { getChatCounts, getHistoryData } from "~/server/repository/getdata";
 import { returnedChat, summariedDiary } from "~/server/repository/updatedata";
 import { initializeChat } from "~/server/service/create";
 
-export async function POST(req: Request,
+export async function POST(
+  req: Request,
   { params }: { params: { id: string } },
 ) {
   try {

@@ -14,10 +14,11 @@ export async function GET() {
       );
     }
     const userId = session?.user.id;
+    console.log("userId"+userId);
     const userData = await getUserByUserID(userId);
     return NextResponse.json({
       message: "get user successfully",
-      user: userData,
+      email: userData?.email,
     });
   } catch (error) {
     console.error("Error in GET user request:", error);
