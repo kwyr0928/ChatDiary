@@ -200,7 +200,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen w-full max-w-md bg-red-50 text-gray-600">
-      <div className="mx-auto mb-[140px] flex flex-col items-center">
+      <div className="mx-auto flex flex-col items-center">
         <div className="ml-8 mr-auto">
           <p className="mt-8 w-full text-left text-xl font-bold">
             アカウント情報
@@ -209,7 +209,18 @@ export default function Page() {
             メールアドレス：{email}
           </p>
         </div>
-        <div className="mt-6 w-[60%]">
+        
+        <div className="mt-12 ml-8 mr-auto">
+          <p className="mb-4 w-full text-left text-xl font-bold">
+            タグの編集
+          </p>
+        </div>
+        <div className="w-[85%]">
+          <TagListSetting initialList={tags} onDeleteTags={handleDeleteTag} />
+        </div>
+      </div>
+
+      <div className="mt-5 mx-auto w-[60%]">
           <Button
             onClick={handleSignOut}
             className="w-full rounded-full bg-gray-400 hover:bg-gray-500"
@@ -218,7 +229,7 @@ export default function Page() {
           </Button>
         </div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <div className="mt-6 w-[60%]">
+          <div className="mx-auto mt-6 w-[60%]">
             <Button
               className="w-full rounded-full bg-red-400 hover:bg-rose-500"
               onClick={() => setIsOpen(true)}
@@ -254,15 +265,6 @@ export default function Page() {
           </DialogContent>
         </Dialog>
 
-        <div className="mt-12 ml-8 mr-auto">
-          <p className="mb-4 w-full text-left text-xl font-bold">
-            タグの編集
-          </p>
-        </div>
-        <div className="w-[65%]">
-          <TagListSetting initialList={tags} onDeleteTags={handleDeleteTag} />
-        </div>
-      </div>
 
       <div className="fixed bottom-0 flex w-full max-w-md justify-around bg-white py-5">
         <Link href={"/setting"}>
