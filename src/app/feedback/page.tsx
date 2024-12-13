@@ -66,7 +66,7 @@ export default function Page() {
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
       <div className="mx-auto mb-[110px] w-[85%]">
-        <p className="mb-3 mt-8 w-full text-left text-xl font-bold">
+        <p className="mb-5 mt-8 w-full text-left text-xl font-bold">
         {year}年{month}月の継続状況
         </p>
         <div className="grid grid-cols-7 items-center gap-3">

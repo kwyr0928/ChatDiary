@@ -13,7 +13,7 @@ export default function ChatCard(props: { isAI: boolean, children: string }) {
                     color="gray"
                     className="mr-2 mt-2"
                 />}
-                <Card className={isAI ? "mb-5 w-[70%] text-gray-600 shadow-none" : "mb-5 ml-auto mr-3 w-[70%] text-gray-600 shadow-none"}>
+                <Card className={isAI ? "mb-5 max-w-[70%] text-gray-600 shadow-none" : "mb-5 ml-auto max-w-[70%] text-gray-600 shadow-none"}>
                     <CardContent className="px-5 py-3">
                         {children}
                     </CardContent>
