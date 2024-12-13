@@ -177,8 +177,8 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         </Dialog>
       </div>
       <div className="mt-[60px] w-[85%]">
-        <div className="flex items-center justify-center space-x-5">
-          <p className="my-2 text-lg">日記本文</p>
+        <div className="flex items-center justify-center">
+          <p className="pr-2 text-center my-2 text-xl font-bold">日記本文</p>
           <Link href={`/diary/edit/${diaryId}`}>
             <GoPencil size={"23px"} color="gray" />
           </Link>
