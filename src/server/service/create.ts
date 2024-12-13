@@ -1,7 +1,9 @@
 import type { z } from "zod";
 import { type analysesSchema, type chatsSchema, type continuationSchema, type diariesSchema, type diaryTagsSchema, type monthlySummariesSchema, type newTag, userSchema } from "~/lib/schemas";
-import { getTodayContinuation } from "../repository/getdata";
+import { getDiariesByUserId, getDiaryData, getTodayContinuation } from "../repository/getdata";
 import { insertAnalyses, insertChat, insertContinuation, insertDiary, insertDiaryTag, insertMonthlySummaries, insertNewUser, insertTag } from "../repository/insertdata";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { NextResponse } from "next/server";
 
 export async function createNewUser(email: string, hashedPassword: string) {
   try {
@@ -115,13 +117,35 @@ export async function connectDiaryTag(diaryId: string, tagId: string) {
 export async function createMonthlyFB(userId: string, target: number) {
   try {
     if (userId == null || target ==null) throw new Error("Invalid option data");
-    // text生成    
+    // 先月のまとめ生成
+    // Gemini APIキーを設定
+    const apiKey = process.env.GEMINI_API_KEY;
 
+    if (!apiKey) throw new Error("err in getDiariesByUserId");
+    const genAI = new GoogleGenerativeAI(apiKey);
+    // モデルの取得
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig: { temperature: 1, maxOutputTokens:254 }, });  // 使用モデル指定
 
+    // 全部の日記の本文を取得 
+    const diaries = await getDiariesByUserId(userId);
+    if (diaries == null) throw new Error("err in getDiariesByUserId");
 
+    const diarySummaries = diaries.map(diary => `[${diary.summary}]`).join("");
 
-    
-    const text = "monthly feedback";
+    // 日記全文＋要約の文章をGeminiに送る（チャットじゃなくてgenerateContents）
+    const prompt_post = `${diarySummaries} あなたは要約と分析を得意とするアシスタントです。上記の[]で囲まれた先月の日記を基に、以下の点を要約して文章にしてください。 主な出来事や体験、感情についてどんな月だったかが把握できるように簡潔に100字以内でまとめてください。`
+
+    // テキスト生成
+    const result = await model.generateContent({
+      contents: [{ role: 'USER', parts: [{ text: prompt_post }] }],
+      generationConfig: { temperature: 2 },
+    });
+    // レスポンスの取得
+    const response = await result.response;
+    const generatedText = await response.text();
+
+    // FBの取得
+    const text = generatedText;    
     const monthlySummariesData: z.infer<typeof monthlySummariesSchema> = {
       userId: userId,
       month: target,
@@ -140,18 +164,48 @@ export async function createMonthlyFB(userId: string, target: number) {
 export async function createAnalysesFB(userId: string) {
   try {
     if (userId == null) throw new Error("Invalid option data");
-    // text生成
-    // @TODO: にいろ
+    // 全体FB生成
+    // 全部の日記の本文を取得 
+    const diaries = await getDiariesByUserId(userId);
+    if (diaries == null) throw new Error("err in getDiariesByUserId");
 
-    // 一か月の日記の本文を取得 
-    // 全文＋要約の文章をGeminiに送る（チャットじゃなくてgenerateContents？）
+    //表示するテキスト
+    let text = "日記を書いてね！"
 
-    const text = "analyses feedback";
+    if (diaries.length != 0) {
+      const diarySummaries = diaries.map(diary => `[${diary.summary}]`).join("");
+
+    // Gemini APIキーを設定
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) throw new Error("err in getDiariesByUserId");
+    
+    const genAI = new GoogleGenerativeAI(apiKey);
+    // モデルの取得
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig: { temperature: 1, maxOutputTokens:254 }, });  // 使用モデル指定
+
+    // 日記全文＋要約の文章をGeminiに送る（チャットじゃなくてgenerateContents）
+    const prompt_post = `${diarySummaries} あなたは人物の分析を得意とするアシスタントです。上記の[]で囲まれた日記を基に、以下の点を要約して文章にしてください。 主な出来事や体験、感情の変化や価値観、ユーザーの強みや特徴を簡潔かつ自己分析に役立つ形で100字以内でまとめてください。`
+
+    // テキスト生成
+    const result = await model.generateContent({
+      contents: [{ role: 'USER', parts: [{ text: prompt_post }] }],
+      generationConfig: { temperature: 1, maxOutputTokens:254 },
+    });
+
+    // レスポンスの取得
+    const response = await result.response;
+    const generatedText = await response.text();
+
+    // FBの取得
+    text = generatedText;
+    }
 
     const analysesData: z.infer<typeof analysesSchema> = {
       userId: userId,
       text: text,
     };
+
     const created = await insertAnalyses(analysesData);
     if(created==null) throw new Error("err in insertAnalyses");
     

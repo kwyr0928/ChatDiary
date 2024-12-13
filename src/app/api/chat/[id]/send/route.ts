@@ -37,7 +37,7 @@ export async function POST(
       }
       const genAI = new GoogleGenerativeAI(apiKey);
       // モデルの取得
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig: { temperature: 2, }, });  // 使用モデル指定
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig: { temperature: 1, }, });  // 使用モデル指定
       //過去のログの生成
       const historyArray = []
       if (mode == 0) {              // 物事モード
@@ -57,9 +57,11 @@ export async function POST(
       }
 
       // テキスト生成
+      console.time("start");
       const chat = model.startChat({
         history: historyArray
       })
+      console.timeEnd("start");
 
       // レスポンスの取得
       const result = await chat.sendMessage(text);
@@ -67,8 +69,10 @@ export async function POST(
       const responseText = response.text();
 
       const res = await returnedChat(sendChat?.id, responseText);
+
       if (res == null) throw new Error("err in returnedChat");
       aiResponse = res.response!;
+      
     } else {
       // 要約を生成する処理
       // Gemini APIキーを設定
