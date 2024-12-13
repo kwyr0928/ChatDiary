@@ -119,7 +119,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         },
         body: JSON.stringify({
           summary: text,
-          tags: tags, // TODO　バグ
+          tags: tags,
           isPublic: isPublic === "public",
         }),
       });
@@ -185,6 +185,11 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
     }
   };
 
+  const handleSetTags = (newTags: string[]) => {
+    setTags(newTags)
+    setIsChanged(true);
+  }
+
   if (isLoading) {
     return (
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
@@ -240,8 +245,8 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           </div>
       </div>
       <div className="mb-auto mt-[60px] w-[85%]">
-        <div className="flex items-center justify-center space-x-5">
-          <p className="my-2 ml-7 text-lg">日記本文</p>
+        <div className="flex items-center space-x-5">
+          <p className="my-2 text-left text-lg">日記本文</p>
         </div>
         {!isSaving ? (
           <ResizeTextarea
@@ -264,8 +269,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             initialTags={tags}
             initialTagList={tagList}
             onChangeTags={(newTags) => {
-              setTags(newTags);
-              setIsChanged(true);
+              handleSetTags(newTags)
             }}
             />
           ) : (

@@ -54,8 +54,11 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
         const errorMes = errorCheck(newItem.trim()) // エラー確認
         setError(errorMes)
         if (errorMes.length === 0) {
-            setTags((prevItems) => [...prevItems, newItem.trim()]); // 新しい配列を作成
-            onChangeTags(tags)
+            setTags((prevItems) => {
+                const updatedTags = [...prevItems, newItem.trim()];
+                onChangeTags(updatedTags); // タグ変更時に一度だけ呼び出す
+                return updatedTags;
+            }); // 新しい配列を作成
             setText("")
             if (!tagList.includes(newItem)) {
                 setTagList((prevItems) => [...prevItems, newItem.trim()])
@@ -72,63 +75,69 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
     return (
         <div className="w-full flex flex-col items-start justify-center">
             <div className="flex flex-wrap items-center gap-2 mb-4">
-                {tags.map((tag, tagIndex) => (
-                    <Tag key={tagIndex} text={tag} onRemoveTag={(removeItem) => removeTag(removeItem)} />
-                ))}
-            </div>
-            {/* タグ一覧リスト */}
-            <div className="flex items-center w-full mb-2">
-                <div className="flex h-10 rounded-md border border-input bg-background text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none md:text-sm w-4/5 mr-3 border-red-400">
-                    <Input
-                        type="text"
-                        className="bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 border-none"
-                        placeholder={`タグを追加（最大${maxTagLength}文字） `}
-                        onChange={(e) => setText(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        value={text}
-                    />
-                    <Separator orientation="vertical" />
-                    <Popover open={open} onOpenChange={setOpen}>
-                        <PopoverTrigger asChild>
-                            <Button
-                                variant="outline"
-                                role="combobox"
-                                aria-expanded={open}
-                                className="bg-transparent acitve:bg-transparent hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 border-none"
-                            >
-                                <IoChevronDownSharp />
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[200px] p-0">
-                            <Command>
-                                <CommandInput placeholder="検索" />
-                                <CommandList>
-                                    <CommandEmpty>タグがありません</CommandEmpty>
-                                    <CommandGroup>
-                                        {tagList.map((tagItem, index) => (
-                                            <CommandItem
-                                                key={index}
-                                                value={tagItem}
-                                                onSelect={(currentValue) => {
-                                                    setText(currentValue)
-                                                    //setOpen(false)
-                                                }}
-                                            >
-                                                {tagItem}
-                                            </CommandItem>
-                                        ))}
-                                    </CommandGroup>
-                                </CommandList>
-                            </Command>
-                        </PopoverContent>
-                    </Popover>
+                {tags.length !== 0 ? (
+                    <div className="flex flex-wrap items-center gap-2 mb-4">
+                        {tags.map((tag, tagIndex) => (
+                            <Tag key={tagIndex} text={tag} onRemoveTag={(removeItem) => removeTag(removeItem)} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="flex flex-wrap items-center"></div>
+                )}
+                {/* タグ一覧リスト */}
+                <div className="flex items-center w-full mb-2">
+                    <div className="flex h-10 rounded-md border border-input bg-background text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none md:text-sm w-4/5 mr-3 border-red-400">
+                        <Input
+                            type="text"
+                            className="bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 border-none"
+                            placeholder={`タグを追加（最大${maxTagLength}文字） `}
+                            onChange={(e) => setText(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            value={text}
+                        />
+                        <Separator orientation="vertical" />
+                        <Popover open={open} onOpenChange={setOpen}>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    aria-expanded={open}
+                                    className="bg-transparent acitve:bg-transparent hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 border-none"
+                                >
+                                    <IoChevronDownSharp />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[200px] p-0">
+                                <Command>
+                                    <CommandInput placeholder="検索" />
+                                    <CommandList>
+                                        <CommandEmpty>タグがありません</CommandEmpty>
+                                        <CommandGroup>
+                                            {tagList.map((tagItem, index) => (
+                                                <CommandItem
+                                                    key={index}
+                                                    value={tagItem}
+                                                    onSelect={(currentValue) => {
+                                                        setText(currentValue)
+                                                        //setOpen(false)
+                                                    }}
+                                                >
+                                                    {tagItem}
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+                    <Button
+                        className="bg-red-400 hover:bg-rose-500"
+                        onClick={() => addTags(text)} >追加
+                    </Button>
                 </div>
-                <Button
-                    className="bg-red-400 hover:bg-rose-500"
-                    onClick={() => addTags(text)} >追加
-                </Button>
+                {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
             </div>
-            {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
         </div>
     )
 }
