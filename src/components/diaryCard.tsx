@@ -15,6 +15,7 @@ export default function DiaryCard({title, summary}: PropTypes) {
                     alt="Diary"
                     priority={true}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <div className="absolute inset-0 text-gray-600 px-2 py-1.5 ml-2">
                     <p className="break-words">

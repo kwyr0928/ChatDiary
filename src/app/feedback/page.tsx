@@ -82,7 +82,7 @@ export default function Page() {
             ))}
         </div>
         <p className="mb-3 mt-5 w-full text-left text-xl font-bold">
-          今月のまとめ
+          先月のまとめ
         </p>
         {/* カード */}
         <Card className="shadow-none">
