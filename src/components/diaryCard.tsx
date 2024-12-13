@@ -11,7 +11,7 @@ export default function DiaryCard({title, summary}: PropTypes) {
         <div className="w-full max-w-md mx-auto">
             <div className="relative aspect-[317/92] mb-3">
                 <Image
-                    src="/日記カード.png"
+                    src="/日記カード.webp"
                     alt="Diary"
                     priority={true}
                     fill
