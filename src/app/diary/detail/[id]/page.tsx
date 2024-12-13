@@ -59,9 +59,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
   useEffect(() => {
     const fetchDiaryDetails = async () => {
       try {
-        // userId書き変え
-        const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
-        const response = await fetch(`/api/diary/${diaryId}?userId=${userId}`, {
+        const response = await fetch(`/api/diary/${diaryId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
