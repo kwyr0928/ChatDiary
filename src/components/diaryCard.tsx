@@ -11,10 +11,11 @@ export default function DiaryCard({title, summary}: PropTypes) {
         <div className="w-full max-w-md mx-auto">
             <div className="relative aspect-[317/92] mb-3">
                 <Image
-                    src="/日記カード.png"
+                    src="/日記カード.webp"
                     alt="Diary"
                     priority={true}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <div className="absolute inset-0 text-gray-600 px-2 py-1.5 ml-2">
                     <p className="break-words">

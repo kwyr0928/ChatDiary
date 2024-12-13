@@ -118,7 +118,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         },
         body: JSON.stringify({
           summary: text,
-          tags: tags, // TODO　バグ
+          tags: tags,
           isPublic: isPublic === "public",
         }),
       });
@@ -183,6 +183,11 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
       setIsLoading(false); // ローディングを終了
     }
   };
+
+  const handleSetTags = (newTags: string[]) => {
+    setTags(newTags)
+    setIsChanged(true);
+  }
 
   if (isLoading) {
     return (
@@ -263,8 +268,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             initialTags={tags}
             initialTagList={tagList}
             onChangeTags={(newTags) => {
-              setTags(newTags);
-              setIsChanged(true);
+              handleSetTags(newTags)
             }}
             />
           ) : (
