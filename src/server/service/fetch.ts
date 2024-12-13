@@ -1,4 +1,4 @@
-import { getShare } from "~/lib/schemas";
+import { getSummary } from "~/lib/schemas";
 import { getDateDiariesByUserId, getMonthlyFeedBack, getOtherUserDiaryData, getRecentTagsByUserId, getTodayContinuation } from "../repository/getdata";
 
 export const getRecentTagNamesByUserId = async (userId: string) => {
@@ -39,8 +39,6 @@ export const getMonthlyContinuation = async (userId: string, today: Date) => {
     for (let i = 1; i <= day; i++) {
       const target = year * 10000 + month * 100 + i;
       const continuation = await getTodayContinuation(userId, target);
-      console.log("!!!" + target);
-      console.log("!!!" + continuation?.done);
       if (continuation == null) {
         ret.push(false);
       } else {
@@ -60,7 +58,7 @@ export const getOtherUserDiary = async (userId: string) => {
     const diary = await getOtherUserDiaryData(userId);
     if (diary == null) return null
 
-    return getShare.parse(diary);
+    return getSummary.parse(diary);
   } catch (error) {
     console.error("Error in getOtherUserDiary:", error);
     return null;
@@ -78,7 +76,7 @@ export const getMonthlyDiariesByUserId = async (userId: string, yearMonth: numbe
     const diary = await getDateDiariesByUserId(userId, startDate, endDate);
     if (diary == null) return null
 
-    return getShare.parse(diary);
+    return getSummary.parse(diary);
   } catch (error) {
     console.error("Error in getOtherUserDiary:", error);
     return null;

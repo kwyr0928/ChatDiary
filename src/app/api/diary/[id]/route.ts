@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { chatLogSchema, putDiary } from "~/lib/schemas";
+import { auth } from "~/server/auth";
 import { deleteDiary } from "~/server/repository/deletedata";
 import { getChatsByDiaryId, getDiaryData, getTagByID, getTagByName, getTagConnectionsByDiary } from "~/server/repository/getdata";
 import { updateDiary, updateRecentTag } from "~/server/repository/updatedata";
@@ -8,15 +9,21 @@ import { connectDiaryTag, createTag } from "~/server/service/create";
 import { getRecentTagNamesByUserId } from "~/server/service/fetch";
 
 // 特定の日記の詳細GET
-export async function GET(req: Request,
+export async function GET(
   { params }: { params: { id: string } },
 ) {
   try {
     // eslint-disable-next-line @typescript-eslint/await-thenable
     const par = await params;
     const diaryId = z.string().parse(par.id); //パスパラメータ
-    const { searchParams } = new URL(req.url);
-    const userId = z.string().parse(searchParams.get("userId")); //クエリパラメータ
+    const session = await auth();
+    if(session==null) {
+      return NextResponse.json(
+        { error: "can't get login session." },
+        { status: 401 },
+      );
+    }
+    const userId = session?.user.id;
     const diaryData = await getDiaryData(diaryId);
     if(diaryData==null) throw new Error("err in getDiaryData");
     
@@ -66,7 +73,16 @@ export async function PUT(req: Request,
     // eslint-disable-next-line @typescript-eslint/await-thenable
     const par = await params;
     const diaryId = z.string().parse(par.id); //パスパラメータ
-    const { userId, summary, tags, isPublic } = putDiary.parse(await req.json()); //body
+    const { summary, tags, isPublic } = putDiary.parse(await req.json()); //body
+
+    const session = await auth();
+    if(session==null) {
+      return NextResponse.json(
+        { error: "can't get login session." },
+        { status: 401 },
+      );
+    }
+    const userId = session?.user.id;
 
     const updatedDiary = await updateDiary(diaryId, summary, isPublic);
     if(updatedDiary==null) throw new Error("err in getDiaryData");
@@ -87,7 +103,7 @@ export async function PUT(req: Request,
         tagId = tagData.id!;
       }
       //紐づけ
-      const newConnection = await connectDiaryTag(diaryId, tagId);
+      await connectDiaryTag(diaryId, tagId);
     }
     return NextResponse.json({
       message: "update diary successfully",
@@ -103,7 +119,7 @@ export async function PUT(req: Request,
 }
 
 // 日記削除DELETE
-export async function DELETE(req: Request,
+export async function DELETE(
   { params }: { params: { id: string } },
 ) {
   try {

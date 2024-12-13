@@ -24,11 +24,21 @@ export async function initializeDiary(userId: string) {
   try {
     if (userId == null) throw new Error("Invalid option data");
     const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1; // 月は0始まりなので+1する
-    const day = now.getDate();
-    const hours = now.getHours();
-    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const formatter = new Intl.DateTimeFormat("ja-JP", {
+      timeZone: "Asia/Tokyo",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+
+    // フォーマットされた日時を分解
+    const formattedDate = formatter.format(now);
+    const [datePart, timePart] = formattedDate.split(" ");
+    const [year, month, day] = datePart!.split("/");
+    const [hours, minutes] = timePart!.split(":");
 
     // フォーマットした日時文字列を返す
     const dateString = `${year}/${month}/${day} ${hours}:${minutes}`;

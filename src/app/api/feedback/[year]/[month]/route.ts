@@ -1,14 +1,13 @@
 // 先月のFB、分析、継続状況GET
 
 import { NextResponse } from "next/server";
-import { z } from "zod";
+import { auth } from "~/server/auth";
 import { getAnalysesFeedBack } from "~/server/repository/getdata";
 import { createAnalysesFB, createMonthlyFB } from "~/server/service/create";
 import { getLastMonthFB, getMonthlyContinuation } from "~/server/service/fetch";
 import { updateAnalysesFB } from "~/server/service/update";
 
 export async function GET(
-  req: Request,
   { params }: { params: { year: string, month: string } },
 ) {
   try {
@@ -16,8 +15,14 @@ export async function GET(
     const par = await params;
     const year = parseInt(par.year); //パスパラメータ
     const month = parseInt(par.month); //パスパラメータ
-    const { searchParams } = new URL(req.url);
-    const userId = z.string().parse(searchParams.get("userId")); //クエリパラメータ
+    const session = await auth();
+    if(session==null) {
+      return NextResponse.json(
+        { error: "can't get login session." },
+        { status: 401 },
+      );
+    }
+    const userId = session?.user.id;
     if(userId==null) throw new Error("userId query is required");
     
     const target = year * 100 + month;
