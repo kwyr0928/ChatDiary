@@ -19,30 +19,44 @@ import { toast } from "~/hooks/use-toast";
 export default function Page() {
   const [tags, setTags] = useState<string[]>([])
   const [isOpen, setIsOpen] = useState(false); // 退会確認ダイアログ
-  // TODO セッション実装でき次第変更
-  const [user, setUser] = useState({
-    id: "cm4ko75er0000eb00x6x4byn7",
-    email: "example@example.com",
-  });
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    const fetchTagNames = async () => {
+    setIsLoading(true);
+    const fetchInitialData = async () => {
       try {
-        const response = await fetch(`/api/diary/tag`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        const responseData = await response.json();
-        console.log(responseData.message);
-        if (response.ok) {
-          setTags(responseData.tagList);
-        } else {
-          throw new Error(responseData);
-        }
+        // Fetch Tags
+      const tagResponse = await fetch(`/api/diary/tag`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const tagResponseData = await tagResponse.json();
+      console.log(tagResponseData);
+      if (tagResponse.ok) {
+        setTags(tagResponseData.tagList);
+      } else {
+        throw new Error(tagResponseData.message || "タグの取得に失敗しました");
+      }
+
+      // Fetch Email
+      const emailResponse = await fetch(`/api/user`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const emailResponseData = await emailResponse.json();
+      console.log(emailResponseData);
+      if (emailResponse.ok) {
+        setEmail(emailResponseData.email.email);
+      } else {
+        throw new Error(emailResponseData.message || "メールアドレスの取得に失敗しました");
+      }
+
       } catch (error) {
         const errorMessage =
           error instanceof Error
@@ -53,10 +67,11 @@ export default function Page() {
           variant: "destructive",
           description: errorMessage,
         });
-
+      } finally {
+        setIsLoading(false); // ローディングを終了
       }
     }
-    void fetchTagNames();
+    void fetchInitialData();
   }, [])
 
   // useEffect(() => {
@@ -77,12 +92,11 @@ export default function Page() {
   const handleDeleteUser = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/user/${user.id}`, {
+      const response = await fetch(`/api/user`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: user.id }),
+        }
       });
       const responseData = await response.json();
       console.log(responseData);
@@ -110,12 +124,11 @@ export default function Page() {
   const handleSignOut = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/user/signout?${user.id}`, {
+      const response = await fetch(`/api/user/signout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: user.id }),
+        }
       });
       const responseData = await response.json();
       console.log(responseData);
@@ -144,7 +157,7 @@ export default function Page() {
   const handleDeleteTag = async (deleteTags: string[]) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/diary/tag/${user.id}`, {
+      const response = await fetch(`/api/diary/tag`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -192,9 +205,8 @@ export default function Page() {
           <p className="mt-8 w-full text-left text-xl font-bold">
             アカウント情報
           </p>
-          <p className="text-md mt-4 w-full text-left">ユーザーID：{user.id}</p>
           <p className="text-md mt-2 w-full text-left">
-            メールアドレス：{user.email}
+            メールアドレス：{email}
           </p>
         </div>
         <div className="mt-6 w-[60%]">
