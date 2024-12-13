@@ -15,7 +15,6 @@ import ChatCard from "~/components/chatCard";
 import InputTag from "~/components/inputTag";
 import ResizeTextarea from "~/components/resizeTextarea";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent } from "~/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -195,7 +194,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
-      <div className="fixed top-0 flex w-full max-w-md items-center justify-between bg-red-50 pt-5 text-center">
+      <div className="fixed top-0 flex w-full max-w-md items-center justify-between bg-red-50 pb-3 pt-5 text-center">
         {isChanged ? (
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger onClick={() => setIsOpen(true)} className="pl-3">
@@ -239,9 +238,9 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             <RiSave3Line size={"35px"} color="#f87171" className="mr-5" />
           </div>
       </div>
-      <div className="mb-auto mt-[60px] w-[85%]">
-        <div className="flex items-center justify-center space-x-5">
-          <p className="my-2 ml-7 text-lg">日記本文</p>
+      <div className="mt-[60px] w-[85%]">
+        <div className="flex items-center space-x-5">
+          <p className="mt-5 mb-3 text-left text-lg">日記本文</p>
         </div>
         {!isSaving ? (
           <ResizeTextarea
@@ -257,7 +256,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             <LoaderCircle className="animate-spin" />
           </div>
         )}
-        <p className="mb-2 mt-7 text-left text-lg">タグ</p>
+        <p className="mt-8 text-left text-lg">タグ</p>
         <div className="flex justify-center">
         {!isSaving ? (
           <InputTag
@@ -274,12 +273,10 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             </div>
           )}
         </div>
-        <p className="mb-2 mt-7 text-left text-lg">公開範囲</p>
+        <p className="mt-7 text-left text-lg">公開状況</p>
         {/* ラジオボタン */}
-        <div className="mb-5 flex justify-center">
+        <div className="mb-5 flex justify-left mt-4">
         {!isSaving ? (
-          <Card className="text-gray-600 shadow-none">
-            <CardContent className="px-5 py-3">
               <RadioGroup
                 defaultValue="private"
                 value={isPublic}
@@ -310,17 +307,15 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
                   </Label>
                 </div>
               </RadioGroup>
-            </CardContent>
-          </Card>
           ) : (
             <div className="flex h-36 mx-auto items-center justify-center">
               <LoaderCircle className="animate-spin" />
             </div>
           )}
         </div>
-        <p className="my-2 text-lg">チャットログ</p>
+        <p className="mt-10 mb-3 text-lg">チャットログ</p>
       </div>
-      <div className="mb-auto">
+      <div className="mb-[140px]">
         {diaryDetail?.chatLog.map((chat, index) => (
           <div key={index}>
             <ChatCard isAI={false}>{chat.message}</ChatCard>
@@ -328,7 +323,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           </div>
         ))}
         <Dialog open={isOpen2} onOpenChange={setIsOpen2}>
-          <div className="w-[60%] mt-5 mx-auto">
+          <div className="w-[60%] mt-10 mx-auto">
             <Button onClick={() => setIsOpen2(true)} className="w-full rounded-full bg-red-400 hover:bg-rose-500">
               日記を削除
             </Button>

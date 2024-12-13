@@ -9,12 +9,21 @@ import {
   IoBarChartSharp,
   IoChevronBackSharp,
   IoCogSharp,
-  IoHomeSharp
+  IoHomeSharp,
 } from "react-icons/io5";
+import { MdOutlinePublic } from "react-icons/md";
+import { PiLockKeyFill } from "react-icons/pi";
 import ChatCard from "~/components/chatCard";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "~/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
+import { Label } from "~/components/ui/label";
 import { useToast } from "~/hooks/use-toast";
 
 type ChatLogEntry = {
@@ -133,13 +142,12 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         </Link>
         <p className="text-lg text-gray-700">{diaryDetail?.diaryData.title}</p>
         <Link href={`/diary/edit/${diaryId}`}>
-            <GoPencil size={"33px"} color="#f87171" className="mr-5" />
-          </Link>
+          <GoPencil size={"33px"} color="#f87171" className="mr-5" />
+        </Link>
       </div>
       <div className="mt-[60px] w-[85%]">
         <div className="flex items-center space-x-5">
-          <p className="my-2 text-left text-lg">日記本文</p>
-          
+          <p className="mb-3 mt-5 text-left text-lg">日記本文</p>
         </div>
         {/* カード */}
         <Card className="text-gray-600 shadow-none">
@@ -156,9 +164,27 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             {diaryDetail?.diaryData.summary}
           </CardContent>
         </Card>
-        <p className="mb-2 mt-8 text-lg">チャットログ</p>
+        <p className="mt-7 text-left text-lg">公開状況</p>
+        <div className="justify-left mb-5 mt-4 flex">
+          {diaryDetail?.diaryData.isPublic ? (
+          <div className="flex items-center space-x-2">
+            <MdOutlinePublic size={30} color={"#f87171"} className="mr-2"/>
+            <Label htmlFor="public">
+            公開（他の人も見ることができます）
+            </Label>
+          </div>
+        ) : (
+          <div className="flex items-center space-x-2">
+            <PiLockKeyFill size={30} color={"#f87171"} className="mr-2"/>
+            <Label htmlFor="private">
+            非公開（外部には公開されません）
+            </Label>
+          </div>
+        )}
+        </div>
+        <p className="mb-3 mt-10 text-lg">チャットログ</p>
       </div>
-      <div className="mb-[120px]">
+      <div className="mb-[140px]">
         {diaryDetail?.chatLog.map((chat, index) => (
           <div key={index}>
             <ChatCard isAI={false}>{chat.message}</ChatCard>
@@ -166,8 +192,11 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           </div>
         ))}
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <div className="w-[60%] mt-5 mx-auto">
-            <Button onClick={() => setIsOpen(true)} className="w-full rounded-full bg-red-400 hover:bg-rose-500">
+          <div className="mx-auto mt-10 w-[60%]">
+            <Button
+              onClick={() => setIsOpen(true)}
+              className="w-full rounded-full bg-red-400 hover:bg-rose-500"
+            >
               日記を削除
             </Button>
           </div>
