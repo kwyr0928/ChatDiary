@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import {
-  IoCheckmarkSharp,
   IoChevronBackSharp,
-  IoTrashSharp,
+  IoTrashSharp
 } from "react-icons/io5";
+import { RiSave3Line } from "react-icons/ri";
 import ChatCard from "~/components/chatCard";
 import InputTag from "~/components/inputTag";
 import ResizeTextarea from "~/components/resizeTextarea";
@@ -128,6 +128,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         toast({
           description: "変更を保存しました。",
         });
+        router.push(`/diary/detail/${diaryId}`)
       } else {
         throw new Error(responseData);
       }
@@ -268,9 +269,9 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
       </div>
       <div className="mb-auto mt-[60px] w-[85%]">
         <div className="flex items-center justify-center space-x-5">
-          <p className="my-2 text-lg">日記本文</p>
+          <p className="my-2 ml-7 text-lg">日記本文</p>
           <div onClick={handleSave}>
-            <IoCheckmarkSharp size={"23px"} color="#f87171" />
+            <RiSave3Line size={"35px"} color="#f87171" />
           </div>
         </div>
         {!isSaving ? (

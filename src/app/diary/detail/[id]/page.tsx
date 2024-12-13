@@ -178,7 +178,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         <div className="flex items-center justify-center space-x-5">
           <p className="my-2 text-lg">日記本文</p>
           <Link href={`/diary/edit/${diaryId}`}>
-            <GoPencil size={"23px"} color="gray" />
+            <GoPencil size={"23px"} color="#f87171" />
           </Link>
         </div>
         {/* カード */}
