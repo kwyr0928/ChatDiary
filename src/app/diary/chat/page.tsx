@@ -140,11 +140,11 @@ function Page() {
   };
 
   return (
-    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
+    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col bg-red-50 text-gray-600">
       <div className="fixed top-0 mb-5 flex w-full max-w-md flex-col justify-center bg-white pt-5 text-center">
         <div className="mb-3 flex">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5">
+            <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5 mr-auto">
               <IoChevronBackSharp color="#f87171" size={"30px"} />
             </DialogTrigger>
             <DialogContent className="w-[80%]">
@@ -180,7 +180,7 @@ function Page() {
           </p>
         </div>
         {/* プルダウン */}
-        <div className="mx-auto mb-3 w-fit">
+        <div className="mx-auto mb-3 w-fit items-center">
           <div className="flex items-center space-x-2">
             <Select onValueChange={handleChange}>
               <SelectTrigger className="px-3 focus-visible:ring-0">
@@ -197,7 +197,7 @@ function Page() {
           </div>
         </div>
       </div>
-      <div className="mb-[60px] mt-[130px]">
+      <div className="mb-[60px] mt-[130px] w-fill">
         {messages.map((message, index) => (
           <ChatCard key={index} isAI={message.isAI}>
             {message.text}
