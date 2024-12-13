@@ -10,11 +10,13 @@ import { getRecentTagNamesByUserId } from "~/server/service/fetch";
 
 // 特定の日記の詳細GET
 export async function GET(
+  req: Request,
   { params }: { params: { id: string } },
 ) {
   try {
     // eslint-disable-next-line @typescript-eslint/await-thenable
     const par = await params;
+    console.log(par);
     const diaryId = z.string().parse(par.id); //パスパラメータ
     const session = await auth();
     if(session==null) {
@@ -66,7 +68,8 @@ export async function GET(
 }
 
 // タグ、本文、公開範囲更新のPUT
-export async function PUT(req: Request,
+export async function PUT(
+  req: Request,
   { params }: { params: { id: string } },
 ) {
   try {
@@ -120,6 +123,7 @@ export async function PUT(req: Request,
 
 // 日記削除DELETE
 export async function DELETE(
+  req: Request,
   { params }: { params: { id: string } },
 ) {
   try {

@@ -106,33 +106,33 @@ function Page() {
     }
   };
 
-  const handleDelete = async () => { // TODO 一旦削除されないようにした
-    // try {
-    //   const response = await fetch(`/api/diary/${diaryId}`, {
-    //     method: "DELETE",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //   });
-    //   const responseData = await response.json();
-    //   console.log(responseData);
-    //   if (response.ok) {
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/diary/${diaryId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const responseData = await response.json();
+      console.log(responseData);
+      if (response.ok) {
         router.push("/home");
-    //   } else {
-    //     throw new Error(responseData);
-    //   }
-    // } catch (error) {
-    //   // 入力エラーメッセージ表示
-    //   const errorMessage =
-    //     error instanceof Error
-    //       ? error.message
-    //       : "予期しないエラーが発生しました";
-    //   // エラーメッセージ表示　普通は出ないはず
-    //   toast({
-    //     variant: "destructive",
-    //     description: errorMessage,
-    //   });
-    // }
+      } else {
+        throw new Error(responseData);
+      }
+    } catch (error) {
+      // 入力エラーメッセージ表示
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "予期しないエラーが発生しました";
+      // エラーメッセージ表示　普通は出ないはず
+      toast({
+        variant: "destructive",
+        description: errorMessage,
+      });
+    }
   };
 
   const handleChange = (value: string) => {
