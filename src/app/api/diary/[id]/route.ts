@@ -6,6 +6,7 @@ import { deleteDiary } from "~/server/repository/deletedata";
 import { getChatsByDiaryId, getDiaryData, getTagByID, getTagByName, getTagConnectionsByDiary } from "~/server/repository/getdata";
 import { updateDiary, updateRecentTag } from "~/server/repository/updatedata";
 import { connectDiaryTag, createTag } from "~/server/service/create";
+import { deleteTagConnectionsByName } from "~/server/service/delete";
 import { getRecentTagNamesByUserId } from "~/server/service/fetch";
 
 // 特定の日記の詳細GET
@@ -90,24 +91,46 @@ export async function PUT(
     const updatedDiary = await updateDiary(diaryId, summary, isPublic);
     if(updatedDiary==null) throw new Error("err in getDiaryData");
 
+    // 今あるタグ取得
+    const nowTags: string[] = [];
+    const tagConnections = await getTagConnectionsByDiary(diaryId);
+    if(tagConnections==null) throw new Error("err in getTagConnectionsByDiary");
+
+    for(const tag of tagConnections){
+      const tagData = await getTagByID(tag.tagId);
+      if(tagData==null) throw new Error("err in getTagByID");
+      nowTags.push(tagData.name);
+    }
+
     //タグの紐づけ
     for (const tag of tags) {
-      const tagData = await getTagByName(tag, userId);
-      let tagId = "";
-      if(tagData==null){
-        // 新しいタグ生成
-        const newTag = await createTag(tag, userId);
-        if(newTag==null) throw new Error("err in createTag");
-        tagId = newTag.id;
-      } else {
-        // 既にあるのでupdate更新
-        const updateTag = await updateRecentTag(tagData.id!);
-        if(updateTag==null) throw new Error("err in updateRecentTag");
-        tagId = tagData.id!;
+      // 今追加されてないタグか
+      if(!nowTags.includes(tag)){
+        // ユーザータグ一覧にあるか
+        const tagData = await getTagByName(userId, tag);
+        if(tagData==null){
+          // 新しいタグ生成
+          const newTag = await createTag(tag, userId);
+          if(newTag==null) throw new Error("err in createTag");
+          //紐づけ
+          await connectDiaryTag(diaryId, newTag.id);
+        } else {
+          //紐づけ
+          await connectDiaryTag(diaryId, tagData.id!);
+          // update時間の更新
+          const updateTag = await updateRecentTag(tagData.id!);
+          if(updateTag==null) throw new Error("err in updateRecentTag");
+      }
       }
       //紐づけ
       await connectDiaryTag(diaryId, tagId);
+        }
+      //紐づけ
+      await connectDiaryTag(diaryId, tagId);
+      }
     }
+    const deleteTagNames = nowTags.filter((val) => !tags.includes(val));
+    if(deleteTagNames.length > 0) await deleteTagConnectionsByName(userId, diaryId, deleteTagNames);
     return NextResponse.json({
       message: "update diary successfully",
       diaryData: updatedDiary,
