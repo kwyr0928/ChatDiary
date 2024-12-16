@@ -147,7 +147,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
       </div>
       <div className="mt-[60px] w-[85%]">
         <div className="flex items-center space-x-5">
-          <p className="mb-3 mt-5 text-left text-lg">日記本文</p>
+          <p className="mb-3 mt-5 text-left text-lg font-bold">日記本文</p>
         </div>
         {/* カード */}
         <Card className="text-gray-600 shadow-none">
@@ -164,7 +164,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             {diaryDetail?.diaryData.summary}
           </CardContent>
         </Card>
-        <p className="mt-7 text-left text-lg">公開状況</p>
+        <p className="mt-7 text-left text-lg font-bold">公開状況</p>
         <div className="justify-left mb-5 mt-4 flex">
           {diaryDetail?.diaryData.isPublic ? (
           <div className="flex items-center space-x-2">
@@ -182,7 +182,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           </div>
         )}
         </div>
-        <p className="mb-3 mt-10 text-lg">チャットログ</p>
+        <p className="mb-3 mt-10 text-lg font-bold">チャットログ</p>
       </div>
       <div className="mb-[140px]">
         {diaryDetail?.chatLog.map((chat, index) => (

@@ -56,7 +56,7 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
         if (errorMes.length === 0) {
             setTags((prevItems) => {
                 const updatedTags = [...prevItems, newItem.trim()];
-                onChangeTags(updatedTags); // タグ変更時に一度だけ呼び出す
+                onChangeTags(tags)
                 return updatedTags;
             }); // 新しい配列を作成
             setText("")
@@ -65,6 +65,10 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
             }
         }
     };
+
+    // useEffect(() => {
+    //     onChangeTags(tags)
+    // }, {tags, onChangeTags})
 
     // タグを削除
     const removeTag = (removeItem: string) => {
@@ -76,7 +80,7 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
         <div className="w-full flex flex-col items-start justify-center">
             <div className="flex flex-wrap items-center gap-2 mb-4">
                 {tags.length !== 0 ? (
-                    <div className="flex flex-wrap items-center gap-2 mb-4">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
                         {tags.map((tag, tagIndex) => (
                             <Tag key={tagIndex} text={tag} onRemoveTag={(removeItem) => removeTag(removeItem)} />
                         ))}
