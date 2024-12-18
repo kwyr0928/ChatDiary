@@ -27,7 +27,28 @@ export async function POST(
     const diaryCounts = await getChatCounts(diaryId);
     if (diaryCounts == null) throw new Error("err in getChatCounts");
 
-    let aiResponse = "";
+    // タイムアウト付きの関数を作成
+    async function withTimeout(promise: Promise<any>, timeoutMs: number): Promise<any> {
+      return new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error("Request timed out")), timeoutMs);
+        promise
+          .then((result) => {
+            clearTimeout(timeout);
+            resolve(result);
+          })
+          .catch((error) => {
+            clearTimeout(timeout);
+            reject(error);
+          });
+      });
+    }
+
+    // タイムアウト時間の設定
+    const timeoutMs = 10000;  // 10秒
+
+    let aiResponse = null;
+    let aiSummary = null;
+
     if (diaryCounts < chatLimit) {
       // Gemini APIキーを設定
       const apiKey = process.env.GEMINI_API_KEY;
@@ -57,22 +78,33 @@ export async function POST(
       }
 
       // テキスト生成
-      console.time("start");
       const chat = model.startChat({
         history: historyArray
       })
-      console.timeEnd("start");
 
-      // レスポンスの取得
-      const result = await chat.sendMessage(text);
-      const response = result.response;
-      const responseText = response.text();
+      try {
+        // レスポンスの取得
+        const result = await withTimeout(chat.sendMessage(text), timeoutMs);
+        const response = result.response;
+        const responseText = response.text();
 
-      const res = await returnedChat(sendChat?.id, responseText);
+        const res = await returnedChat(sendChat?.id, responseText);
 
-      if (res == null) throw new Error("err in returnedChat");
-      aiResponse = res.response!;
-      
+        if (res == null) throw new Error("err in returnedChat");
+        aiResponse = res.response!;
+      } catch (error) {
+        if (error.message === "Request timed out") {
+          console.error("Gemini API request timed out");
+
+          // タイムアウト時にchatcountを増加させないための処理
+          return NextResponse.json(
+            { error: "Gemini API request timed out" },
+            { status: 504 },
+          );
+        } else {
+          throw error; // その他のエラーはそのままスロー
+        }
+      }
     } else {
       // 要約を生成する処理
       // Gemini APIキーを設定
@@ -110,22 +142,36 @@ export async function POST(
       const chat = model.startChat({
         history: historyArray
       })
+      let summaryText;
+      try {
+        // 要約の取得
+        const result = await withTimeout(chat.sendMessage("これまでのやり取りを基に、日記として自然な要約を書いてください。AIとのやり取りや会話形式には触れず、内容が矛盾しないように調整してください。余計な情報は追加せず、200字程度でまとめてください"), 10000);
+        const response = result.response;
+        summaryText = response.text();
+      } catch (error) {
+        if (error.message === "Request timed out") {
+          console.error("Gemini API request timed out");
 
-      // 要約の取得
-      const result = await chat.sendMessage("これまでのやり取りを基に、日記として200字程度で要約してまとめてください");
-      const response = result.response;
-      const summaryText = response.text();
-
+          // タイムアウト時にchatcountを増加させないための処理
+          return NextResponse.json(
+            { error: "Gemini API request timed out" },
+            { status: 504 },
+          );
+        } else {
+          throw error; // その他のエラーはそのままスロー
+        }
+      }
       // 日記に追加
       const updatedDiary = await summariedDiary(diaryId, summaryText);
       if (updatedDiary == null) throw new Error("err in summariedDiary");
-      aiResponse = updatedDiary.summary!;
+      aiSummary = updatedDiary.summary!;
     }
     return NextResponse.json({
       message: "send chat successfully",
       chatId: sendChat?.id,
       count: diaryCounts,
       response: aiResponse,
+      summary: aiSummary,
     });
   } catch (error) {
     console.error("Error in POST chat/[id]/send request:", error);
