@@ -19,6 +19,7 @@ export async function GET() {
     return NextResponse.json({
       message: "get user successfully",
       email: userData?.email,
+      theme: userData?.theme,
     });
   } catch (error) {
     console.error("Error in GET user request:", error);

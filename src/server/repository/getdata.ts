@@ -22,7 +22,6 @@ export const getUserByEmail = async (email: string) => {
   try {
     const user = await db.user.findUnique({
       where: { email }
-
     });
     if(user==null) throw new Error("user not found");
     const parsedUser = userSchema.parse(user);
