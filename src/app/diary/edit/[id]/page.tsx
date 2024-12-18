@@ -258,6 +258,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
               setText(newText);
               setIsChanged(true);
             }}
+            isLimit={false}
           />
         ) : (
           <div className="flex h-36 w-full items-center justify-center">
