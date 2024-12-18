@@ -17,7 +17,11 @@ export default function ResizeTextarea(props: { className: string, text: string,
 
     useEffect(() => {
         if (textareaRef.current) {
+            textareaRef.current.style.height = "auto";
             textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
+
+            // 最大高さ
+            textareaRef.current.style.maxHeight = `${4 * 1.5}em`;
         }
     }, [])
 
