@@ -144,13 +144,16 @@ export default function Page() {
         )}
         {/* </ScrollArea> */}
       </div>
-      <div className="fixed top-0 flex w-[85%] max-w-sm items-center space-x-3 bg-red-50 pb-5 pt-5">
-        <IoSearchSharp size={"25px"} />
+      <div className="fixed top-0 w-full bg-red-50 pb-4 pt-4">
+        <div className="flex items-center mx-6 space-x-3">
+        <IoSearchSharp size={"30px"} color="#EB6B6B" />
         <Input
           placeholder="日記を検索"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
+          className="shadow-sm"
         />
+        </div>
       </div>
       <div onClick={initializeDiary} className="fixed bottom-24 flex w-full max-w-md justify-end pr-4">
         <IoAddCircleSharp size={"70px"} color="#f87171" />
