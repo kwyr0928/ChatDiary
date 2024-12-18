@@ -24,9 +24,7 @@ export default function Page() {
   useEffect(() => {
     const fetchFeedBack = async () => {
       try {
-        // userId書き変え
-        const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
-        const response = await fetch(`/api/feedback/${year}/${month}?userId=${userId}`, {
+        const response = await fetch(`/api/feedback/${year}/${month}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -68,10 +66,10 @@ export default function Page() {
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
       <div className="mx-auto mb-[110px] w-[85%]">
-        <p className="mb-3 mt-5 w-full text-left text-xl font-bold">
+        <p className="mb-5 mt-8 w-full text-left text-xl font-bold">
         {year}年{month}月の継続状況
         </p>
-        <div className="grid grid-cols-7 items-center gap-3">
+        <div className="grid grid-cols-7 items-center place-items-center gap-3">
             {feedback?.continuation.map((isActive, index) => (
               <div
                 key={index}
@@ -81,14 +79,14 @@ export default function Page() {
               />
             ))}
         </div>
-        <p className="mb-3 mt-5 w-full text-left text-xl font-bold">
-          今月のまとめ
+        <p className="mb-3 mt-8 w-full text-left text-xl font-bold">
+          先月のまとめ
         </p>
         {/* カード */}
         <Card className="shadow-none">
           <CardContent className="px-5 py-3">{feedback?.monthly}</CardContent>
         </Card>
-        <p className="mb-3 mt-5 w-full text-left text-xl font-bold">
+        <p className="mb-3 mt-9  w-full text-left text-xl font-bold">
           あなたの分析
         </p>
         {/* カード */}

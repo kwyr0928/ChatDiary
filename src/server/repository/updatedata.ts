@@ -31,6 +31,21 @@ export async function updateUserCreated(userId: string) {
   }
 }
 
+export async function updateUserTheme(userId: string, theme: number) {
+  try {
+    if (userId == null) throw new Error("Invalid option data");
+    const update = await db.user.update({
+      where: { id: userId },
+      data: { theme: theme },
+    });
+    const parsedUpdata = userSchema.parse(update);
+    return parsedUpdata;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
 export async function returnedChat(chatId: string, aiMessage: string) {
   try {
     if (chatId == null || aiMessage ==null) throw new Error("Invalid option data");

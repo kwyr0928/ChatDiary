@@ -32,9 +32,7 @@ function Page() {
   useEffect(() => {
     const fetchTagNames = async () => {
       try {
-        // userId書き変え
-        const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
-        const response = await fetch(`/api/diary/tag?userId=${userId}`, {
+        const response = await fetch(`/api/diary/tag`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -71,7 +69,6 @@ function Page() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: "cm4ko75er0000eb00x6x4byn7", // TODO セッション実装され次第変更
           summary: res,
           tags: tags,
           isPublic: isPublic === "public",
@@ -148,26 +145,24 @@ function Page() {
         </div>
       </div>
       <div className="mb-auto mt-[70px] w-[85%]">
-        <p className="my-2 text-center text-lg">出力された日記</p>
+        <p className="mt-5 mb-3 text-left text-lg">出力された日記</p>
         {/* カード */}
         <Card className="text-gray-600 shadow-none">
           <CardContent className="px-5 py-3">{res}</CardContent>
         </Card>
-        <p className="mb-2 mt-7 text-left text-lg">タグ</p>
+        <p className="mt-8 text-left text-lg">タグ</p>
         <div className="flex justify-center">
           <InputTag initialTags={tags} initialTagList={tagList} onChangeTags={setTags} />
         </div>
-        <p className="mb-2 mt-7 text-left text-lg">公開範囲</p>
+        <p className="mt-7 text-left text-lg">公開状況</p>
         {/* ラジオボタン */}
-        <div className="mb-5 flex justify-center">
-          <Card className="text-gray-600 shadow-none">
-            <CardContent className="px-5 py-3">
+        <div className="mb-5 flex justify-left mt-4">
               <RadioGroup
                 defaultValue="private"
                 value={isPublic}
-                onValueChange={(value: "public" | "private") =>
-                  setIsPublic(value)
-                }
+                onValueChange={(value: "public" | "private") => {
+                  setIsPublic(value);
+                }}
                 className="space-y-2"
               >
                 <div className="flex items-center space-x-2">
@@ -191,15 +186,13 @@ function Page() {
                   </Label>
                 </div>
               </RadioGroup>
-            </CardContent>
-          </Card>
         </div>
         <Link href={"/home"}>
           {/* ボタンUI */}
           <div className="my-10 flex justify-center">
             <Button
               onClick={handleCreateDiary}
-              className="w-[80%] rounded-full bg-red-400 text-xl hover:bg-rose-500"
+              className="w-[80%] rounded-full bg-red-400 text-xl hover:bg-rose-500 mt-6"
             >
               作成する！
             </Button>

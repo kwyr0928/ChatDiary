@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { IoChevronBackSharp, IoSendSharp } from "react-icons/io5";
 import ChatCard from "~/components/chatCard";
+import ResizeTextarea from "~/components/resizeTextarea";
 import { Button } from "~/components/ui/button";
 
 import { LoaderCircle } from "lucide-react";
@@ -106,33 +107,33 @@ function Page() {
     }
   };
 
-  const handleDelete = async () => { // TODO 一旦削除されないようにした
-    // try {
-    //   const response = await fetch(`/api/diary/${diaryId}`, {
-    //     method: "DELETE",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //   });
-    //   const responseData = await response.json();
-    //   console.log(responseData);
-    //   if (response.ok) {
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/diary/${diaryId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const responseData = await response.json();
+      console.log(responseData);
+      if (response.ok) {
         router.push("/home");
-    //   } else {
-    //     throw new Error(responseData);
-    //   }
-    // } catch (error) {
-    //   // 入力エラーメッセージ表示
-    //   const errorMessage =
-    //     error instanceof Error
-    //       ? error.message
-    //       : "予期しないエラーが発生しました";
-    //   // エラーメッセージ表示　普通は出ないはず
-    //   toast({
-    //     variant: "destructive",
-    //     description: errorMessage,
-    //   });
-    // }
+      } else {
+        throw new Error(responseData);
+      }
+    } catch (error) {
+      // 入力エラーメッセージ表示
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "予期しないエラーが発生しました";
+      // エラーメッセージ表示　普通は出ないはず
+      toast({
+        variant: "destructive",
+        description: errorMessage,
+      });
+    }
   };
 
   const handleChange = (value: string) => {
@@ -140,11 +141,11 @@ function Page() {
   };
 
   return (
-    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
+    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col bg-red-50 text-gray-600">
       <div className="fixed top-0 mb-5 flex w-full max-w-md flex-col justify-center bg-white pt-5 text-center">
         <div className="mb-3 flex">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5">
+            <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5 mr-auto">
               <IoChevronBackSharp color="#f87171" size={"30px"} />
             </DialogTrigger>
             <DialogContent className="w-[80%]">
@@ -180,11 +181,11 @@ function Page() {
           </p>
         </div>
         {/* プルダウン */}
-        <div className="mx-auto mb-3 w-fit">
+        <div className="mx-auto mb-3 w-fit items-center">
           <div className="flex items-center space-x-2">
             <Select onValueChange={handleChange}>
-              <SelectTrigger className="px-3 focus-visible:ring-0">
-                <SelectValue placeholder="モードを選択してね" />
+              <SelectTrigger className="px-3 hover:bg-gray-50">
+                <SelectValue placeholder="物事掘り下げモード" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -197,7 +198,7 @@ function Page() {
           </div>
         </div>
       </div>
-      <div className="mb-[60px] mt-[130px]">
+      <div className="mb-[120px] mt-[130px] w-fill">
         {messages.map((message, index) => (
           <ChatCard key={index} isAI={message.isAI}>
             {message.text}
@@ -205,7 +206,7 @@ function Page() {
         ))}
       </div>
       {/* チャット欄 */}
-      <div className="fixed bottom-0 flex w-full max-w-md items-center justify-center space-x-2 bg-red-50 pb-5 pt-3">
+      <div className="fixed bottom-0 flex items-end justify-center w-full max-w-md bg-red-50 pb-5 pt-3">
         {isSending ? (
           // 送信中の表示
           <LoaderCircle className="w-[300px] animate-spin" />
@@ -213,14 +214,16 @@ function Page() {
           // 回答生成中の表示
           <p className="w-[300px] text-center">回答生成中...</p>
         ) : (
-          <textarea
-            rows={1}
-            value={inputText}
-            className="w-[300px] resize-none rounded border p-1 focus:outline-none"
-            onChange={(e) => setInputText(e.target.value)}
+          <div className="flex items-end justify-center space-x-2">
+          <ResizeTextarea
+          className="w-[300px] resize-none rounded border p-1 focus:outline-none"
+            text={inputText}
+            onChange={(text) => setInputText(text)}
+            isLimit={true}
           />
+          <IoSendSharp onClick={handleSend} color="#f87171" size={"30px"} className="pb-1" />
+          </div>
         )}
-        <IoSendSharp onClick={handleSend} color="#f87171" size={"25px"} />
       </div>
     </div>
   );

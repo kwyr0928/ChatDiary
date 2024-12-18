@@ -4,6 +4,7 @@ CREATE TABLE "User" (
     "email" TEXT,
     "emailVerified" TIMESTAMP(3),
     "password" VARCHAR(255) NOT NULL,
+    "theme" INTEGER NOT NULL DEFAULT 0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
@@ -14,7 +15,7 @@ CREATE TABLE "Diaries" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "title" VARCHAR(255) NOT NULL,
-    "summary" VARCHAR(255),
+    "summary" TEXT,
     "isPublic" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -39,6 +40,7 @@ CREATE TABLE "Tags" (
     "userId" TEXT NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Tags_pkey" PRIMARY KEY ("id")
 );
@@ -94,6 +96,9 @@ CREATE INDEX "Chats_diaryId_idx" ON "Chats"("diaryId");
 
 -- CreateIndex
 CREATE INDEX "MonthlySummaries_userId_idx" ON "MonthlySummaries"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Analyses_userId_key" ON "Analyses"("userId");
 
 -- CreateIndex
 CREATE INDEX "Analyses_userId_idx" ON "Analyses"("userId");

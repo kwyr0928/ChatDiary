@@ -6,6 +6,7 @@ import { Checkbox } from "~/components/ui/checkbox";
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle
 } from "~/components/ui/dialog";
@@ -28,8 +29,19 @@ export default function TagListSetting(props: { initialList: string[], onDeleteT
         setIsOpen(false)
     }
 
+    const listClassName = () => {
+        const classes = ["mb-5 rounded-lg border w-full bg-white flex flex-col"]
+
+        if(tagList.length <= 1) classes.push("h-23")
+        if(tagList.length == 2) classes.push("h-30")
+        if(tagList.length == 3) classes.push("h-44")
+        if(tagList.length >= 4) classes.push("h-52")
+
+        return classes.join(" ");
+    }
+
     return (
-        <div className="mb-5 rounded-lg border w-full h-52 bg-white flex flex-col">
+        <div className={listClassName()}>
             <div className="flex items-center justify-between pr-3 py-2">
                 <span className="text-lg font-bold pl-3">タグ一覧</span>
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -51,6 +63,9 @@ export default function TagListSetting(props: { initialList: string[], onDeleteT
                         <DialogContent className="w-[80%]">
                             <DialogHeader>
                                 <DialogTitle className="mt-5">チェックしたタグを削除しますか？</DialogTitle>
+                                <DialogDescription>
+                                    日記からもそのタグが削除されます。
+                                </DialogDescription>
                             </DialogHeader>
                             <div className="flex justify-around">
                                 <div className="my-2">
@@ -79,6 +94,7 @@ export default function TagListSetting(props: { initialList: string[], onDeleteT
                 {tagList.length !== 0 ?
                     (tagList.map((tag, tagIndex) => (
                         <div key={tagIndex}>
+                            <Separator />
                             <div className="py-2 space-x-1 pl-3 flex items-center">
                                 <Checkbox
                                     checked={deleteTags?.includes(tag)}
@@ -91,7 +107,6 @@ export default function TagListSetting(props: { initialList: string[], onDeleteT
                                 />
                                 <label className="text-base text-gray-600 pl-1">{tag}</label>
                             </div>
-                            <Separator />
                         </div>
                     )))
                     : (<div className="py-2 space-x-1 pl-3 flex items-center">

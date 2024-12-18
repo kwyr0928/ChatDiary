@@ -44,3 +44,20 @@ export async function deleteTag(tagId: string) {
     return null;
   }
 }
+
+export async function deleteTagConnection(diaryId: string, tagId: string) {
+  try {
+    if (tagId == null) throw new Error("Invalid option data");
+    const deleted = await db.diaryTags.deleteMany({
+      where: {
+        diaryId: diaryId,
+        tagId: tagId
+      },
+    });
+    return deleted;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+

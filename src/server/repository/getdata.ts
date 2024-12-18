@@ -22,7 +22,6 @@ export const getUserByEmail = async (email: string) => {
   try {
     const user = await db.user.findUnique({
       where: { email }
-
     });
     if(user==null) throw new Error("user not found");
     const parsedUser = userSchema.parse(user);
@@ -172,7 +171,7 @@ export const getTagsByUserId = async (userId: string) => {
   } catch (error) {
     console.error("Error in getTagsByUserId:", error);
   }
-}
+};
 
 export const getRecentTagsByUserId = async (userId: string) => {
   try {
@@ -186,7 +185,7 @@ export const getRecentTagsByUserId = async (userId: string) => {
   } catch (error) {
     console.error("Error in getRecentTagsByUserId:", error);
   }
-}
+};
 
 export const getTagConnectionsByDiary = async (diaryId: string) => {
   try {
@@ -195,6 +194,17 @@ export const getTagConnectionsByDiary = async (diaryId: string) => {
     return z.array(diaryTagsSchema).parse(data);
   } catch (error) {
     console.error("Error in getTagConnectionsByDiary:", error);
+    return null;
+  }
+};
+
+export const getTagConnectionsByTag = async (diaryId: string, tagId: string) => {
+  try {
+    const data = await db.diaryTags.findMany({ where: { diaryId, tagId } });
+    if(data == null) return [];
+    return z.array(diaryTagsSchema).parse(data);
+  } catch (error) {
+    console.error("Error in getTagConnectionsByTag:", error);
     return null;
   }
 };

@@ -1,12 +1,18 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
+import { auth } from "~/server/auth";
 import { getOtherUserDiary } from "~/server/service/fetch";
 
 // 自分以外の誰かの日記取得 GET
-export async function GET(req: Request) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(req.url);
-    const userId = z.string().parse(searchParams.get("userId")); //クエリパラメータ
+    const session = await auth();
+    if(session==null) {
+      return NextResponse.json(
+        { error: "can't get login session." },
+        { status: 401 },
+      );
+    }
+    const userId = session?.user.id;
     
     const share = await getOtherUserDiary(userId);
 

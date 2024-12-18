@@ -1,41 +1,51 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { chatLogSchema, putDiary } from "~/lib/schemas";
+import { auth } from "~/server/auth";
 import { deleteDiary } from "~/server/repository/deletedata";
 import { getChatsByDiaryId, getDiaryData, getTagByID, getTagByName, getTagConnectionsByDiary } from "~/server/repository/getdata";
 import { updateDiary, updateRecentTag } from "~/server/repository/updatedata";
 import { connectDiaryTag, createTag } from "~/server/service/create";
+import { deleteTagConnectionsByName } from "~/server/service/delete";
 import { getRecentTagNamesByUserId } from "~/server/service/fetch";
 
 // 特定の日記の詳細GET
-export async function GET(req: Request,
+export async function GET(
+  req: Request,
   { params }: { params: { id: string } },
 ) {
   try {
     // eslint-disable-next-line @typescript-eslint/await-thenable
     const par = await params;
+    console.log(par);
     const diaryId = z.string().parse(par.id); //パスパラメータ
-    const { searchParams } = new URL(req.url);
-    const userId = z.string().parse(searchParams.get("userId")); //クエリパラメータ
+    const session = await auth();
+    if (session == null) {
+      return NextResponse.json(
+        { error: "can't get login session." },
+        { status: 401 },
+      );
+    }
+    const userId = session?.user.id;
     const diaryData = await getDiaryData(diaryId);
-    if(diaryData==null) throw new Error("err in getDiaryData");
-    
+    if (diaryData == null) throw new Error("err in getDiaryData");
+
     // タグ取得
     const tags = [];
     const tagConnections = await getTagConnectionsByDiary(diaryId);
-    if(tagConnections==null) throw new Error("err in getTagConnectionsByDiary");
+    if (tagConnections == null) throw new Error("err in getTagConnectionsByDiary");
 
-    for(const tag of tagConnections){
+    for (const tag of tagConnections) {
       const tagData = await getTagByID(tag.tagId);
-      if(tagData==null) throw new Error("err in getTagByID");
+      if (tagData == null) throw new Error("err in getTagByID");
       tags.push(tagData.name);
     }
 
     //チャットログ
     const chatLog = [];
     const chats = await getChatsByDiaryId(diaryId);
-    if(chats==null) throw new Error("err in getChatsByDiaryId");
-    for(const chat of chats) {
+    if (chats == null) throw new Error("err in getChatsByDiaryId");
+    for (const chat of chats) {
       chatLog.push(chatLogSchema.parse(chat));
     }
 
@@ -59,36 +69,62 @@ export async function GET(req: Request,
 }
 
 // タグ、本文、公開範囲更新のPUT
-export async function PUT(req: Request,
+export async function PUT(
+  req: Request,
   { params }: { params: { id: string } },
 ) {
   try {
     // eslint-disable-next-line @typescript-eslint/await-thenable
     const par = await params;
     const diaryId = z.string().parse(par.id); //パスパラメータ
-    const { userId, summary, tags, isPublic } = putDiary.parse(await req.json()); //body
+    const { summary, tags, isPublic } = putDiary.parse(await req.json()); //body
+
+    const session = await auth();
+    if (session == null) {
+      return NextResponse.json(
+        { error: "can't get login session." },
+        { status: 401 },
+      );
+    }
+    const userId = session?.user.id;
 
     const updatedDiary = await updateDiary(diaryId, summary, isPublic);
-    if(updatedDiary==null) throw new Error("err in getDiaryData");
+    if (updatedDiary == null) throw new Error("err in getDiaryData");
+
+    // 今あるタグ取得
+    const nowTags: string[] = [];
+    const tagConnections = await getTagConnectionsByDiary(diaryId);
+    if (tagConnections == null) throw new Error("err in getTagConnectionsByDiary");
+
+    for (const tag of tagConnections) {
+      const tagData = await getTagByID(tag.tagId);
+      if (tagData == null) throw new Error("err in getTagByID");
+      nowTags.push(tagData.name);
+    }
 
     //タグの紐づけ
     for (const tag of tags) {
-      const tagData = await getTagByName(tag, userId);
-      let tagId = "";
-      if(tagData==null){
-        // 新しいタグ生成
-        const newTag = await createTag(tag, userId);
-        if(newTag==null) throw new Error("err in createTag");
-        tagId = newTag.id;
-      } else {
-        // 既にあるのでupdate更新
-        const updateTag = await updateRecentTag(tagData.id!);
-        if(updateTag==null) throw new Error("err in updateRecentTag");
-        tagId = tagData.id!;
+      // 今追加されてないタグか
+      if (!nowTags.includes(tag)) {
+        // ユーザータグ一覧にあるか
+        const tagData = await getTagByName(userId, tag);
+        if (tagData == null) {
+          // 新しいタグ生成
+          const newTag = await createTag(tag, userId);
+          if (newTag == null) throw new Error("err in createTag");
+          //紐づけ
+          await connectDiaryTag(diaryId, newTag.id);
+        } else {
+          //紐づけ
+          await connectDiaryTag(diaryId, tagData.id!);
+          // update時間の更新
+          const updateTag = await updateRecentTag(tagData.id!);
+          if (updateTag == null) throw new Error("err in updateRecentTag");
+        }
       }
-      //紐づけ
-      const newConnection = await connectDiaryTag(diaryId, tagId);
     }
+    const deleteTagNames = nowTags.filter((val) => !tags.includes(val));
+    if (deleteTagNames.length > 0) await deleteTagConnectionsByName(userId, diaryId, deleteTagNames);
     return NextResponse.json({
       message: "update diary successfully",
       diaryData: updatedDiary,
@@ -103,17 +139,18 @@ export async function PUT(req: Request,
 }
 
 // 日記削除DELETE
-export async function DELETE(req: Request,
+export async function DELETE(
+  req: Request,
   { params }: { params: { id: string } },
 ) {
   try {
     // eslint-disable-next-line @typescript-eslint/await-thenable
     const par = await params;
     const diaryId = z.string().parse(par.id); //パスパラメータ
-    
+
     const deleted = await deleteDiary(diaryId);
-    if(deleted==null) throw new Error("err in deleteDiary");
-    
+    if (deleted == null) throw new Error("err in deleteDiary");
+
     return NextResponse.json({
       message: "delete diary successfully. diaryTitle: " + deleted.title,
     });

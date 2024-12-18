@@ -19,32 +19,44 @@ import { toast } from "~/hooks/use-toast";
 export default function Page() {
   const [tags, setTags] = useState<string[]>([])
   const [isOpen, setIsOpen] = useState(false); // 退会確認ダイアログ
-  // TODO セッション実装でき次第変更
-  const [user, setUser] = useState({
-    id: "cm4ko75er0000eb00x6x4byn7",
-    email: "example@example.com",
-  });
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    const fetchTagNames = async () => {
+    setIsLoading(true);
+    const fetchInitialData = async () => {
       try {
-        // userId書き変え
-        const userId = "cm4ko75er0000eb00x6x4byn7"; // TODO セッション実装され次第変更
-        const response = await fetch(`/api/diary/tag?userId=${userId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        const responseData = await response.json();
-        console.log(responseData.message);
-        if (response.ok) {
-          setTags(responseData.tagList);
-        } else {
-          throw new Error(responseData);
-        }
+        // Fetch Tags
+      const tagResponse = await fetch(`/api/diary/tag`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const tagResponseData = await tagResponse.json();
+      console.log(tagResponseData);
+      if (tagResponse.ok) {
+        setTags(tagResponseData.tagList);
+      } else {
+        throw new Error(tagResponseData.message || "タグの取得に失敗しました");
+      }
+
+      // Fetch Email
+      const emailResponse = await fetch(`/api/user`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const emailResponseData = await emailResponse.json();
+      console.log(emailResponseData);
+      if (emailResponse.ok) {
+        setEmail(emailResponseData.email);
+      } else {
+        throw new Error(emailResponseData.message || "メールアドレスの取得に失敗しました");
+      }
+
       } catch (error) {
         const errorMessage =
           error instanceof Error
@@ -55,10 +67,11 @@ export default function Page() {
           variant: "destructive",
           description: errorMessage,
         });
-
+      } finally {
+        setIsLoading(false); // ローディングを終了
       }
     }
-    void fetchTagNames();
+    void fetchInitialData();
   }, [])
 
   // useEffect(() => {
@@ -79,12 +92,11 @@ export default function Page() {
   const handleDeleteUser = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/user/${user.id}`, {
+      const response = await fetch(`/api/user`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: user.id }),
+        }
       });
       const responseData = await response.json();
       console.log(responseData);
@@ -112,12 +124,11 @@ export default function Page() {
   const handleSignOut = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/user/signout?${user.id}`, {
+      const response = await fetch(`/api/user/signout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: user.id }),
+        }
       });
       const responseData = await response.json();
       console.log(responseData);
@@ -146,7 +157,7 @@ export default function Page() {
   const handleDeleteTag = async (deleteTags: string[]) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/diary/tag/${user.id}`, {
+      const response = await fetch(`/api/diary/tag`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -189,17 +200,27 @@ export default function Page() {
 
   return (
     <div className="min-h-screen w-full max-w-md bg-red-50 text-gray-600">
-      <div className="mx-auto mb-[140px] flex flex-col items-center">
+      <div className="mx-auto flex flex-col items-center">
         <div className="ml-8 mr-auto">
           <p className="mt-8 w-full text-left text-xl font-bold">
             アカウント情報
           </p>
-          <p className="text-md mt-4 w-full text-left">ユーザーID：{user.id}</p>
           <p className="text-md mt-2 w-full text-left">
-            メールアドレス：{user.email}
+            メールアドレス：{email}
           </p>
         </div>
-        <div className="mt-6 w-[60%]">
+        
+        <div className="mt-12 ml-8 mr-auto">
+          <p className="mb-4 w-full text-left text-xl font-bold">
+            タグの編集
+          </p>
+        </div>
+        <div className="w-[85%]">
+          <TagListSetting initialList={tags} onDeleteTags={handleDeleteTag} />
+        </div>
+      </div>
+
+      <div className="mt-5 mx-auto w-[60%]">
           <Button
             onClick={handleSignOut}
             className="w-full rounded-full bg-gray-400 hover:bg-gray-500"
@@ -208,9 +229,8 @@ export default function Page() {
           </Button>
         </div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <div className="mt-6 w-[60%]">
+          <div className="mx-auto mt-6 w-[60%]">
             <Button
-              disabled={true} // TODO セッション実装され次第削除
               className="w-full rounded-full bg-red-400 hover:bg-rose-500"
               onClick={() => setIsOpen(true)}
             >
@@ -245,15 +265,6 @@ export default function Page() {
           </DialogContent>
         </Dialog>
 
-        <div className="mt-12 ml-8 mr-auto">
-          <p className="mb-4 w-full text-left text-xl font-bold">
-            タグの編集
-          </p>
-        </div>
-        <div className="w-[65%]">
-          <TagListSetting initialList={tags} onDeleteTags={handleDeleteTag} />
-        </div>
-      </div>
 
       <div className="fixed bottom-0 flex w-full max-w-md justify-around bg-white py-5">
         <Link href={"/setting"}>
