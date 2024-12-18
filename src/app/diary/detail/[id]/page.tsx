@@ -192,7 +192,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           </div>
         ))}
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <div className="mx-auto mt-10 w-[60%]">
+          <div className="mx-auto mt-10 w-[80%]">
             <Button
               onClick={() => setIsOpen(true)}
               className="w-full rounded-full bg-red-400 hover:bg-rose-500"

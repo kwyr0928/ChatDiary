@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoChevronDownSharp } from "react-icons/io5";
 import Tag from "./tag";
 import { Button } from "./ui/button";
@@ -56,7 +56,6 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
         if (errorMes.length === 0) {
             setTags((prevItems) => {
                 const updatedTags = [...prevItems, newItem.trim()];
-                onChangeTags(tags)
                 return updatedTags;
             }); // 新しい配列を作成
             setText("")
@@ -66,14 +65,13 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
         }
     };
 
-    // useEffect(() => {
-    //     onChangeTags(tags)
-    // }, {tags, onChangeTags})
+    useEffect(() => {
+        onChangeTags(tags); // レンダリング完了後に状態を親に通知
+    }, [tags, onChangeTags]);
 
     // タグを削除
     const removeTag = (removeItem: string) => {
         setTags((prevItems) => prevItems.filter((item) => item !== removeItem))
-        onChangeTags(tags)
     }
 
     return (
