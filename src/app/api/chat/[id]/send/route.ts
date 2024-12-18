@@ -46,7 +46,9 @@ export async function POST(
     // タイムアウト時間の設定
     const timeoutMs = 10000;  // 10秒
 
-    let aiResponse = "";
+    let aiResponse = null;
+    let aiSummary = null;
+
     if (diaryCounts < chatLimit) {
       // Gemini APIキーを設定
       const apiKey = process.env.GEMINI_API_KEY;
@@ -162,13 +164,14 @@ export async function POST(
       // 日記に追加
       const updatedDiary = await summariedDiary(diaryId, summaryText);
       if (updatedDiary == null) throw new Error("err in summariedDiary");
-      aiResponse = updatedDiary.summary!;
+      aiSummary = updatedDiary.summary!;
     }
     return NextResponse.json({
       message: "send chat successfully",
       chatId: sendChat?.id,
       count: diaryCounts,
       response: aiResponse,
+      summary: aiSummary,
     });
   } catch (error) {
     console.error("Error in POST chat/[id]/send request:", error);
