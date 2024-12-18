@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoChevronDownSharp } from "react-icons/io5";
 import Tag from "./tag";
 import { Button } from "./ui/button";
@@ -56,7 +56,6 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
         if (errorMes.length === 0) {
             setTags((prevItems) => {
                 const updatedTags = [...prevItems, newItem.trim()];
-                onChangeTags(updatedTags); // タグ変更時に一度だけ呼び出す
                 return updatedTags;
             }); // 新しい配列を作成
             setText("")
@@ -66,17 +65,20 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
         }
     };
 
+    useEffect(() => {
+        onChangeTags(tags); // レンダリング完了後に状態を親に通知
+    }, [tags, onChangeTags]);
+
     // タグを削除
     const removeTag = (removeItem: string) => {
         setTags((prevItems) => prevItems.filter((item) => item !== removeItem))
-        onChangeTags(tags)
     }
 
     return (
         <div className="w-full flex flex-col items-start justify-center">
             <div className="flex flex-wrap items-center gap-2 mb-4">
                 {tags.length !== 0 ? (
-                    <div className="flex flex-wrap items-center gap-2 mb-4">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
                         {tags.map((tag, tagIndex) => (
                             <Tag key={tagIndex} text={tag} onRemoveTag={(removeItem) => removeTag(removeItem)} />
                         ))}
@@ -141,4 +143,3 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
         </div>
     )
 }
-// TODO: タグ一覧を閲覧、選択できるようにする
