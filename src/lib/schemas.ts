@@ -16,6 +16,7 @@ export const userSchema = z.object({
   emailVerified: z.date().nullable().optional(),
   email: z.string().email(),
   password: z.string().min(1),
+  theme: z.number().optional(),
   created_at: z.date().optional(),
 });
 
@@ -23,6 +24,7 @@ export const safeUserSchema = z.object({
   id: z.string().min(1).optional(),
   emailVerified: z.date().nullable().optional(),
   email: z.string().email(),
+  theme: z.number().optional(),
   created_at: z.date().optional(),
 });
 
@@ -116,6 +118,11 @@ export const postSignin = z.object({
 export const postReEmail = z.object({
   userId: z.string(),
   email: z.string().email(),
+});
+
+// api/user/theme
+export const putTheme = z.object({
+  theme: z.number(),
 });
 
 /*

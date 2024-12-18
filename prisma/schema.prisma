@@ -19,6 +19,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   password      String    @db.VarChar(255) //hashed
+  theme         Int       @default(0)
   created_at    DateTime  @default(now())
 
   Diaries Diaries[]
@@ -36,7 +37,7 @@ model Diaries {
   id         String      @id @default(cuid())
   userId     String
   title      String      @db.VarChar(255)
-  summary    String?     
+  summary    String?
   isPublic   Boolean     @default(false)
   created_at DateTime    @default(now())
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
