@@ -143,4 +143,3 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
         </div>
     )
 }
-// TODO: タグ一覧を閲覧、選択できるようにする

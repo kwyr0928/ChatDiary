@@ -6,6 +6,7 @@ import { Checkbox } from "~/components/ui/checkbox";
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle
 } from "~/components/ui/dialog";
@@ -51,6 +52,9 @@ export default function TagListSetting(props: { initialList: string[], onDeleteT
                         <DialogContent className="w-[80%]">
                             <DialogHeader>
                                 <DialogTitle className="mt-5">チェックしたタグを削除しますか？</DialogTitle>
+                                <DialogDescription>
+                                    日記からもそのタグが削除されます。
+                                </DialogDescription>
                             </DialogHeader>
                             <div className="flex justify-around">
                                 <div className="my-2">
