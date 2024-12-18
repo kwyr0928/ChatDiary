@@ -143,7 +143,7 @@ export async function POST(
       let summaryText;
       try {
         // 要約の取得
-        const result = await withTimeout(chat.sendMessage("これまでのやり取りを基に、一人称視点で自然な日記を書いてください。AIとのやり取りや会話形式には触れず、内容が矛盾しないように調整してください。余計な情報は追加せず、200字程度で要約してまとめてください"), 10000);
+        const result = await withTimeout(chat.sendMessage("これまでのやり取りを基に、日記として自然な要約を書いてください。AIとのやり取りや会話形式には触れず、内容が矛盾しないように調整してください。余計な情報は追加せず、200字程度でまとめてください"), 10000);
         const response = result.response;
         summaryText = response.text();
       } catch (error) {
