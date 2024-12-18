@@ -219,6 +219,7 @@ function Page() {
           className="w-[300px] resize-none rounded border p-1 focus:outline-none"
             text={inputText}
             onChange={(text) => setInputText(text)}
+            isLimit={true}
           />
           <IoSendSharp onClick={handleSend} color="#f87171" size={"30px"} className="pb-1" />
           </div>

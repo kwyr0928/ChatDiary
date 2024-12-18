@@ -69,7 +69,7 @@ export default function Page() {
         <p className="mb-5 mt-8 w-full text-left text-xl font-bold">
         {year}年{month}月の継続状況
         </p>
-        <div className="grid grid-cols-7 items-center gap-3">
+        <div className="grid grid-cols-7 items-center place-items-center gap-3">
             {feedback?.continuation.map((isActive, index) => (
               <div
                 key={index}
@@ -79,14 +79,14 @@ export default function Page() {
               />
             ))}
         </div>
-        <p className="mb-3 mt-5 w-full text-left text-xl font-bold">
+        <p className="mb-3 mt-8 w-full text-left text-xl font-bold">
           先月のまとめ
         </p>
         {/* カード */}
         <Card className="shadow-none">
           <CardContent className="px-5 py-3">{feedback?.monthly}</CardContent>
         </Card>
-        <p className="mb-3 mt-12  w-full text-left text-xl font-bold">
+        <p className="mb-3 mt-9  w-full text-left text-xl font-bold">
           あなたの分析
         </p>
         {/* カード */}
