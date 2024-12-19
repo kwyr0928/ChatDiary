@@ -77,7 +77,7 @@ function Page() {
         if (count + 1 >= 5) {
           await new Promise((resolve) => setTimeout(resolve, 1000));
           router.push(
-            `/diary/new?res=${responseData.response}&diaryId=${diaryId}`,
+            `/diary/new?res=${responseData.summary}&diaryId=${diaryId}`,
           );
           return;
         }

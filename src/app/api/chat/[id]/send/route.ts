@@ -93,7 +93,7 @@ export async function POST(
         if (res == null) throw new Error("err in returnedChat");
         aiResponse = res.response!;
       } catch (error) {
-        if (error.message === "Request timed out") {
+        if (error instanceof Error && error.message === "Request timed out") {
           console.error("Gemini API request timed out");
 
           // タイムアウト時にchatcountを増加させないための処理
@@ -149,7 +149,7 @@ export async function POST(
         const response = result.response;
         summaryText = response.text();
       } catch (error) {
-        if (error.message === "Request timed out") {
+        if (error instanceof Error && error.message === "Request timed out") {
           console.error("Gemini API request timed out");
 
           // タイムアウト時にchatcountを増加させないための処理
