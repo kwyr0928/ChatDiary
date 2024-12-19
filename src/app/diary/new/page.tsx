@@ -61,6 +61,12 @@ function Page() {
     void fetchTagNames();
   }, [])
 
+  useEffect(() => {
+    if (tagList.length > 0) {
+      console.log("tagList updated:", tagList);
+    }
+  }, [tagList]);
+
   const handleCreateDiary = async () => {
     try {
       const response = await fetch(`/api/diary/${diaryId}`, {

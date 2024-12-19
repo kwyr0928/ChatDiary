@@ -79,6 +79,7 @@ function Page() {
           router.push(
             `/diary/new?res=${responseData.response}&diaryId=${diaryId}`,
           );
+          return;
         }
         setCount(count + 1);
         // AIの返信をメッセージリストに追加
