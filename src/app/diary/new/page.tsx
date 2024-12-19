@@ -83,7 +83,7 @@ function Page() {
       const responseData = await response.json();
       console.log(responseData);
       if (response.ok) {
-      router.push("/home");
+      router.push(`/home?diaryId=${diaryId}`);
     } else {
       throw new Error(responseData);
     }

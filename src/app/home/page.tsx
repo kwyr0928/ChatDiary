@@ -2,16 +2,18 @@
 
 import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   IoAddCircleSharp,
   IoBarChartSharp,
   IoCogSharp,
   IoHomeSharp,
-  IoSearchSharp,
+  IoSearchSharp
 } from "react-icons/io5";
 import DiaryCard from "~/components/diaryCard";
+import { Button } from "~/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { toast } from "~/hooks/use-toast";
 
@@ -33,18 +35,39 @@ type ApiResponse = {
 export default function Page() {
   const [keyword, setKeyword] = useState("");
   const [diaryList, setDiaryList] = useState<ApiResponse>();
+  const [shareData, setShareData] = useState();
   const filteredDiary = diaryList
     ? diaryList.diaries.filter((d) =>
         JSON.stringify(d).toLowerCase().includes(keyword.toLowerCase()),
       )
     : []; // 検索
+    const [isOpen, setIsOpen] = useState(false);
+    const params = useSearchParams();
+    const diaryId = params.get("diaryId");
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
 
   useEffect(() => {
     const fetchDiaries = async () => {
       // 日記一覧取得
+      
       try {
+      if (diaryId != undefined) {
+        setIsOpen(true);
+        const response = await fetch(`/api/share`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const responseData = await response.json();
+        console.log(responseData);
+        if (response.ok) {
+          setShareData(responseData);
+        } else {
+          throw new Error(responseData);
+        }
+      }
         const response = await fetch(`/api/diary`, {
           method: "GET",
           headers: {
@@ -121,6 +144,23 @@ export default function Page() {
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
       <div className="mx-auto mb-[140px] mt-[80px] w-[85%]">
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogContent className="w-[80%]">
+              <DialogHeader>
+                <DialogTitle className="mt-5">
+                  誰かの日記が届きました！
+                </DialogTitle>
+              </DialogHeader>
+              <DialogDescription className="text-gray-500 my-3">
+                {shareData.share.summary}
+              </DialogDescription>
+                  <div className="my-2 mx-auto">
+                    <Button className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500" onClick={() => (setIsOpen(false))}>
+                      見た！
+                    </Button>
+                  </div>
+            </DialogContent>
+          </Dialog>
         {/* <ScrollArea> */}
         {filteredDiary.length > 0 ? (
           filteredDiary.map((d, index) => (
