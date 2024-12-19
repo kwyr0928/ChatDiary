@@ -144,7 +144,7 @@ export default function Page() {
         )}
         {/* </ScrollArea> */}
       </div>
-      <div className="fixed top-0 w-full bg-red-50 pb-4 pt-4">
+      <div className="fixed top-0 max-w-md w-full bg-red-50 pb-4 pt-4">
         <div className="flex items-center mx-6 space-x-3">
         <IoSearchSharp size={"30px"} color="#EB6B6B" />
         <Input
