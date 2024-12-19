@@ -136,7 +136,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
-      <div className="fixed top-0 flex w-full max-w-md items-center justify-between bg-red-50 pb-3 pt-5 text-center">
+      <div className="fixed top-0 flex w-full bg-white max-w-md items-center justify-between pb-5 pt-5 text-center">
         <Link href={"/home"} className="pl-4">
           <IoChevronBackSharp color="#f87171" size={"30px"} />
         </Link>
@@ -147,7 +147,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
       </div>
       <div className="mt-[60px] w-[85%]">
         <div className="flex items-center space-x-5">
-          <p className="mb-3 mt-5 text-left text-lg font-bold">日記本文</p>
+          <p className="mb-3 mt-10 text-left text-lg font-bold">日記本文</p>
         </div>
         {/* カード */}
         <Card className="text-gray-600 shadow-none">

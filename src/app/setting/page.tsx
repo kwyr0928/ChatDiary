@@ -199,7 +199,7 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-screen w-full max-w-md bg-red-50 text-gray-600">
+    <div className="min-h-screen w-full max-w-md bg-red-50 text-gray-600 mx-auto">
       <div className="mx-auto flex flex-col items-center">
         <div className="ml-8 mr-auto">
           <p className="mt-8 w-full text-left text-xl font-bold">

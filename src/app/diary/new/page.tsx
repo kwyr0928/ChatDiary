@@ -83,7 +83,7 @@ function Page() {
       const responseData = await response.json();
       console.log(responseData);
       if (response.ok) {
-      router.push("/home");
+      router.push(`/home?diaryId=${diaryId}`);
     } else {
       throw new Error(responseData);
     }
@@ -146,7 +146,13 @@ function Page() {
             </DialogContent>
           </Dialog> */}
           <p className="mx-auto my-auto text-lg">
-            {new Date().toLocaleDateString("ja-JP")}
+          {new Date().toLocaleString("ja-JP", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </p>
         </div>
       </div>
