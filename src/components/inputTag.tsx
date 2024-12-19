@@ -37,6 +37,11 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
         }
     }
 
+    useEffect(() => {
+        // 初期値としてタグリストを更新
+        setTagList(initialTagList)
+    }, [initialTagList]);
+
     // エラー確認
     const errorCheck = (tag: string) => {
         if (tag === "") {

@@ -178,7 +178,7 @@ export const getRecentTagsByUserId = async (userId: string) => {
     const data = await db.tags.findMany({
       where: { userId },
       orderBy: { updated_at: 'desc'},
-      take: 3,
+      take: 30,
     });
     if(data == null) throw new Error("tags not found");
     return z.array(tagsSchema).parse(data);
