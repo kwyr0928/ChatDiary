@@ -3,7 +3,7 @@
 import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import {
   IoAddCircleSharp,
   IoBarChartSharp,
@@ -32,7 +32,15 @@ type ApiResponse = {
   tagList: string[];
 };
 
-export default function Page() {
+export default function Home() {
+  return (
+    <Suspense>
+      <Page />
+    </Suspense>
+  );
+}
+
+function Page() {
   const [keyword, setKeyword] = useState("");
   const [diaryList, setDiaryList] = useState<ApiResponse>();
   const [shareData, setShareData] = useState();
