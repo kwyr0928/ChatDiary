@@ -186,12 +186,12 @@ function Page() {
           <div className="flex items-center space-x-2">
             <Select onValueChange={handleChange}>
               <SelectTrigger className="px-3 hover:bg-gray-50">
-                <SelectValue placeholder="物事掘り下げモード" />
+                <SelectValue placeholder="物事を" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="episode">物事掘り下げモード</SelectItem>
-                  <SelectItem value="emotion">感情掘り下げモード</SelectItem>
+                  <SelectItem value="episode">物事を</SelectItem>
+                  <SelectItem value="emotion">感情を</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
