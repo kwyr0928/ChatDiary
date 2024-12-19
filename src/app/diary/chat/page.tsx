@@ -146,7 +146,7 @@ function Page() {
       <div className="fixed top-0 mb-5 flex w-full max-w-md flex-col justify-center bg-white pt-5 text-center">
         <div className="mb-3 flex">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5 mr-auto">
+            <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5">
               <IoChevronBackSharp color="#f87171" size={"30px"} />
             </DialogTrigger>
             <DialogContent className="w-[80%]">
@@ -177,8 +177,14 @@ function Page() {
               </div>
             </DialogContent>
           </Dialog>
-          <p className="my-auto mr-12 w-[95%] text-lg text-gray-700">
-            {new Date().toLocaleDateString("ja-JP")}
+          <p className="mx-auto pr-12 text-lg text-gray-700">
+            {new Date().toLocaleString("ja-JP", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </p>
         </div>
         {/* プルダウン */}
@@ -199,7 +205,7 @@ function Page() {
           </div>
         </div>
       </div>
-      <div className="mb-[120px] mt-[130px] w-fill">
+      <div className="w-fill mb-[120px] mt-[130px]">
         {messages.map((message, index) => (
           <ChatCard key={index} isAI={message.isAI}>
             {message.text}
@@ -207,7 +213,7 @@ function Page() {
         ))}
       </div>
       {/* チャット欄 */}
-      <div className="fixed bottom-0 flex items-end justify-center w-full max-w-md bg-red-50 pb-5 pt-3">
+      <div className="fixed bottom-0 flex w-full max-w-md items-end justify-center bg-red-50 pb-5 pt-3">
         {isSending ? (
           // 送信中の表示
           <LoaderCircle className="w-[300px] animate-spin" />
@@ -216,13 +222,18 @@ function Page() {
           <p className="w-[300px] text-center">回答生成中...</p>
         ) : (
           <div className="flex items-end justify-center space-x-2">
-          <ResizeTextarea
-          className="w-[300px] resize-none rounded border p-1 focus:outline-none"
-            text={inputText}
-            onChange={(text) => setInputText(text)}
-            isLimit={true}
-          />
-          <IoSendSharp onClick={handleSend} color="#f87171" size={"30px"} className="pb-1" />
+            <ResizeTextarea
+              className="w-[300px] resize-none rounded border p-1 focus:outline-none"
+              text={inputText}
+              onChange={(text) => setInputText(text)}
+              isLimit={true}
+            />
+            <IoSendSharp
+              onClick={handleSend}
+              color="#f87171"
+              size={"30px"}
+              className="pb-1"
+            />
           </div>
         )}
       </div>
