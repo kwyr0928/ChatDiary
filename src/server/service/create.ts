@@ -13,7 +13,7 @@ export async function createNewUser(email: string, hashedPassword: string) {
       password: hashedPassword,
     });
     const create = await insertNewUser(userData);
-    if(create==null) throw new Error("err in insertNewUser");
+    if (create == null) throw new Error("err in insertNewUser");
 
     return create;
   } catch (error) {
@@ -50,9 +50,9 @@ export async function initializeDiary(userId: string) {
       summary: "出力結果",
       isPublic: false,
     };
-    
+
     const created = await insertDiary(diaryData);
-    if(created==null) throw new Error("err in insertDiary");
+    if (created == null) throw new Error("err in insertDiary");
 
     return created;
   } catch (error) {
@@ -63,16 +63,16 @@ export async function initializeDiary(userId: string) {
 
 export async function initializeChat(diaryId: string, mode: number, userMessage: string) {
   try {
-    if (diaryId == null || userMessage ==null) throw new Error("Invalid option data");
+    if (diaryId == null || userMessage == null) throw new Error("Invalid option data");
     const chatData: z.infer<typeof chatsSchema> = {
       diaryId: diaryId,
       mode: mode,
       message: userMessage,
     };
-    
+
     const created = await insertChat(chatData);
-    if(created==null) throw new Error("err in insertChat");
-    
+    if (created == null) throw new Error("err in insertChat");
+
     return created;
   } catch (error) {
     console.error(error);
@@ -82,14 +82,14 @@ export async function initializeChat(diaryId: string, mode: number, userMessage:
 
 export async function createTag(name: string, userId: string) {
   try {
-    if (name ==null) throw new Error("Invalid option data");
+    if (name == null) throw new Error("Invalid option data");
     const tagData: z.infer<typeof newTag> = {
       name: name,
       userId: userId
     };
     const created = await insertTag(tagData);
-    if(created==null) throw new Error("err in createTag");
-    
+    if (created == null) throw new Error("err in createTag");
+
     return created;
   } catch (error) {
     console.error(error);
@@ -99,14 +99,14 @@ export async function createTag(name: string, userId: string) {
 
 export async function connectDiaryTag(diaryId: string, tagId: string) {
   try {
-    if (diaryId == null || tagId ==null) throw new Error("Invalid option data");
+    if (diaryId == null || tagId == null) throw new Error("Invalid option data");
     const diaryTagsData: z.infer<typeof diaryTagsSchema> = {
       diaryId: diaryId,
       tagId: tagId
     };
     const created = await insertDiaryTag(diaryTagsData);
-    if(created==null) throw new Error("err in insertDiaryTag");
-    
+    if (created == null) throw new Error("err in insertDiaryTag");
+
     return created;
   } catch (error) {
     console.error(error);
@@ -116,7 +116,7 @@ export async function connectDiaryTag(diaryId: string, tagId: string) {
 
 export async function createMonthlyFB(userId: string, target: number) {
   try {
-    if (userId == null || target ==null) throw new Error("Invalid option data");
+    if (userId == null || target == null) throw new Error("Invalid option data");
     // 先月のまとめ生成
     // Gemini APIキーを設定
     const apiKey = process.env.GEMINI_API_KEY;
@@ -124,7 +124,7 @@ export async function createMonthlyFB(userId: string, target: number) {
     if (!apiKey) throw new Error("err in getDiariesByUserId");
     const genAI = new GoogleGenerativeAI(apiKey);
     // モデルの取得
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig: { temperature: 1, maxOutputTokens:254 }, });  // 使用モデル指定
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig: { temperature: 1, maxOutputTokens: 254 }, });  // 使用モデル指定
 
     // 全部の日記の本文を取得 
     const diaries = await getDiariesByUserId(userId);
@@ -145,15 +145,15 @@ export async function createMonthlyFB(userId: string, target: number) {
     const generatedText = await response.text();
 
     // FBの取得
-    const text = generatedText;    
+    const text = generatedText;
     const monthlySummariesData: z.infer<typeof monthlySummariesSchema> = {
       userId: userId,
       month: target,
       text: text,
     };
     const created = await insertMonthlySummaries(monthlySummariesData);
-    if(created==null) throw new Error("err in insertMonthlySummaries");
-    
+    if (created == null) throw new Error("err in insertMonthlySummaries");
+
     return created;
   } catch (error) {
     console.error(error);
@@ -170,19 +170,16 @@ export async function createAnalysesFB(userId: string) {
     if (diaries == null) throw new Error("err in getDiariesByUserId");
 
     //表示するテキスト
-    let text = "日記を書いてね！"
-
-    if (diaries.length != 0) {
-      const diarySummaries = diaries.map(diary => `[${diary.summary}]`).join("");
+    const diarySummaries = diaries.map(diary => `[${diary.summary}]`).join("");
 
     // Gemini APIキーを設定
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) throw new Error("err in getDiariesByUserId");
-    
+
     const genAI = new GoogleGenerativeAI(apiKey);
     // モデルの取得
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig: { temperature: 1, maxOutputTokens:254 }, });  // 使用モデル指定
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig: { temperature: 1, maxOutputTokens: 254 }, });  // 使用モデル指定
 
     // 日記全文＋要約の文章をGeminiに送る（チャットじゃなくてgenerateContents）
     const prompt_post = `${diarySummaries} あなたは人物の分析を得意とするアシスタントです。上記の[]で囲まれた日記を基に、以下の点を要約して文章にしてください。 主な出来事や体験、感情の変化や価値観、ユーザーの強みや特徴を簡潔かつ自己分析に役立つ形で100字以内でまとめてください。`
@@ -190,7 +187,7 @@ export async function createAnalysesFB(userId: string) {
     // テキスト生成
     const result = await model.generateContent({
       contents: [{ role: 'USER', parts: [{ text: prompt_post }] }],
-      generationConfig: { temperature: 1, maxOutputTokens:254 },
+      generationConfig: { temperature: 1, maxOutputTokens: 254 },
     });
 
     // レスポンスの取得
@@ -198,8 +195,8 @@ export async function createAnalysesFB(userId: string) {
     const generatedText = await response.text();
 
     // FBの取得
-    text = generatedText;
-    }
+    const text = generatedText;
+
 
     const analysesData: z.infer<typeof analysesSchema> = {
       userId: userId,
@@ -207,8 +204,8 @@ export async function createAnalysesFB(userId: string) {
     };
 
     const created = await insertAnalyses(analysesData);
-    if(created==null) throw new Error("err in insertAnalyses");
-    
+    if (created == null) throw new Error("err in insertAnalyses");
+
     return created;
   } catch (error) {
     console.error(error);
@@ -224,16 +221,16 @@ export async function createContinuation(userId: string, today: Date) {
     const month = today.getMonth(); // 月は0ベース
     const day = today.getDate();
     // YYYYMMDD形式
-    const target = year*10000 + (month+1)*100 + day; // 月は0ベースなので+1して調整
+    const target = year * 10000 + (month + 1) * 100 + day; // 月は0ベースなので+1して調整
     const exist = await getTodayContinuation(userId, target);
-    if(exist==null) {
+    if (exist == null) {
       const continuationData: z.infer<typeof continuationSchema> = {
         userId: userId,
         day: target,
         done: true,
       };
       const created = await insertContinuation(continuationData);
-      if(created==null) throw new Error("err in insertContinuation");
+      if (created == null) throw new Error("err in insertContinuation");
       return created;
     }
     return exist;

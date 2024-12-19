@@ -2,7 +2,7 @@
 
 import { NextResponse } from "next/server";
 import { auth } from "~/server/auth";
-import { getAnalysesFeedBack } from "~/server/repository/getdata";
+import { getAnalysesFeedBack, getDiariesByUserId } from "~/server/repository/getdata";
 import { createAnalysesFB, createMonthlyFB } from "~/server/service/create";
 import { getLastMonthFB, getMonthlyContinuation } from "~/server/service/fetch";
 import { updateAnalysesFB } from "~/server/service/update";
@@ -30,23 +30,33 @@ export async function GET(
     // 先月のDB
     let lastMonthFBData = await getLastMonthFB(userId, target);
     let lastMonthFB = lastMonthFBData?.text;
-    if(lastMonthFBData==null){
-      //FB生成
-      const created = await createMonthlyFB(userId, target);
-      lastMonthFBData = created;
-      lastMonthFB = lastMonthFBData?.text;
+    const diaries = await getDiariesByUserId(userId);
+    if (diaries == null) throw new Error("err in getDiariesByUserId");
+    if (lastMonthFBData == null) {
+      if (diaries.length != 0) {
+        //FB生成
+        const created = await createMonthlyFB(userId, target);
+        lastMonthFBData = created;
+        lastMonthFB = lastMonthFBData?.text;
+      } else {
+        lastMonthFB = "日記を書いてね！"
+      }
     }
 
     // 全体分析
     let analysesFBData = await getAnalysesFeedBack(userId);
     let analysesFB = analysesFBData?.text;
     const limit = new Date();
-    limit.setMonth(new Date().getMonth()-1);
-    if(analysesFBData==null){
-      //分析FB生成
-      analysesFBData = await createAnalysesFB(userId);
-      analysesFB = analysesFBData?.text;
-    } else if(analysesFBData.created_at! < limit){
+    limit.setMonth(new Date().getMonth() - 1);
+    if (analysesFBData == null) {
+      if (diaries.length != 0) {
+        //分析FB生成
+        analysesFBData = await createAnalysesFB(userId);
+        analysesFB = analysesFBData?.text;
+      } else {
+        analysesFB = "日記を書いてね！";
+      }
+    } else if (analysesFBData.created_at! < limit) {
       //分析FB生成
       analysesFBData = await updateAnalysesFB(userId);
       analysesFB = analysesFBData?.text;
@@ -54,10 +64,10 @@ export async function GET(
 
     // 継続情報
     const continuation = await getMonthlyContinuation(userId, new Date());
-    if(continuation==null || continuation.length==0) throw new Error("err in getMonthlyContinuation");
+    if (continuation == null || continuation.length == 0) throw new Error("err in getMonthlyContinuation");
 
     return NextResponse.json({
-      message: "get "+year+"/"+month+" feedback successfully",
+      message: "get " + year + "/" + month + " feedback successfully",
       monthly: lastMonthFB,
       analyses: analysesFB,
       continuation: continuation,
