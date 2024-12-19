@@ -184,14 +184,6 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
     }
   };
 
-  useEffect(() => {
-    setIsChanged(true)
-  }, [tags])
-
-  const handleSetTags = (newTags: string[]) => {
-    setTags(newTags)
-  }
-
   if (isLoading) {
     return (
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
@@ -202,7 +194,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
-      <div className="fixed top-0 flex w-full max-w-md items-center justify-between bg-red-50 pb-3 pt-5 text-center">
+      <div className="fixed top-0 flex w-full bg-white max-w-md items-center justify-between pb-5 pt-5 text-center">
         {isChanged ? (
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger onClick={() => setIsOpen(true)} className="pl-3">
@@ -248,7 +240,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
       </div>
       <div className="mt-[60px] w-[85%]">
         <div className="flex items-center space-x-5">
-          <p className="mt-5 mb-3 text-left text-lg font-bold">日記本文</p>
+          <p className="mt-10 mb-3 text-left text-lg font-bold">日記本文</p>
         </div>
         {!isSaving ? (
           <ResizeTextarea
@@ -272,7 +264,8 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             initialTags={tags}
             initialTagList={tagList}
             onChangeTags={(newTags) => {
-              handleSetTags(newTags)
+              setIsChanged(true);
+              setTags(newTags);
             }}
             />
           ) : (

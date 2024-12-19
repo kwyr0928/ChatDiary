@@ -71,8 +71,10 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
     };
 
     useEffect(() => {
-        onChangeTags(tags); // レンダリング完了後に状態を親に通知
-    }, [tags, onChangeTags]);
+           if (tags != initialTags) {
+            onChangeTags(tags);
+        } // レンダリング完了後に状態を親に通知
+    }, [tags]);
 
     // タグを削除
     const removeTag = (removeItem: string) => {
