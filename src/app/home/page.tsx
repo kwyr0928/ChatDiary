@@ -160,7 +160,7 @@ function Page() {
                 </DialogTitle>
               </DialogHeader>
               <DialogDescription className="text-gray-500 my-3">
-                {shareData.share.summary}
+                {shareData?.share.summary}
               </DialogDescription>
                   <div className="my-2 mx-auto">
                     <Button className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500" onClick={() => (setIsOpen(false))}>
