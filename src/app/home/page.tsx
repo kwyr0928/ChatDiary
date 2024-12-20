@@ -58,9 +58,9 @@ function Page() {
   useEffect(() => {
     const fetchDiaries = async () => {
       // 日記一覧取得
-      
       try {
-      if (diaryId != undefined) {
+        const shouldShowDialog = sessionStorage.getItem("showDialog");
+        if (shouldShowDialog === "true") {
         setIsOpen(true);
         const response = await fetch(`/api/share`, {
           method: "GET",
@@ -72,6 +72,7 @@ function Page() {
         console.log(responseData);
         if (response.ok) {
           setShareData(responseData);
+          sessionStorage.removeItem("showDialog");
         } else {
           throw new Error(responseData);
         }

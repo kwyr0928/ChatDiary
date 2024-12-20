@@ -68,6 +68,7 @@ function Page() {
   }, [tagList]);
 
   const handleCreateDiary = async () => {
+    sessionStorage.setItem("showDialog", "true");
     try {
       const response = await fetch(`/api/diary/${diaryId}`, {
         method: "PUT",
@@ -83,8 +84,9 @@ function Page() {
       const responseData = await response.json();
       console.log(responseData);
       if (response.ok) {
-      router.push(`/home?diaryId=${diaryId}`);
+      router.push("/home");
     } else {
+      sessionStorage.removeItem("showDialog");
       throw new Error(responseData);
     }
     } catch (error) {
