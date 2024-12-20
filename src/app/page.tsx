@@ -17,7 +17,6 @@ export default function Page() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({}),
         });
         const responseData = await response.json();
         console.log(responseData);
@@ -27,6 +26,7 @@ export default function Page() {
           throw new Error(responseData);
         }
       } catch (error) {
+        console.log(error)
         router.replace("/signin");
       } finally {
         setLoading(false); // ローディング状態を解除
