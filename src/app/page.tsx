@@ -1,12 +1,65 @@
-import Link from "next/link";
+"use client"
 
-export default async function Page() {
+import { LoaderCircle } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+export default function Page() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const start = async () => {
+      try {
+        const response = await fetch("/api/user", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({}),
+        });
+        const responseData = await response.json();
+        console.log(responseData);
+        if (response.ok) {
+          router.replace("/home")
+        } else {
+          throw new Error(responseData);
+        }
+      } catch (error) {
+        router.replace("/signin");
+      } finally {
+        setLoading(false); // ローディング状態を解除
+      }
+    }
+
+    void start();
+  }, [router])
+
+  if (loading) {
+    return (
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+        <Image
+          src="/logo.png"
+          alt="logo"
+          priority={true}
+          width={250}
+          height={250}
+        />
+        <LoaderCircle className="animate-spin" />
+      </div>
+    )
+  }
 
   return (
-      <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-        <Link href={"/signin"}>
-          対話型自己分析日記システム
-        </Link>
-      </button>
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <Image
+        src="/logo.png"
+        alt="logo"
+        priority={true}
+        width={250}
+        height={250}
+      />
+    </div>
   );
 }

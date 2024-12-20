@@ -1,10 +1,10 @@
 "use client";
 
 import { Eye, EyeClosed, LoaderCircle } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { IoDocumentTextSharp } from "react-icons/io5";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { toast } from "~/hooks/use-toast";
@@ -81,7 +81,13 @@ export default function Page() {
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
-      <IoDocumentTextSharp color="gray" size={"70px"} />
+      <Image
+        src="/logo.png"
+        alt="logo"
+        priority={true}
+        width={120}
+        height={120}
+      />
       <p className="my-8 text-3xl font-bold">ログイン</p>
       <form className="flex w-[70%] flex-col space-y-7" onSubmit={handleSignin}>
         <div className="space-y-2">
@@ -103,26 +109,26 @@ export default function Page() {
               パスワード<span className="ml-2 text-xs">※8文字以上</span>
             </label>
           </div>
-         <div className="relative w-full">
-           <Input
-             name="password"
-             type={showPassword ? "text" : "password"}
-             className="h-12 w-full rounded-full border-gray-200 px-4 pr-12"
-             placeholder="パスワード"
-             value={password}
-             onChange={(e) => validatePassword(e.target.value)}
+          <div className="relative w-full">
+            <Input
+              name="password"
+              type={showPassword ? "text" : "password"}
+              className="h-12 w-full rounded-full border-gray-200 px-4 pr-12"
+              placeholder="パスワード"
+              value={password}
+              onChange={(e) => validatePassword(e.target.value)}
             />
-           <button
-             type="button"
-             onClick={()=>{setShowPassword(!showPassword)}}
-             className="absolute inset-y-0 right-4 flex items-center text-gray-500"
-           >
-            {showPassword ? <Eye /> : <EyeClosed />}
-           </button>
-         </div>
-           {passwordError && (
-             <p className="text-xs text-red-500">{passwordError}</p>
-           )}
+            <button
+              type="button"
+              onClick={() => { setShowPassword(!showPassword) }}
+              className="absolute inset-y-0 right-4 flex items-center text-gray-500"
+            >
+              {showPassword ? <Eye /> : <EyeClosed />}
+            </button>
+          </div>
+          {passwordError && (
+            <p className="text-xs text-red-500">{passwordError}</p>
+          )}
         </div>
         {/* ボタンUI */}
         <div>
