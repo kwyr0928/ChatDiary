@@ -46,8 +46,8 @@ export default function Page() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetch("/api/user", {
-        method: "GET",
+      const response = await fetch("/api/user/signin", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
