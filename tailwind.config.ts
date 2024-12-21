@@ -89,9 +89,9 @@ export default {
         },
         theme5: {
           // monochrome
-          primary: "#3A3949",
+          primary: "#55555F",
           background: "#FAFAFA",
-          hover: "#A2A1B5",
+          hover: "#232329",
         },
         theme6: {
           // dark
