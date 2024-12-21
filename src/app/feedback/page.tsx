@@ -2,6 +2,7 @@
 
 import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IoBarChartSharp, IoCogSharp, IoHomeSharp } from "react-icons/io5";
 import { Card, CardContent } from "~/components/ui/card";
@@ -16,12 +17,14 @@ type FeedbackResponse = {
 };
 
 export default function Page() {
+  const router = useRouter();
    const theme = useThemeStore((state) => state.theme);
   const [isLoading, setIsLoading] = useState(true);
   const [feedback, setFeedback] = useState<FeedbackResponse>();
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth() + 1;
+  const [isSession, setIsSession] = useState(false);
 
   useEffect(() => {
     const fetchFeedBack = async () => {
@@ -32,30 +35,54 @@ export default function Page() {
             "Content-Type": "application/json",
           },
         });
-        const responseData = await response.json();
+        const responseData = (await response.json()) as FeedbackResponse;
         console.log(responseData);
         if (response.ok) {
+          setIsSession(true);
           setFeedback(responseData);
-        } else {
-          throw new Error(responseData);
+        } else { // 401 500
+          let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
         }
       } catch (error) {
-        // 入力エラーメッセージ表示
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "予期しないエラーが発生しました";
-        // エラーメッセージ表示　普通は出ないはず
+        console.log(error);
+        if (error instanceof Error) {
         toast({
           variant: "destructive",
-          description: errorMessage,
+          description: error.message,
         });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
       } finally {
-        setIsLoading(false); // ローディングを終了
+        if(isSession){
+          setIsLoading(false); // ローディングを終了
+        }
       }
     };
     void fetchFeedBack();
   }, []);
+
+  useEffect(() => {
+    if(isSession){
+      setIsLoading(false); // ローディングを終了
+    }
+  }, [isSession]);
 
   if (isLoading) {
     return (

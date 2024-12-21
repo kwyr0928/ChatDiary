@@ -6,9 +6,15 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
 
+type GetUserResponse = {
+  message: string;
+  email: string;
+  theme: number;
+}
+
 export default function Page() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const setTheme = useThemeStore((state) => state.setTheme);
 
   useEffect(() => {
@@ -20,19 +26,32 @@ export default function Page() {
             "Content-Type": "application/json",
           },
         });
-        const responseData = await response.json();
+        const responseData = (await response.json()) as GetUserResponse;
         console.log(responseData);
         if (response.ok) {
           setTheme(responseData.theme);
           router.replace("/home")
         } else {
-          throw new Error(responseData);
+          let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
         }
       } catch (error) {
         console.log(error);
         router.replace("/signin");
       } finally {
-        setLoading(false); // ローディング状態を解除
+        setIsLoading(false); // ローディング状態を解除
       }
     }
 
@@ -40,7 +59,7 @@ export default function Page() {
   }, [router, setTheme])
   
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600`}>
         <Image
