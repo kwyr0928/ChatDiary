@@ -207,8 +207,8 @@ function Page() {
         />
         </div>
       </div>
-      <div onClick={initializeDiary} className="fixed bottom-24 flex w-full max-w-md justify-end pr-4">
-        <IoAddCircleSharp size={"70px"} className={`text-theme${theme}-primary`} />
+      <div className="fixed bottom-24 flex w-full max-w-md justify-end pr-4">
+        <IoAddCircleSharp onClick={initializeDiary} size={"70px"} className={`text-theme${theme}-primary`} />
       </div>
       <div className="fixed bottom-0 flex w-full max-w-md justify-around bg-white py-5">
         <Link href={"/setting"}>
