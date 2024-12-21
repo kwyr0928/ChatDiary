@@ -81,21 +81,61 @@ export default function Page() {
           if (response.ok) {
             setTheme(responseData.theme);
             router.push("/home");
-                    } else {
-            throw new Error(responseData.message);
+                    } else { // 401 500
+            let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
           }
         } catch (error) {
           console.log(error);
-        }
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
       } else {
-        throw new Error(responseData.message);
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
+        }
+      } else { // 500
+        let errorMessage = '';
+      switch (response.status) {
+          case 500:
+            errorMessage = 'ログインエラー（500）：メールアドレスまたはパスワードが間違っています。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
       }
     } catch (error) {
-      // 入力エラーメッセージ表示
-      toast({
-        variant: "destructive",
-        description: "メールアドレスかパスワードが間違っています",
-      });
+      console.log(error);
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
     } finally {
       setIsLoading(false); // ローディングを終了
     }

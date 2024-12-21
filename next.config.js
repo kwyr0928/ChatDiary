@@ -15,6 +15,4 @@ const config = {
       },
 };
 
-config.devtool = false;
-
 export default config;

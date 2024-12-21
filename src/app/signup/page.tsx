@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, EyeClosed } from "lucide-react";
+import { Eye, EyeClosed, LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -32,6 +32,7 @@ export default function Page() {
     !password ||
     !rePassword; // ボタンが押せるかどうか
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateEmail = (value: string) => {
     // メールアドレス バリデーション
@@ -82,6 +83,7 @@ export default function Page() {
   const onSubmit = async (e: React.FormEvent) => {
     // 登録ボタン
     e.preventDefault();
+    setIsLoading(true);
     try {
       const response = await fetch("/api/user/signup", {
         method: "POST",
@@ -94,17 +96,49 @@ export default function Page() {
       console.log(responseData);
       if (response.ok) {
         router.push(`/signup/send?email=${email}&userId=${responseData.userId}`);
-      } else {
-        throw new Error(responseData.message);
+      } else { // 409 500
+        let errorMessage = '';
+      switch (response.status) {
+        case 409:
+            errorMessage = '登録エラー（509）：このメールアドレスは既に登録されています。';
+            setIsLoading(false); // ローディングを終了
+            break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            setIsLoading(false); // ローディングを終了
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          setIsLoading(false); // ローディングを終了
+          break;
+      }
+      throw new Error(errorMessage);
       }
     } catch (error) {
-      // 入力エラーメッセージ表示
-      toast({
-        variant: "destructive",
-        description: "このメールアドレスは既に登録されています",
-      });
+      console.log(error);
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
+    } finally {
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+        <LoaderCircle className="animate-spin" />
+      </div>
+    );
+  }
+
 
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">

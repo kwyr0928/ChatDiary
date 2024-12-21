@@ -2,13 +2,17 @@
 
 import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { toast } from "~/hooks/use-toast";
 
 type CertificationResponse = {
   message: string;
+}
+
+type ErrorResponse = {
+  error: string;
 }
 
 export default function Complete() {
@@ -23,6 +27,8 @@ function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  const router = useRouter();
+  const [isSession, setIsSession] = useState(false);
 
   useEffect(() => {
     // 認証
@@ -35,28 +41,70 @@ function Page() {
             "authorization": `JWT ${token}`,
           }
         });
+        if (response.ok) {
+          setIsSession(true);
         const responseData = (await response.json()) as CertificationResponse;
         console.log(responseData);
-        if (response.ok) {
-        } else {
-          throw new Error(responseData.message);
+        } else { // 401 404 500
+          let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          const errorData = (await response.json()) as ErrorResponse;
+      if (errorData.error === "Token expired") {
+          errorMessage = '期限切れ（401）: トークンの有効期限が切れています。';
+          router.push("/signup/expired");
+      } else if  (errorData.error === "Already authenticated") {
+        errorMessage = '認証済み（401）: 既に認証が完了しております。ログインをお試しください。';
+        router.push("/signin");
+      }
+          break;
+          case 404:
+          errorMessage = 'Not Found（404）: ユーザーが見つかりません';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            router.push("/signin");
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
         }
       } catch (error) {
-        // 入力エラーメッセージ表示
+        console.log(error);
+        if (error instanceof Error) {
+          if (error.message == "Already authenticated") {
+            toast({
+              description: error.message,
+            });
+          } else {
+            toast({
+              variant: "destructive",
+              description: error.message,
+            });
+          }
+      } else {
         toast({
-          description: (
-            <div style={{ whiteSpace: "pre-line" }}>
-              既に認証が完了しております。
-              {"\n"}ログイン画面からログインをお試しください。
-            </div>
-          ),
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
         });
+      }
       } finally {
-        setIsLoading(false); // ローディング完了
+        if(isSession){
+          setIsLoading(false); // ローディングを終了
+        }
       }
     };
     void fetchCertification();
   }, []);
+
+  useEffect(() => {
+    if(isSession){
+      setIsLoading(false); // ローディングを終了
+    }
+  }, [isSession]);
 
   if (isLoading) {
     return (

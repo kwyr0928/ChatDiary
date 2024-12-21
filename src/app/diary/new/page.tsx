@@ -46,9 +46,10 @@ function Page() {
   const [tagList, setTagList] = useState<string[]>([])
   const [isPublic, setIsPublic] = useState("private");
   const searchParams = useSearchParams();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const res = searchParams.get("res");
   const diaryId = searchParams.get("diaryId");
+  const [isSession, setIsSession] = useState(false);
 
   useEffect(() => {
     const fetchTagNames = async () => {
@@ -62,21 +63,41 @@ function Page() {
         const responseData = (await response.json()) as GetTagResponse;
         console.log(responseData);
         if (response.ok) {
+          setIsSession(true);
           setTagList(responseData.tagList);
-        } else {
-          throw new Error(responseData.message);
+        } else { // 401 500
+          let errorMessage = '';
+          switch (response.status) {
+            case 401:
+              errorMessage = '認証エラー（401）: ログインが必要です。';
+              router.push("/signin");
+              break;
+              case 500:
+                errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+                break;
+            default:
+              errorMessage = '予期しないエラーが発生しました。';
+              break;
+          }
+          throw new Error(errorMessage);
         }
       } catch (error) {
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "予期しないエラーが発生しました";
-        // エラーメッセージ表示　普通は出ないはず
+        console.log(error);
+        if (error instanceof Error) {
         toast({
           variant: "destructive",
-          description: errorMessage,
+          description: error.message,
         });
-
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
+      } finally {
+        if(isSession){
+          setIsLoading(false); // ローディングを終了
+        }
       }
     }
     void fetchTagNames();
@@ -89,6 +110,7 @@ function Page() {
   }, [tagList]);
 
   const handleCreateDiary = async () => {
+    setIsLoading(true);
     sessionStorage.setItem("showDialog", "true");
     try {
       const response = await fetch(`/api/diary/${diaryId}`, {
@@ -105,26 +127,50 @@ function Page() {
       const responseData = (await response.json()) as UpdateDiaryResponse;
       console.log(responseData);
       if (response.ok) {
+        setIsSession(true);
       router.push("/home");
-    } else {
+    } else { // 401 500
       sessionStorage.removeItem("showDialog");
-      throw new Error(responseData.message);
+      let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
     }
     } catch (error) {
-      // 入力エラーメッセージ表示
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "予期しないエラーが発生しました";
-      // エラーメッセージ表示　普通は出ないはず
-      toast({
-        variant: "destructive",
-        description: errorMessage,
-      });
+      console.log(error);
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
     } finally {
-      setIsLoading(false); // ローディングを終了
+      if(isSession){
+        setIsLoading(false); // ローディングを終了
+      }
     }
     };
+
+    useEffect(() => {
+      if(isSession){
+        setIsLoading(false); // ローディングを終了
+      }
+    }, [isSession]);
 
     if (isLoading) {
       return (

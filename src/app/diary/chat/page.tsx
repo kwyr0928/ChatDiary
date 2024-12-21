@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { IoChevronBackSharp, IoSendSharp } from "react-icons/io5";
 import ChatCard from "~/components/chatCard";
 import ResizeTextarea from "~/components/resizeTextarea";
@@ -39,6 +39,12 @@ type DeleteResponse = {
   message: string;
 }
 
+type GetUserResponse = {
+  message: string;
+  email: string;
+  theme: number;
+}
+
 export default function Chat() {
   return (
     <Suspense>
@@ -58,9 +64,65 @@ function Page() {
   const [isOpen, setIsOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false); // 要約生成中かどうか
   const [isSending, setIsSending] = useState(false); // 送信中かどうか
+  const [isLoading, setIsLoading] = useState(true); // 送信中かどうか
   const router = useRouter();
   const params = useSearchParams();
   const diaryId = params.get("diaryId");
+  const [isSession, setIsSession] = useState(false);
+
+  useEffect(() => {
+    const start = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch("/api/user", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const responseData = (await response.json()) as GetUserResponse;
+        console.log(responseData);
+        if (response.ok) {
+          setIsSession(true);
+        } else { // 401 500
+          let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
+        }
+      } catch (error) {
+        console.log(error);
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
+        router.replace("/signin");
+      } finally {
+        if(isSession){
+          setIsLoading(false); // ローディングを終了
+        }
+      }
+    }
+
+    void start();
+  }, []);
 
   const handleSend = async () => {
     // メッセージを送信
@@ -88,6 +150,7 @@ function Page() {
       const responseData = (await response.json()) as ChatResponse;
       console.log(responseData);
       if (response.ok) {
+        setIsSession(true);
         if (count + 1 >= 5) {
           await new Promise((resolve) => setTimeout(resolve, 1000));
           router.push(
@@ -101,28 +164,47 @@ function Page() {
           ...prev,
           { text: responseData.response, isAI: true },
         ]);
-      } else {
-        throw new Error(responseData.message);
+      } else { // 401 500 504
+        let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+          case 504:
+            errorMessage = 'タイムアウト（504）：再試行してください。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
       }
       // 入力フィールドをクリア
       setInputText("");
     } catch (error) {
-      // 入力エラーメッセージ表示
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "予期しないエラーが発生しました";
-      // エラーメッセージ表示　普通は出ないはず
-      toast({
-        variant: "destructive",
-        description: errorMessage,
-      });
+      console.log(error);
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
     } finally {
       setIsSending(false); // 送信完了
     }
   };
 
   const handleDelete = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch(`/api/diary/${diaryId}`, {
         method: "DELETE",
@@ -134,26 +216,55 @@ function Page() {
       console.log(responseData);
       if (response.ok) {
         router.push("/home");
-      } else {
-        throw new Error(responseData.message);
+      } else { // 500
+        let errorMessage = '';
+      switch (response.status) {
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
       }
     } catch (error) {
-      // 入力エラーメッセージ表示
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "予期しないエラーが発生しました";
-      // エラーメッセージ表示　普通は出ないはず
-      toast({
-        variant: "destructive",
-        description: errorMessage,
-      });
+      console.log(error);
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
+  } finally {
+    if(isSession){
+      setIsLoading(false); // ローディングを終了
     }
-  };
+  }
+};
 
   const handleChange = (value: string) => {
     setMode(value === "episode" ? 0 : 1);
   };
+
+  useEffect(() => {
+    if(isSession){
+      setIsLoading(false); // ローディングを終了
+    }
+  }, [isSession]);
+
+  if (isLoading) {
+    return (
+      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
+        <LoaderCircle className="animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col bg-theme${theme}-background text-gray-600`}>

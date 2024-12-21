@@ -60,6 +60,7 @@ export default function Page() {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
+    const [isSession, setIsSession] = useState(false);
 
   useEffect(() => {
     console.log(theme);
@@ -78,13 +79,27 @@ export default function Page() {
         const responseData = (await response.json()) as GetShareResponse;
         console.log(responseData);
         if (response.ok) {
+          setIsSession(true);
           setShareData(responseData.share.summary);
           sessionStorage.removeItem("showDialog");
-        } else {
-          throw new Error(responseData.message);
+        } else { // 401 500
+          let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+        case 500:
+          errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+          break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
         }
       }
-        const response = await fetch(`/api/diary`, {
+      const response = await fetch(`/api/diary`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -93,28 +108,52 @@ export default function Page() {
         const responseData = (await response.json()) as GetDiaryResponse;
         console.log(responseData);
         if (response.ok) {
+          setIsSession(true);
           setDiaryList(responseData);
-        } else {
-          throw new Error(responseData.message);
+        } else { // 401 500
+          let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
         }
       } catch (error) {
-        // 入力エラーメッセージ表示
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "予期しないエラーが発生しました";
-        // エラーメッセージ表示　普通は出ないはず
-        toast({
-          variant: "destructive",
-          description: errorMessage,
-        });
+        if (error instanceof Error) {
+          toast({
+            variant: "destructive",
+            description: error.message,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            description: "予期しないエラーが発生しました。",
+          });
+        }
       } finally {
+        if(isSession){
         setIsLoading(false); // ローディングを終了
+      }
       }
     };
 
     void fetchDiaries();
   }, []);
+
+  useEffect(() => {
+    if(isSession){
+      setIsLoading(false); // ローディングを終了
+    }
+  }, [isSession]);
+
 
     const initializeDiary = async () => {
       // 日記作成
@@ -129,23 +168,41 @@ export default function Page() {
         const responseData = (await response.json()) as StartChatResponse;
         console.log(responseData);
         if (response.ok) {
+          setIsSession(true);
           router.push(`/diary/chat?diaryId=${responseData.diaryId}`);
-        } else {
-          throw new Error(responseData.message);
+        } else { // 401 500
+          let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
         }
       } catch (error) {
-        // 入力エラーメッセージ表示
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "予期しないエラーが発生しました";
-        // エラーメッセージ表示　普通は出ないはず
+        console.log(error);
+        if (error instanceof Error) {
         toast({
           variant: "destructive",
-          description: errorMessage,
+          description: error.message,
         });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
       } finally {
-        setIsLoading(false); // ローディングを終了
+        if(isSession){
+          setIsLoading(false); // ローディングを終了
+        }
       }
     };
 
