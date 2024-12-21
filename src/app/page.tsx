@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
 
 export default function Page() {
-  const theme = useThemeStore((state) => state.theme);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const setTheme = useThemeStore((state) => state.setTheme);

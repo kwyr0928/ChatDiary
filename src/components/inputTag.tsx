@@ -143,7 +143,7 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
                         </Popover>
                     </div>
                     <Button
-                        className={`bg-theme0-primary hover:bg-theme0-hover`}
+                        className={`bg-theme${theme}-primary hover:bg-theme${theme}-hover`}
                         onClick={() => addTags(text)} >追加
                     </Button>
                 </div>

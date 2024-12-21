@@ -19,6 +19,7 @@ import { useThemeStore } from "~/store/themeStore";
 
 export default function Page() {
   const theme = useThemeStore((state) => state.theme);
+  const setTheme = useThemeStore((state) => state.setTheme);
   const [tags, setTags] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false); // 退会確認ダイアログ
   const [email, setEmail] = useState("");
@@ -158,8 +159,41 @@ export default function Page() {
     }
   };
 
-  const handleThemeChange = () => {
-    console.log("テーマ変更");
+  const handleThemeChange = async (themeNum: number) => {
+    setTheme(themeNum);
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/user/theme`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },body: JSON.stringify({
+          theme: themeNum,
+        }),
+      });
+      const responseData = await response.json();
+      console.log(responseData);
+      if (response.ok) {
+        toast({
+          description: "テーマカラーを変更しました！",
+        });
+      } else {
+        throw new Error(responseData);
+      }
+    } catch (error) {
+      // 入力エラーメッセージ表示
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "予期しないエラーが発生しました";
+      // エラーメッセージ表示　普通は出ないはず
+      toast({
+        variant: "destructive",
+        description: errorMessage,
+      });
+    } finally {
+      setIsLoading(false); // ローディングを終了
+    }
   };
 
   // タグ消去
@@ -233,13 +267,14 @@ export default function Page() {
           <div className="mb-4 w-full text-left text-xl font-bold">
             テーマカラー
             <div className="flex space-x-4 mt-3 mb-16">
-              <div className="w-8 h-8 bg-red-600 rounded-full" onClick={handleThemeChange}>
+              {/* テーマカラー変更4 */}
+              <div className="w-8 h-8 bg-red-600 rounded-full" onClick= {() => handleThemeChange(0)}>
               </div>
-              <div className="w-8 h-8 bg-blue-600 rounded-full" onClick={handleThemeChange}>
+              <div className="w-8 h-8 bg-blue-600 rounded-full" onClick={() => handleThemeChange(1)}>
               </div>
-              <div className="w-8 h-8 bg-yellow-600 rounded-full" onClick={handleThemeChange}>
+              <div className="w-8 h-8 bg-yellow-600 rounded-full" onClick={() => handleThemeChange(2)}>
               </div>
-              <div className="w-8 h-8 bg-black rounded-full" onClick={handleThemeChange}>
+              <div className="w-8 h-8 bg-black rounded-full" onClick={() => handleThemeChange(3)}>
               </div>
             </div>
           </div>
