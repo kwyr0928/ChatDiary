@@ -233,7 +233,7 @@ function Page() {
             <IoSendSharp
               onClick={handleSend}
               size={"30px"}
-              className={`pb-1 text-theme0${theme}-primary`}
+              className={`pb-1 text-theme${theme}-primary`}
             />
           </div>
         )}

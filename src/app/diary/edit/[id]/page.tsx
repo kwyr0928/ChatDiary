@@ -214,7 +214,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
               <div className="flex justify-around">
                 <div className="my-2">
                   <Button
-                    className={`w-[100px] rounded-full border border-theme${theme}-primary bg-white text-theme${theme}-primary hover:border-transparent hover:bg-theme0-hover hover:text-white`}
+                    className={`w-[100px] rounded-full border border-theme${theme}-primary bg-white text-theme${theme}-primary hover:border-transparent hover:bg-theme${theme}-hover hover:text-white`}
                     onClick={() => setIsOpen(false)}
                   >
                     いいえ

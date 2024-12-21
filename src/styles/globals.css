@@ -55,6 +55,7 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%
   }
+  /* テーマカラー変更3 */
   .theme-0 {
     --color-primary: theme0-primary;
     --color-background: theme0-background;
@@ -64,6 +65,16 @@
     --color-primary: theme1-primary;
     --color-background: theme1-background;
     --color-hover: theme1-hover;
+  }
+  .theme-2 {
+    --color-primary: theme2-primary;
+    --color-background: theme2-background;
+    --color-hover: theme2-hover;
+  }
+  .theme-3 {
+    --color-primary: theme3-primary;
+    --color-background: theme3-background;
+    --color-hover: theme3-hover;
   }
 }
 @layer base {

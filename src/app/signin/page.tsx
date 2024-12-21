@@ -8,8 +8,10 @@ import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { toast } from "~/hooks/use-toast";
+import { useThemeStore } from "~/store/themeStore";
 
 export default function Page() {
+  const setTheme = useThemeStore((state) => state.setTheme);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -56,7 +58,24 @@ export default function Page() {
       const responseData = await response.json();
       console.log(responseData);
       if (response.ok) {
-        router.push("/home");
+        try {
+          const response = await fetch("/api/user", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const responseData = await response.json();
+          console.log(responseData);
+          if (response.ok) {
+            setTheme(responseData.theme);
+            router.push("/home");
+                    } else {
+            throw new Error(responseData);
+          }
+        } catch (error) {
+          console.log(error);
+        }
       } else {
         throw new Error(responseData);
       }
