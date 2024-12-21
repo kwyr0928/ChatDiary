@@ -63,7 +63,6 @@ export default function Page() {
     const [isSession, setIsSession] = useState(false);
 
   useEffect(() => {
-    console.log(theme);
     const fetchDiaries = async () => {
       // 日記一覧取得
       try {

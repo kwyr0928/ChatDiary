@@ -55,6 +55,10 @@ function Page() {
   useEffect(() => {
     const fetchTagNames = async () => {
       try {
+        if( res == undefined ) {
+        router.push("/home");
+        throw new Error("エラーが発生しました。もう一度やり直してください。");
+        }
         const response = await fetch(`/api/diary/tag`, {
           method: "GET",
           headers: {

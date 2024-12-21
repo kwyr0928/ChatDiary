@@ -10,10 +10,18 @@ import { Input } from "~/components/ui/input";
 import { toast } from "~/hooks/use-toast";
 import { useThemeStore } from "~/store/themeStore";
 
+type Session = {
+  user: {
+    email: string;
+    id: string;
+  };
+  expires: string;
+};
+
 type SignInResponse = {
   message: string;
-  session: null; // TODO
-}
+  session: Session;
+};
 
 type GetUserResponse = {
   message: string;

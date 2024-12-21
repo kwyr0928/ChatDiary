@@ -109,6 +109,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           break;
           case 500:
             errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            router.push("/home");
             break;
         default:
           errorMessage = '予期しないエラーが発生しました。';
