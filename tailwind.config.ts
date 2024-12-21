@@ -54,7 +54,17 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+			theme0: {
+				primary: "#f87171",
+				background: "#fef2f2",
+				hover: "#f43f5e",
+			},
+			theme1: {
+				primary: "#274a78",
+				background: "#e0f3f8",
+				hover: "#674598",
+			},
   		}
   	}
   },

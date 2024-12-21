@@ -55,6 +55,16 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%
   }
+  .theme-0 {
+    --color-primary: theme0-primary;
+    --color-background: theme0-background;
+    --color-hover: theme0-hover;
+  }
+  .theme-1 {
+    --color-primary: theme1-primary;
+    --color-background: theme1-background;
+    --color-hover: theme1-hover;
+  }
 }
 @layer base {
   * {

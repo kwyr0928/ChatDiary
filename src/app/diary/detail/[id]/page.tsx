@@ -25,6 +25,7 @@ import {
 } from "~/components/ui/dialog";
 import { Label } from "~/components/ui/label";
 import { useToast } from "~/hooks/use-toast";
+import { useThemeStore } from "~/store/themeStore";
 
 type ChatLogEntry = {
   message: string;
@@ -49,6 +50,7 @@ type ApiResponse = {
 };
 
 export default function Page({ params }: { params: Promise<{ id: number }> }) {
+   const theme = useThemeStore((state) => state.theme);
   const [diaryDetail, setDiaryDetail] = useState<ApiResponse>();
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
@@ -128,21 +130,21 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
 
   if (isLoading) {
     return (
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
         <LoaderCircle className="animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
+    <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-theme${theme}-background text-gray-600`}>
       <div className="fixed top-0 flex w-full bg-white max-w-md items-center justify-between pb-5 pt-5 text-center">
         <Link href={"/home"} className="pl-4">
-          <IoChevronBackSharp color="#f87171" size={"30px"} />
+          <IoChevronBackSharp size={"30px"} className={`text-theme${theme}-primary`} />
         </Link>
         <p className="text-lg text-gray-700">{diaryDetail?.diaryData.title}</p>
         <Link href={`/diary/edit/${diaryId}`}>
-          <GoPencil size={"33px"} color="#f87171" className="mr-5" />
+          <GoPencil size={"33px"} className={`text-theme${theme}-primary mr-5`} />
         </Link>
       </div>
       <div className="mt-[60px] w-[85%]">
@@ -153,7 +155,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         <Card className="text-gray-600 shadow-none">
           <CardContent className="px-5 py-3">
             {diaryDetail?.tags && diaryDetail.tags.length > 0 && (
-              <div className="pb-2 pt-1 text-red-400">
+              <div className={`pb-2 pt-1 text-theme${theme}-primary`}>
                 {diaryDetail.tags.map((tag, index) => (
                   <span className="mr-4" key={index}>
                     #{tag}
@@ -168,14 +170,14 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         <div className="justify-left mb-5 mt-4 flex">
           {diaryDetail?.diaryData.isPublic ? (
           <div className="flex items-center space-x-2">
-            <MdOutlinePublic size={30} color={"#f87171"} className="mr-2"/>
+            <MdOutlinePublic size={30} className={`text-theme${theme}-primary mr-2`}/>
             <Label htmlFor="public">
             公開（他の人も見ることができます）
             </Label>
           </div>
         ) : (
           <div className="flex items-center space-x-2">
-            <PiLockKeyFill size={30} color={"#f87171"} className="mr-2"/>
+            <PiLockKeyFill size={30} className={`text-theme${theme}-primary mr-2`}/>
             <Label htmlFor="private">
             非公開（外部には公開されません）
             </Label>
@@ -195,7 +197,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           <div className="mx-auto mt-10 w-[80%]">
             <Button
               onClick={() => setIsOpen(true)}
-              className="w-full rounded-full bg-red-400 hover:bg-rose-500"
+              className={`w-full rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}
             >
               日記を削除
             </Button>
@@ -210,7 +212,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             <div className="flex justify-around">
               <div className="my-2">
                 <Button
-                  className="w-[100px] rounded-full border border-red-400 bg-white text-red-400 hover:border-transparent hover:bg-red-400 hover:text-white"
+                  className={`w-[100px] rounded-full border border-theme${theme}-primary bg-white text-theme${theme}-primary hover:border-transparent hover:bg-theme${theme}-primary hover:text-white`}
                   onClick={() => setIsOpen(false)}
                 >
                   いいえ
@@ -219,7 +221,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
               <Link href={"/home"}>
                 <div className="my-2">
                   <Button
-                    className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500"
+                    className={`w-[100px] rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}
                     onClick={handleDelete}
                   >
                     はい

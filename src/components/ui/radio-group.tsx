@@ -5,6 +5,7 @@ import { Circle } from "lucide-react"
 import * as React from "react"
 
 import { cn } from "~/lib/utils"
+import { useThemeStore } from "~/store/themeStore"
 
 const RadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
@@ -24,6 +25,8 @@ const RadioGroupItem = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
 >(({ className, ...props }, ref) => {
+  const theme = useThemeStore((state) => state.theme);
+
   return (
     <RadioGroupPrimitive.Item
       ref={ref}
@@ -34,7 +37,7 @@ const RadioGroupItem = React.forwardRef<
       {...props}
     >
       <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
-        <Circle className="h-2.5 w-2.5 fill-red-400 text-red-400" />
+        <Circle className={`h-2.5 w-2.5 fill-theme${theme}-primary text-theme${theme}-primary`} />
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
   )
@@ -42,3 +45,4 @@ const RadioGroupItem = React.forwardRef<
 RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName
 
 export { RadioGroup, RadioGroupItem }
+

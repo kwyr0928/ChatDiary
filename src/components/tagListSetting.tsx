@@ -12,9 +12,11 @@ import {
 } from "~/components/ui/dialog";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
+import { useThemeStore } from "~/store/themeStore";
 import { Button } from "./ui/button";
 
 export default function TagListSetting(props: { initialList: string[], onDeleteTags: (updatedTags: string[]) => void }) {
+    const theme = useThemeStore((state) => state.theme);
     const { initialList, onDeleteTags = () => { } } = props
     const [tagList, setTagList] = useState<string[]>(initialList) // タグリスト
     const [deleteTags, setDeleteTags] = useState<string[]>([]) // 削除するタグ
@@ -70,7 +72,7 @@ export default function TagListSetting(props: { initialList: string[], onDeleteT
                             <div className="flex justify-around">
                                 <div className="my-2">
                                     <Button
-                                        className="w-[100px] rounded-full bg-white hover:bg-red-400 text-red-400 hover:text-white border border-red-400 hover:border-transparent"
+                                        className={`w-[100px] rounded-full bg-white hover:bg-theme${theme}-primary text-theme${theme}-primary hover:text-white border border-theme${theme}-primary hover:border-transparent`}
                                         onClick={() => setIsOpen(false)}
                                     >
                                         いいえ
@@ -78,7 +80,7 @@ export default function TagListSetting(props: { initialList: string[], onDeleteT
                                 </div>
                                 <div className="my-2">
                                     <Button
-                                        className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500"
+                                        className={`w-[100px] rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}
                                         onClick={deleteTag}
                                     >
                                         はい
@@ -103,7 +105,7 @@ export default function TagListSetting(props: { initialList: string[], onDeleteT
                                             ? setDeleteTags((prevDeleteTags) => [...prevDeleteTags, tag])
                                             : setDeleteTags(deleteTags.filter((deleteTag) => (deleteTag !== tag)))
                                     }}
-                                    className="border-red-600  data-[state=checked]:bg-red-400 data-[state=checked]:border-red-400"
+                                    className={`border-theme${theme}-primary data-[state=checked]:bg-theme${theme}-primary data-[state=checked]:border-theme${theme}-primary`}
                                 />
                                 <label className="text-base text-gray-600 pl-1">{tag}</label>
                             </div>
