@@ -9,6 +9,22 @@ import { returnedChat, summariedDiary } from "~/server/repository/updatedata";
 import { initializeChat } from "~/server/service/create";
 import { getChatHistory } from "~/server/service/fetch";
 
+// タイムアウト付きの関数を作成
+async function withTimeout(promise: Promise<GenerateContentResult>, timeoutMs: number) {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => reject(new Error("Request timed out")), timeoutMs);
+    promise
+      .then((result) => {
+        clearTimeout(timeout);
+        resolve(result);
+      })
+      .catch((error) => {
+        clearTimeout(timeout);
+        reject(error);
+      });
+  });
+}
+
 export async function POST(
   req: Request,
   { params }: { params: { id: string } },
@@ -27,22 +43,6 @@ export async function POST(
     const chatLimit = 5;
     const diaryCounts = await getChatCounts(diaryId);
     if (diaryCounts == null) throw new Error("err in getChatCounts");
-
-    // タイムアウト付きの関数を作成
-    async function withTimeout(promise: Promise<GenerateContentResult>, timeoutMs: number) {
-      return new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error("Request timed out")), timeoutMs);
-        promise
-          .then((result) => {
-            clearTimeout(timeout);
-            resolve(result);
-          })
-          .catch((error) => {
-            clearTimeout(timeout);
-            reject(error);
-          });
-      });
-    }
 
     // タイムアウト時間の設定
     const timeoutMs = 10000;  // 10秒
@@ -73,21 +73,18 @@ export async function POST(
         // レスポンスの取得
         const result = await withTimeout(chat.sendMessage(text), timeoutMs);
         const response = result.response;
-        const responseText = response.text();
 
-        const res = await returnedChat(sendChat?.id, responseText as string);
+        const res = await returnedChat(sendChat?.id, response.text() as string);
         if (res == null) throw new Error("err in returnedChat");
         aiResponse = res.response!;
       } else {
-        let summaryText = "";
         // 要約の取得
         const prompt = "これまでのやり取りを基に、日記として自然な要約を書いてください。AIとのやり取りや会話形式には触れず、内容が矛盾しないように調整してください。余計な情報は追加せず、200字程度でまとめてください";
         const result = await withTimeout(chat.sendMessage(prompt), 10000);
         const response = result.response;
-        summaryText = response.text();
 
         // 日記に追加
-        const updatedDiary = await summariedDiary(diaryId, summaryText);
+        const updatedDiary = await summariedDiary(diaryId, response.text() as string);
         if (updatedDiary == null) throw new Error("err in summariedDiary");
         aiSummary = updatedDiary.summary!;
       }
