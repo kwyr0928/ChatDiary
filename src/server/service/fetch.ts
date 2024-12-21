@@ -1,5 +1,33 @@
-import { getSummary } from "~/lib/schemas";
-import { getDateDiariesByUserId, getMonthlyFeedBack, getOtherUserDiaryData, getRecentTagsByUserId, getTodayContinuation } from "../repository/getdata";
+import { z } from "zod";
+import { diaryAndTagSchema, getSummary } from "~/lib/schemas";
+import { getDateDiariesByUserId, getDiaryData, getMonthlyFeedBack, getOtherUserDiaryData, getRecentTagsByUserId, getTagByID, getTagConnectionsByDiary, getTodayContinuation } from "../repository/getdata";
+
+export const getDiariesAndTag = async (diaryId: string) => {
+  try {
+    const diaryData = await getDiaryData(diaryId);
+    if (diaryData == null) return [];
+    const tagNames: string[] = [];
+    const connections = await getTagConnectionsByDiary(diaryId);
+    if (connections != null) {
+      for (const tag of connections){
+        const tagName = await getTagByID(tag.tagId);
+        if(tagName != null) tagNames.push(tagName.name);
+      }
+    }
+    const diaryAndTagData: z.infer<typeof diaryAndTagSchema> = {
+      id: diaryData.id,
+      title: diaryData.title,
+      isPublic: diaryData.isPublic,
+      summary: diaryData.summary,
+      created_at: diaryData.created_at,
+      tags: tagNames
+    }
+    return diaryAndTagData;
+  } catch (error) {
+    console.error("Error in getDiariesAndTag:", error);
+    return null;
+  }
+};
 
 export const getRecentTagNamesByUserId = async (userId: string) => {
   try {

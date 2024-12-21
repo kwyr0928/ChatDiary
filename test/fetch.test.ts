@@ -1,6 +1,33 @@
 import { getTodayContinuation } from "~/server/repository/getdata";
-import { createContinuation, createMonthlyFB, createNewUser, createTag, initializeDiary } from "~/server/service/create";
-import { getLastMonthFB, getMonthlyContinuation, getRecentTagNamesByUserId } from "~/server/service/fetch";
+import { connectDiaryTag, createContinuation, createMonthlyFB, createNewUser, createTag, initializeDiary } from "~/server/service/create";
+import { getDiariesAndTag, getLastMonthFB, getMonthlyContinuation, getRecentTagNamesByUserId } from "~/server/service/fetch";
+
+describe("getDiariesAndTag", () => {
+  test("正常系", async () => {
+    const email = "xxx@gmail.com";
+    const hashedPassword = "pass";
+    const user = await createNewUser(email, hashedPassword);
+    
+    const diary = await initializeDiary(user?.id as unknown as string);
+    
+    const tagName = "tag";
+    const tag = await createTag(tagName, user?.id as unknown as string);
+    await connectDiaryTag(diary?.id as unknown as string, tag?.id as unknown as string);
+    const tagName2 = "tag2";
+    const tag2 = await createTag(tagName2, user?.id as unknown as string);
+    await connectDiaryTag(diary?.id as unknown as string, tag2?.id as unknown as string);
+    const tagName3 = "tag3";
+    const tag3 = await createTag(tagName3, user?.id as unknown as string);
+    await connectDiaryTag(diary?.id as unknown as string, tag3?.id as unknown as string);
+    const tagName4 = "tag4";
+    const tag4 = await createTag(tagName4, user?.id as unknown as string);
+    await connectDiaryTag(diary?.id as unknown as string, tag4?.id as unknown as string);
+
+    const getData = await getDiariesAndTag(diary?.id as unknown as string);
+    expect(getData).not.toEqual([]);
+    expect(getData?.tags).toEqual([tagName, tagName2, tagName3, tagName4]);
+  });
+});
 
 describe("getRecentTagNamesByUserId", () => {
   test("正常系", async () => {
@@ -20,7 +47,7 @@ describe("getRecentTagNamesByUserId", () => {
     await createTag(tagName4, user?.id as unknown as string);
 
     const getData = await getRecentTagNamesByUserId(user?.id as unknown as string);
-    expect(getData).toEqual([tagName4, tagName3, tagName2]);
+    expect(getData).toEqual([tagName4, tagName3, tagName2, tagName]);
   });
 });
 
