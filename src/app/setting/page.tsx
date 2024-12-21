@@ -355,7 +355,7 @@ export default function Page() {
   }
 
   return (
-    <div className={`mx-auto min-h-screen w-full max-w-md bg-theme${theme}-background text-gray-800`}>
+    <div className={`mx-auto min-h-screen w-full max-w-md bg-theme${theme}-background text-gray-600`}>
       <div className="mx-auto flex flex-col items-center">
         <div className="ml-8 mr-auto">
           <p className="mt-8 w-full text-left text-xl font-bold">
