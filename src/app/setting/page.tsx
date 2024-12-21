@@ -17,6 +17,30 @@ import {
 import { toast } from "~/hooks/use-toast";
 import { useThemeStore } from "~/store/themeStore";
 
+type GetTagResponse = {
+  message: string;
+  tagList: string[];
+}
+
+type GetUserResponse = {
+  message: string;
+  email: string;
+  theme: number;
+}
+
+type SignOutResponse = {
+  message: string;
+}
+
+type DeleteResponse = {
+  message: string;
+}
+
+type UpdateThemeResponse = {
+  message: string;
+  theme: number;
+}
+
 export default function Page() {
   const theme = useThemeStore((state) => state.theme);
   const setTheme = useThemeStore((state) => state.setTheme);
@@ -37,16 +61,13 @@ export default function Page() {
             "Content-Type": "application/json",
           },
         });
-        const tagResponseData = await tagResponse.json();
+        const tagResponseData = (await tagResponse.json()) as GetTagResponse;
         console.log(tagResponseData);
         if (tagResponse.ok) {
           setTags(tagResponseData.tagList);
         } else {
-          throw new Error(
-            tagResponseData.message || "タグの取得に失敗しました",
-          );
+          throw new Error(tagResponseData.message);
         }
-
         // Fetch Email
         const emailResponse = await fetch(`/api/user`, {
           method: "GET",
@@ -54,14 +75,12 @@ export default function Page() {
             "Content-Type": "application/json",
           },
         });
-        const emailResponseData = await emailResponse.json();
+        const emailResponseData = (await emailResponse.json()) as GetUserResponse;
         console.log(emailResponseData);
         if (emailResponse.ok) {
           setEmail(emailResponseData.email);
         } else {
-          throw new Error(
-            emailResponseData.message || "メールアドレスの取得に失敗しました",
-          );
+          throw new Error(emailResponseData.message);
         }
       } catch (error) {
         const errorMessage =
@@ -80,20 +99,6 @@ export default function Page() {
     void fetchInitialData();
   }, []);
 
-  // useEffect(() => {
-  // idメアド取得 (JWT取得？ api/user/[id]？)
-  // const getUser = async () => {
-  //   const response = await fetch(`/api/user/[id]`);
-  //   if (response.ok) {
-  //     const data = await response.json();
-  //     setUser({ ...user, id: data.id, email: data.email })
-  //   } else {
-  //     console.error("Failed to fetch");
-  //   }
-  // };
-  // getUser();
-  // }, [])
-
   // 退会処理
   const handleDeleteUser = async () => {
     setIsLoading(true);
@@ -104,12 +109,12 @@ export default function Page() {
           "Content-Type": "application/json",
         },
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as DeleteResponse;
       console.log(responseData);
       if (response.ok) {
         router.push("/setting/delete/complete");
       } else {
-        throw new Error(responseData);
+        throw new Error(responseData.message);
       }
     } catch (error) {
       // 入力エラーメッセージ表示
@@ -136,12 +141,12 @@ export default function Page() {
           "Content-Type": "application/json",
         },
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as SignOutResponse;
       console.log(responseData);
       if (response.ok) {
         router.push("/signin");
       } else {
-        throw new Error(responseData);
+        throw new Error(responseData.message);
       }
     } catch (error) {
       // 入力エラーメッセージ表示
@@ -171,14 +176,14 @@ export default function Page() {
           theme: themeNum,
         }),
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as UpdateThemeResponse;
       console.log(responseData);
       if (response.ok) {
         toast({
           description: "テーマカラーを変更しました！",
         });
       } else {
-        throw new Error(responseData);
+        throw new Error(responseData.message);
       }
     } catch (error) {
       // 入力エラーメッセージ表示
@@ -207,7 +212,7 @@ export default function Page() {
         },
         body: JSON.stringify({ names: deleteTags }),
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as DeleteResponse;
       console.log(responseData);
       if (response.ok) {
         setTags((prevItems) =>
@@ -217,7 +222,7 @@ export default function Page() {
           description: "タグを削除しました。",
         });
       } else {
-        throw new Error(responseData);
+        throw new Error(responseData.message);
       }
     } catch (error) {
       // 入力エラーメッセージ表示
@@ -340,3 +345,4 @@ export default function Page() {
     </div>
   );
 }
+

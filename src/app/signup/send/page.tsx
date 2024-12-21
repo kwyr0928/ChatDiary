@@ -5,6 +5,10 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { useToast } from "~/hooks/use-toast";
 
+type ReMailResponse = {
+  message: string;
+}
+
 export default function Send() {
   return (
     <Suspense>
@@ -35,14 +39,14 @@ function Page() {
           email: email
          }),
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as ReMailResponse;
       console.log(responseData);
       if (response.ok) {
         toast({
           description: "メールを再送しました！",
         });
       } else {
-        throw new Error(responseData);
+        throw new Error(responseData.message);
       }
     } catch (error) {
       const errorMessage =

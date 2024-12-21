@@ -12,6 +12,25 @@ import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { toast } from "~/hooks/use-toast";
 import { useThemeStore } from "~/store/themeStore";
 
+type GetTagResponse = {
+  message: string;
+  tagList: string[];
+}
+
+type DiaryData = {
+  id: string;
+  userId: string;
+  title: string;
+  summary: string;
+  isPublic: boolean;
+  created_at: string;
+}
+
+type UpdateDiaryResponse = {
+  message: string;
+  diaryData: DiaryData;
+}
+
 export default function New() {
   return (
     <Suspense>
@@ -40,12 +59,12 @@ function Page() {
             "Content-Type": "application/json",
           },
         })
-        const responseData = await response.json();
-        console.log(responseData.message);
+        const responseData = (await response.json()) as GetTagResponse;
+        console.log(responseData);
         if (response.ok) {
           setTagList(responseData.tagList);
         } else {
-          throw new Error(responseData);
+          throw new Error(responseData.message);
         }
       } catch (error) {
         const errorMessage =
@@ -83,13 +102,13 @@ function Page() {
           isPublic: isPublic === "public",
         }),
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as UpdateDiaryResponse;
       console.log(responseData);
       if (response.ok) {
       router.push("/home");
     } else {
       sessionStorage.removeItem("showDialog");
-      throw new Error(responseData);
+      throw new Error(responseData.message);
     }
     } catch (error) {
       // 入力エラーメッセージ表示
@@ -119,36 +138,6 @@ function Page() {
     <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
       <div className="fixed top-0 mb-5 flex w-full max-w-md flex-col justify-around bg-white pt-5 text-center">
         <div className="mb-3 flex">
-          {/* <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5">
-              <IoChevronBackSharp color="#f87171" size={"30px"} />
-            </DialogTrigger>
-            <DialogContent className="w-[80%]">
-              <DialogHeader>
-                <DialogTitle className="mt-5">編集内容を削除して戻りますか？</DialogTitle>
-              </DialogHeader>
-              <DialogDescription className="text-center text-gray-500">
-                作成した日記は削除されます
-              </DialogDescription>
-              <div className="flex justify-around">
-                <div className="my-2">
-                  <Button
-                    className="w-[100px] rounded-full bg-white hover:bg-red-400 text-red-400 hover:text-white border border-red-400 hover:border-transparent"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    いいえ
-                  </Button>
-                </div>
-                <Link href={"/home"}>
-                  <div className="my-2">
-                    <Button className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500">
-                      はい
-                    </Button>
-                  </div>
-                </Link>
-              </div>
-            </DialogContent>
-          </Dialog> */}
           <p className="mx-auto my-auto text-lg">
           {new Date().toLocaleString("ja-JP", {
               year: "numeric",

@@ -3,7 +3,7 @@ import { useThemeStore } from "~/store/themeStore";
 
 /* タグUI */
 export default function Tag(props: {text: string, onRemoveTag: (removeTag: string) => void}) {
-    const { text, onRemoveTag = () => { } } = props
+    const { text, onRemoveTag } = props
             const theme = useThemeStore((state) => state.theme);
     const removeTag = () =>{
         onRemoveTag(text)

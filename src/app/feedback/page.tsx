@@ -32,12 +32,12 @@ export default function Page() {
             "Content-Type": "application/json",
           },
         });
-        const responseData = await response.json();
+        const responseData = (await response.json()) as FeedbackResponse;
         console.log(responseData);
         if (response.ok) {
           setFeedback(responseData);
         } else {
-          throw new Error(responseData);
+          throw new Error(responseData.message);
         }
       } catch (error) {
         // 入力エラーメッセージ表示

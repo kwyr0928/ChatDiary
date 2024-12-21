@@ -2,8 +2,8 @@
 
 import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   IoAddCircleSharp,
   IoBarChartSharp,
@@ -27,33 +27,37 @@ type Diary = {
   created_at: string;
 };
 
-type ApiResponse = {
+type GetDiaryResponse = {
   message: string;
   diaries: Diary[];
   tagList: string[];
 };
 
-export default function Home() {
-  return (
-    <Suspense>
-      <Page />
-    </Suspense>
-  );
+type ShareData = {
+  summary: string;
 }
 
-function Page() {
+type GetShareResponse = {
+  message: string;
+  share: ShareData;
+}
+
+type StartChatResponse = {
+  message: string;
+  diaryId: string;
+}
+
+export default function Page() {
   const theme = useThemeStore((state) => state.theme);
   const [keyword, setKeyword] = useState("");
-  const [diaryList, setDiaryList] = useState<ApiResponse>();
-  const [shareData, setShareData] = useState();
+  const [diaryList, setDiaryList] = useState<GetDiaryResponse>();
+  const [shareData, setShareData] = useState("");
   const filteredDiary = diaryList
     ? diaryList.diaries.filter((d) =>
         JSON.stringify(d).toLowerCase().includes(keyword.toLowerCase()),
       )
     : []; // 検索
     const [isOpen, setIsOpen] = useState(false);
-    const params = useSearchParams();
-    const diaryId = params.get("diaryId");
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
 
@@ -71,13 +75,13 @@ function Page() {
             "Content-Type": "application/json",
           },
         });
-        const responseData = await response.json();
+        const responseData = (await response.json()) as GetShareResponse;
         console.log(responseData);
         if (response.ok) {
-          setShareData(responseData);
+          setShareData(responseData.share.summary);
           sessionStorage.removeItem("showDialog");
         } else {
-          throw new Error(responseData);
+          throw new Error(responseData.message);
         }
       }
         const response = await fetch(`/api/diary`, {
@@ -86,12 +90,12 @@ function Page() {
             "Content-Type": "application/json",
           },
         });
-        const responseData = await response.json();
+        const responseData = (await response.json()) as GetDiaryResponse;
         console.log(responseData);
         if (response.ok) {
           setDiaryList(responseData);
         } else {
-          throw new Error(responseData);
+          throw new Error(responseData.message);
         }
       } catch (error) {
         // 入力エラーメッセージ表示
@@ -122,12 +126,12 @@ function Page() {
             "Content-Type": "application/json",
           },
         });
-        const responseData = await response.json();
+        const responseData = (await response.json()) as StartChatResponse;
         console.log(responseData);
         if (response.ok) {
           router.push(`/diary/chat?diaryId=${responseData.diaryId}`);
         } else {
-          throw new Error(responseData);
+          throw new Error(responseData.message);
         }
       } catch (error) {
         // 入力エラーメッセージ表示
@@ -164,7 +168,7 @@ function Page() {
                 </DialogTitle>
               </DialogHeader>
               <DialogDescription className="text-gray-500 my-3">
-                {shareData?.share.summary}
+                {shareData}
               </DialogDescription>
                   <div className="my-2 mx-auto">
                     <Button className={`w-[100px] rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`} onClick={() => (setIsOpen(false))}>

@@ -27,6 +27,18 @@ import {
 import { toast } from "~/hooks/use-toast";
 import { useThemeStore } from "~/store/themeStore";
 
+type ChatResponse = {
+  message: string;
+  chatId: string;
+  count: number;
+  response: string;
+  summary: string | null;
+}
+
+type DeleteResponse = {
+  message: string;
+}
+
 export default function Chat() {
   return (
     <Suspense>
@@ -73,7 +85,7 @@ function Page() {
           text: inputText,
         }),
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as ChatResponse;
       console.log(responseData);
       if (response.ok) {
         if (count + 1 >= 5) {
@@ -90,7 +102,7 @@ function Page() {
           { text: responseData.response, isAI: true },
         ]);
       } else {
-        throw new Error(responseData);
+        throw new Error(responseData.message);
       }
       // 入力フィールドをクリア
       setInputText("");
@@ -118,12 +130,12 @@ function Page() {
           "Content-Type": "application/json",
         },
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as DeleteResponse;
       console.log(responseData);
       if (response.ok) {
         router.push("/home");
       } else {
-        throw new Error(responseData);
+        throw new Error(responseData.message);
       }
     } catch (error) {
       // 入力エラーメッセージ表示

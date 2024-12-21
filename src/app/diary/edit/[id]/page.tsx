@@ -28,11 +28,6 @@ import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { useToast } from "~/hooks/use-toast";
 import { useThemeStore } from "~/store/themeStore";
 
-type ChatLogEntry = {
-  message: string;
-  response: string | null;
-};
-
 type DiaryData = {
   id: string;
   userId: string;
@@ -40,15 +35,29 @@ type DiaryData = {
   summary: string;
   isPublic: boolean;
   created_at: string;
-};
+}
 
-type ApiResponse = {
+type ChatLogEntry = {
+  message: string;
+  response: string | null;
+}
+
+type GetDiaryResponse = {
   message: string;
   diaryData: DiaryData;
   tags: string[];
   tagList: string[];
   chatLog: ChatLogEntry[];
-};
+}
+
+type UpdateDiaryResponse = {
+  message: string;
+  diaryData: DiaryData;
+}
+
+type DeleteDiaryResponse = {
+  message: string;
+}
 
 export default function Page({ params }: { params: Promise<{ id: number }> }) {
     const theme = useThemeStore((state) => state.theme);
@@ -61,7 +70,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
   const [text, setText] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
   const [tagList, setTagList] = useState<string[]>([]);
-  const [diaryDetail, setDiaryDetail] = useState<ApiResponse>();
+  const [diaryDetail, setDiaryDetail] = useState<GetDiaryResponse>();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
@@ -77,7 +86,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             "Content-Type": "application/json",
           },
         });
-        const responseData = await response.json();
+        const responseData = (await response.json()) as GetDiaryResponse;
         console.log(responseData);
         if (response.ok) {
           setDiaryDetail(responseData);
@@ -90,7 +99,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             setIsPublic("private");
           }
         } else {
-          throw new Error(responseData);
+          throw new Error(responseData.message);
         }
       } catch (error) {
         // 入力エラーメッセージ表示
@@ -124,7 +133,9 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           isPublic: isPublic === "public",
         }),
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as UpdateDiaryResponse;
+      
+      console.log("これ")
       console.log(responseData);
       if (response.ok) {
         setIsChanged(false);
@@ -133,7 +144,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         });
         router.push(`/diary/detail/${diaryId}`)
       } else {
-        throw new Error(responseData);
+        throw new Error(responseData.message);
       }
     } catch (error) {
       // 入力エラーメッセージ表示
@@ -160,7 +171,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           "Content-Type": "application/json",
         },
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as DeleteDiaryResponse;
       console.log(responseData);
       if (response.ok) {
         toast({
@@ -168,7 +179,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         });
         router.push("/home");
       } else {
-        throw new Error(responseData);
+        throw new Error(responseData.message);
       }
     } catch (error) {
       // 入力エラーメッセージ表示

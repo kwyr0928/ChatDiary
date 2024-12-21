@@ -7,6 +7,10 @@ import { Suspense, useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { toast } from "~/hooks/use-toast";
 
+type CertificationResponse = {
+  message: string;
+}
+
 export default function Complete() {
   return (
     <Suspense>
@@ -31,11 +35,11 @@ function Page() {
             "authorization": `JWT ${token}`,
           }
         });
-        const responseData = await response.json();
+        const responseData = (await response.json()) as CertificationResponse;
         console.log(responseData);
         if (response.ok) {
         } else {
-          throw new Error(responseData);
+          throw new Error(responseData.message);
         }
       } catch (error) {
         // 入力エラーメッセージ表示

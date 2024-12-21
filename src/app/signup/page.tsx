@@ -9,6 +9,11 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { toast } from "~/hooks/use-toast";
 
+type CreateUserResponse = {
+  message: string;
+  userId: string;
+}
+
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -85,12 +90,12 @@ export default function Page() {
         },
         body: JSON.stringify({ email: email, password: password }),
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as CreateUserResponse;
       console.log(responseData);
       if (response.ok) {
         router.push(`/signup/send?email=${email}&userId=${responseData.userId}`);
       } else {
-        throw new Error(responseData);
+        throw new Error(responseData.message);
       }
     } catch (error) {
       // 入力エラーメッセージ表示
@@ -116,6 +121,7 @@ export default function Page() {
             className="h-12 rounded-full border-gray-200 px-4"
             placeholder="メールアドレス"
             value={email}
+            autoComplete="email"
             onChange={(e) => validateEmail(e.target.value)}
           />
           {emailError && <p className="text-xs text-red-500">{emailError}</p>}
@@ -157,6 +163,7 @@ export default function Page() {
               className="h-12 rounded-full border-gray-200 px-4"
               placeholder="パスワード"
               value={password}
+              autoComplete="new-password"
               onChange={(e) => validatePassword(e.target.value)}
             />
             <button
@@ -180,6 +187,7 @@ export default function Page() {
               className="h-12 rounded-full border-gray-200 px-4"
               placeholder="パスワード（再入力）"
               value={rePassword}
+              autoComplete="new-password"
               onChange={(e) => validateRePassword(e.target.value)}
             />
             <button

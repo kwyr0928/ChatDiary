@@ -6,6 +6,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
 
+type GetUserResponse = {
+  message: string;
+  email: string;
+  theme: number;
+}
+
 export default function Page() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -20,13 +26,13 @@ export default function Page() {
             "Content-Type": "application/json",
           },
         });
-        const responseData = await response.json();
+        const responseData = (await response.json()) as GetUserResponse;
         console.log(responseData);
         if (response.ok) {
           setTheme(responseData.theme);
           router.replace("/home")
         } else {
-          throw new Error(responseData);
+          throw new Error(responseData.message);
         }
       } catch (error) {
         console.log(error);
