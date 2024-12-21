@@ -1,5 +1,53 @@
-import { getSummary } from "~/lib/schemas";
-import { getDateDiariesByUserId, getMonthlyFeedBack, getOtherUserDiaryData, getRecentTagsByUserId, getTodayContinuation } from "../repository/getdata";
+import { z } from "zod";
+import { diaryAndTagSchema, getSummary } from "~/lib/schemas";
+import { getDateDiariesByUserId, getDiaryData, getHistoryData, getMonthlyFeedBack, getOtherUserDiaryData, getRecentTagsByUserId, getTagByID, getTagConnectionsByDiary, getTodayContinuation } from "../repository/getdata";
+
+export const getDiariesAndTag = async (diaryId: string) => {
+  try {
+    const diaryData = await getDiaryData(diaryId);
+    if (diaryData == null) return [];
+    const tagNames: string[] = [];
+    const connections = await getTagConnectionsByDiary(diaryId);
+    if (connections != null) {
+      for (const tag of connections){
+        const tagName = await getTagByID(tag.tagId);
+        if(tagName != null) tagNames.push(tagName.name);
+      }
+    }
+    const diaryAndTagData: z.infer<typeof diaryAndTagSchema> = {
+      id: diaryData.id,
+      title: diaryData.title,
+      isPublic: diaryData.isPublic,
+      summary: diaryData.summary,
+      created_at: diaryData.created_at,
+      tags: tagNames
+    }
+    return diaryAndTagData;
+  } catch (error) {
+    console.error("Error in getDiariesAndTag:", error);
+    return null;
+  }
+};
+
+export const getChatHistory = async (mode: number, diaryId: string) => {
+  const historyArray = []
+  if (mode == 0) {              // 物事モード
+    historyArray.push({ role: "user", parts: [{ text: "あなたは物事について深掘りする質問を得意とするアシスタントです。ユーザーが書いた文章に基づいて、その出来事や状況の背景、関連する要素、起こった結果について詳しく引き出し、それを深く理解する手助けをする質問を1つしてください。質問は親しみやすく、ユーザーが考えを整理しやすいトーンで簡潔に作成してください。" }] });
+    historyArray.push({ role: "model", parts: [{ text: 'はい、私は物事を深掘りする質問を得意とするアシスタントです。個人的な意見は述べず、リラックスしたトーンで、ユーザーが答えやすい簡単な質問を、80字以内の簡潔な文章で1つ作成します。' }] });
+  } else {                       // 感情モード
+    historyArray.push({ role: "user", parts: [{ text: "あなたは感情を深掘りする質問を得意とするアシスタントです。ユーザーが書いた文章に基づいて、そのときの感情や体験の背景を詳しく引き出し、価値観、強みを見つけ出すことにつながるような質問を1つしてください。質問は親しみやすく、ユーザーが考えを整理しやすいトーンで簡潔に作成してください。" }] });
+    historyArray.push({ role: "model", parts: [{ text: 'はい、私は感情を深掘りする質問を得意とするアシスタントです。個人的な意見は述べず、リラックスしたトーンで、ユーザーが答えやすい簡単な質問を、80字以内の簡潔な文章で1つ作成します。' }] });
+  }
+  const historyData = await getHistoryData(diaryId);
+  if (historyData == null) return [];
+  for (const data of historyData) {
+    if (data?.message && data?.response) {
+      historyArray.push({ role: "user", parts: [{ text: data.message }] });
+      historyArray.push({ role: "model", parts: [{ text: data.response }] });
+    }
+  }
+  return historyArray;
+}
 
 export const getRecentTagNamesByUserId = async (userId: string) => {
   try {

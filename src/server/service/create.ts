@@ -1,9 +1,8 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { z } from "zod";
 import { type analysesSchema, type chatsSchema, type continuationSchema, type diariesSchema, type diaryTagsSchema, type monthlySummariesSchema, type newTag, userSchema } from "~/lib/schemas";
-import { getDiariesByUserId, getDiaryData, getTodayContinuation } from "../repository/getdata";
+import { getDiariesByUserId, getTodayContinuation } from "../repository/getdata";
 import { insertAnalyses, insertChat, insertContinuation, insertDiary, insertDiaryTag, insertMonthlySummaries, insertNewUser, insertTag } from "../repository/insertdata";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { NextResponse } from "next/server";
 
 export async function createNewUser(email: string, hashedPassword: string) {
   try {
@@ -165,7 +164,7 @@ export async function createAnalysesFB(userId: string) {
   try {
     if (userId == null) throw new Error("Invalid option data");
     // 全体FB生成
-    // 全部の日記の本文を取得 
+    // 全部の日記の本文を取得
     const diaries = await getDiariesByUserId(userId);
     if (diaries == null) throw new Error("err in getDiariesByUserId");
 
@@ -181,8 +180,8 @@ export async function createAnalysesFB(userId: string) {
     // モデルの取得
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig: { temperature: 1, maxOutputTokens: 254 }, });  // 使用モデル指定
 
-    // 日記全文＋要約の文章をGeminiに送る（チャットじゃなくてgenerateContents）
-    const prompt_post = `${diarySummaries} あなたは人物の分析を得意とするアシスタントです。上記の[]で囲まれた日記を基に、以下の点を要約して文章にしてください。 主な出来事や体験、感情の変化や価値観、ユーザーの強みや特徴を簡潔かつ自己分析に役立つ形で100字以内でまとめてください。`
+    // 日記全文+要約の文章をGeminiに送る（チャットじゃなくてgenerateContents）
+    const prompt_post = `${diarySummaries} あなたは人物の分析を得意とするアシスタントです。上記の[]で囲まれた日記を基に、以下の点を要約して文章にしてください。 主な出来事や体験、感情の変化や価値観、ユーザーの強みや特徴を簡潔かつ自己分析に役立つ形で100字以内でまとめてください。`;
 
     // テキスト生成
     const result = await model.generateContent({

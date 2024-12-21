@@ -5,11 +5,10 @@ import { auth } from "~/server/auth";
 import {
   getChatsByDiaryId,
   getDiariesByUserId,
-  getDiaryData,
   getTagByID,
-  getTagConnectionsByDiary,
+  getTagConnectionsByDiary
 } from "~/server/repository/getdata";
-import { getRecentTagNamesByUserId } from "~/server/service/fetch";
+import { getDiariesAndTag, getRecentTagNamesByUserId } from "~/server/service/fetch";
 
 export async function GET() {
   try {
@@ -28,7 +27,7 @@ export async function GET() {
     if (diaries.length != 0) {
       for (const diary of diaries) {
         const diaryId: string = diary.id!;
-        const diaryData = await getDiaryData(diaryId);
+        const diaryData = await getDiariesAndTag(diaryId);
         if (diaryData == null) throw new Error("err in getDiaryData");
 
         // タグ取得

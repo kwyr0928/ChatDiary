@@ -170,3 +170,13 @@ export const getSummary = z.object({
 export const getEmail = z.object({
   email: z.string().email(),
 });
+
+// api/diary
+export const diaryAndTagSchema = z.object({
+  id: z.string().min(1).optional(),
+  title: z.string().min(1),
+  summary: z.string().min(1).optional(),
+  isPublic: z.boolean(),
+  created_at: z.date().optional(),
+  tags: z.array(z.string())
+});
