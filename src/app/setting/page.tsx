@@ -348,14 +348,14 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
+      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background`}>
         <LoaderCircle className="animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className={`mx-auto min-h-screen w-full max-w-md bg-theme${theme}-background text-gray-600`}>
+    <div className={`mx-auto min-h-screen w-full max-w-md bg-theme${theme}-background`}>
       <div className="mx-auto flex flex-col items-center">
         <div className="ml-8 mr-auto">
           <p className="mt-8 w-full text-left text-xl font-bold">
@@ -379,40 +379,20 @@ export default function Page() {
             テーマカラー
             <div className="flex space-x-4 mt-5 mb-16">
               {/* テーマカラー変更4 */}
-              <div 
-      className={`w-8 h-8 bg-theme0-primary rounded-full ${
-        theme === 0 ? 'ring-2 ring-white ring-offset-2' : ''
-      }`} 
-      onClick={() => handleThemeChange(0)}
-    >
-      {theme === 0 && <Check className="h-9 w-7 mx-auto my-auto text-white" />}
-    </div>
-    <div 
-      className={`w-8 h-8 bg-theme1-primary rounded-full ${
-        theme === 1 ? 'ring-2 ring-white ring-offset-2' : ''
-      }`} 
-      onClick={() => handleThemeChange(1)}
-    >
-      {theme === 1 && <Check className="h-9 w-7 mx-auto my-auto text-white" />}
-    </div>
-    <div 
-      className={`w-8 h-8 bg-theme2-primary rounded-full ${
-        theme === 2 ? 'ring-2 ring-white ring-offset-2' : ''
-      }`} 
-      onClick={() => handleThemeChange(2)}
-    >
-      {theme === 2 && <Check className="h-9 w-7 mx-auto my-auto text-white" />}
-    </div>
-    <div 
-      className={`w-8 h-8 bg-theme3-primary rounded-full ${
-        theme === 3 ? 'ring-2 ring-white ring-offset-2' : ''
-      }`} 
-      onClick={() => handleThemeChange(3)}
-    >
-      {theme === 3 && <Check className="h-9 w-7 mx-auto my-auto text-white" />}
-    </div>
-  </div>
-</div>
+              <div className="w-8 h-8 bg-theme0-primary rounded-full" onClick= {() => handleThemeChange(0)}>
+              </div>
+              <div className="w-8 h-8 bg-theme1-primary rounded-full" onClick={() => handleThemeChange(1)}>
+              </div>
+              <div className="w-8 h-8 bg-theme2-primary rounded-full" onClick={() => handleThemeChange(2)}>
+              </div>
+              <div className="w-8 h-8 bg-theme3-primary rounded-full" onClick={() => handleThemeChange(3)}>
+              </div>
+              <div className="w-8 h-8 bg-theme4-primary rounded-full" onClick={() => handleThemeChange(4)}>
+              </div>
+              <div className="w-8 h-8 bg-theme5-hover rounded-full" onClick={() => handleThemeChange(5)}>
+              </div>
+            </div>
+          </div>
         </div>
 
       <div className="mx-auto mt-5 w-[60%]">
