@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import InputTag from "~/components/inputTag";
+import ResizeTextarea from "~/components/resizeTextarea";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { toast } from "~/hooks/use-toast";
@@ -23,12 +23,13 @@ export default function New() {
 function Page() {
   const theme = useThemeStore((state) => state.theme);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const res = searchParams.get("res");
+  const [text, setText] = useState<string>(res ?? "")
   const [tags, setTags] = useState<string[]>([]);
   const [tagList, setTagList] = useState<string[]>([])
   const [isPublic, setIsPublic] = useState("private");
-  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
-  const res = searchParams.get("res");
   const diaryId = searchParams.get("diaryId");
 
   useEffect(() => {
@@ -78,7 +79,7 @@ function Page() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          summary: res,
+          summary: text,
           tags: tags,
           isPublic: isPublic === "public",
         }),
@@ -86,11 +87,11 @@ function Page() {
       const responseData = await response.json();
       console.log(responseData);
       if (response.ok) {
-      router.push("/home");
-    } else {
-      sessionStorage.removeItem("showDialog");
-      throw new Error(responseData);
-    }
+        router.push("/home");
+      } else {
+        sessionStorage.removeItem("showDialog");
+        throw new Error(responseData);
+      }
     } catch (error) {
       // 入力エラーメッセージ表示
       const errorMessage =
@@ -105,15 +106,15 @@ function Page() {
     } finally {
       setIsLoading(false); // ローディングを終了
     }
-    };
+  };
 
-    if (isLoading) {
-      return (
-        <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
-          <LoaderCircle className="animate-spin" />
-        </div>
-      );
-    }
+  if (isLoading) {
+    return (
+      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
+        <LoaderCircle className="animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
@@ -150,7 +151,7 @@ function Page() {
             </DialogContent>
           </Dialog> */}
           <p className="mx-auto my-auto text-lg">
-          {new Date().toLocaleString("ja-JP", {
+            {new Date().toLocaleString("ja-JP", {
               year: "numeric",
               month: "2-digit",
               day: "2-digit",
@@ -162,10 +163,14 @@ function Page() {
       </div>
       <div className="mb-auto mt-[70px] w-[85%]">
         <p className="mt-5 mb-3 text-left text-lg">出力された日記</p>
-        {/* カード */}
-        <Card className="text-gray-600 shadow-none">
-          <CardContent className="px-5 py-3">{res}</CardContent>
-        </Card>
+        <ResizeTextarea
+          className="h-36 w-full resize-none rounded border border-gray-300 p-2 px-5 py-3 text-gray-600 focus:outline-none"
+          text={text}
+          onChange={(newText) => {
+            setText(newText);
+          }}
+          isLimit={false}
+        />
         <p className="mt-8 text-left text-lg">タグ</p>
         <div className="flex justify-center">
           <InputTag initialTags={tags} initialTagList={tagList} onChangeTags={setTags} />
@@ -173,35 +178,35 @@ function Page() {
         <p className="mt-7 text-left text-lg">公開状況</p>
         {/* ラジオボタン */}
         <div className="mb-5 flex justify-left mt-4">
-              <RadioGroup
-                defaultValue="private"
-                value={isPublic}
-                onValueChange={(value: "public" | "private") => {
-                  setIsPublic(value);
-                }}
-                className="space-y-2"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem
-                    value="public"
-                    id="public"
-                    className={`border-theme${theme}-primary`}
-                  />
-                  <Label htmlFor="public">
-                    公開（他の人も見ることができます）
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem
-                    value="private"
-                    id="private"
-                    className={`border-theme${theme}-primary`}
-                  />
-                  <Label htmlFor="private">
-                    非公開（外部には公開されません）
-                  </Label>
-                </div>
-              </RadioGroup>
+          <RadioGroup
+            defaultValue="private"
+            value={isPublic}
+            onValueChange={(value: "public" | "private") => {
+              setIsPublic(value);
+            }}
+            className="space-y-2"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="public"
+                id="public"
+                className={`border-theme${theme}-primary`}
+              />
+              <Label htmlFor="public">
+                公開（他の人も見ることができます）
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="private"
+                id="private"
+                className={`border-theme${theme}-primary`}
+              />
+              <Label htmlFor="private">
+                非公開（外部には公開されません）
+              </Label>
+            </div>
+          </RadioGroup>
         </div>
         <Link href={"/home"}>
           {/* ボタンUI */}
