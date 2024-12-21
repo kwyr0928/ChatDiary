@@ -48,6 +48,8 @@ type StartChatResponse = {
 }
 
 export default function Page() {
+  const [filterPublic, setFilterPublic] = useState<"all" | "public" | "private">("all");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const theme = useThemeStore((state) => state.theme);
   const [keyword, setKeyword] = useState("");
   const [diaryList, setDiaryList] = useState<GetDiaryResponse>();
@@ -55,12 +57,30 @@ export default function Page() {
   const filteredDiary = diaryList
     ? diaryList.diaries.filter((d) =>
         JSON.stringify(d).toLowerCase().includes(keyword.toLowerCase()),
+      ).filter((d) => {
+        if (filterPublic === "public") return d.isPublic;
+        if (filterPublic === "private") return !d.isPublic;
+        return true; // "all" の場合
+      }).sort((a, b) =>
+        sortOrder === "asc"
+          ? new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          : new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       )
     : []; // 検索
+
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
     const [isSession, setIsSession] = useState(false);
+
+    const toggleSortOrder = () => {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    };
+
+
+    const handleFilterChange = (filter: "all" | "public" | "private") => {
+      setFilterPublic(filter);
+    };
 
   useEffect(() => {
     const fetchDiaries = async () => {
@@ -232,6 +252,24 @@ export default function Page() {
                   </div>
             </DialogContent>
           </Dialog>
+          <div className="flex justify-end space-x-5 mb-4">
+          <Button
+            onClick={toggleSortOrder}
+            className={`rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}
+          >
+            {sortOrder === "asc" ? "早い順" : "遅い順"}
+          </Button>
+           <select
+            value={filterPublic}
+            onChange={(e) => handleFilterChange(e.target.value as "all" | "public" | "private")}
+            className="w-28 rounded-lg border border-gray-300 p-2"
+          >
+            <option value="all">すべて</option>
+            <option value="public">public</option>
+            <option value="private">private</option>
+          </select>
+        </div>
+
         {/* <ScrollArea> */}
         {filteredDiary.length > 0 ? (
           filteredDiary.map((d, index) => (
