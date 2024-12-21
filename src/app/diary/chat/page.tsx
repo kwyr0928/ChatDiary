@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { toast } from "~/hooks/use-toast";
+import { useThemeStore } from "~/store/themeStore";
 
 export default function Chat() {
   return (
@@ -35,6 +36,7 @@ export default function Chat() {
 }
 
 function Page() {
+  const theme = useThemeStore((state) => state.theme);
   const [mode, setMode] = useState(0); // 深掘りモード
   const [inputText, setInputText] = useState(""); // 入力メッセージ
   const [count, setCount] = useState(0); // チャット回数
@@ -142,12 +144,12 @@ function Page() {
   };
 
   return (
-    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col bg-red-50 text-gray-600">
+    <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col bg-theme${theme}-background text-gray-600`}>
       <div className="fixed top-0 mb-5 flex w-full max-w-md flex-col justify-center bg-white pt-5 text-center">
         <div className="mb-3 flex">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5">
-              <IoChevronBackSharp color="#f87171" size={"30px"} />
+              <IoChevronBackSharp size={"30px"} className={`text-theme${theme}-primary`} />
             </DialogTrigger>
             <DialogContent className="w-[80%]">
               <DialogHeader>
@@ -161,7 +163,7 @@ function Page() {
               <div className="flex justify-around">
                 <div className="my-2">
                   <Button
-                    className="w-[100px] rounded-full border border-red-400 bg-white text-red-400 hover:border-transparent hover:bg-red-400 hover:text-white"
+                    className={`w-[100px] rounded-full border border-theme${theme}-primary bg-white text-theme${theme}-primary hover:border-transparent hover:bg-theme${theme}-hover hover:text-white`}
                     onClick={() => setIsOpen(false)}
                   >
                     いいえ
@@ -169,7 +171,7 @@ function Page() {
                 </div>
                 <div onClick={handleDelete}>
                   <div className="my-2">
-                    <Button className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500">
+                    <Button className={`w-[100px] rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}>
                       はい
                     </Button>
                   </div>
@@ -213,7 +215,7 @@ function Page() {
         ))}
       </div>
       {/* チャット欄 */}
-      <div className="fixed bottom-0 flex w-full max-w-md items-end justify-center bg-red-50 pb-5 pt-3">
+      <div className={`fixed bottom-0 flex w-full max-w-md items-end justify-center bg-theme${theme}-background pb-5 pt-3`}>
         {isSending ? (
           // 送信中の表示
           <LoaderCircle className="w-[300px] animate-spin" />
@@ -230,9 +232,8 @@ function Page() {
             />
             <IoSendSharp
               onClick={handleSend}
-              color="#f87171"
               size={"30px"}
-              className="pb-1"
+              className={`pb-1 text-theme0${theme}-primary`}
             />
           </div>
         )}

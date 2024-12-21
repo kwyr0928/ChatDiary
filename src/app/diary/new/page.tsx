@@ -10,6 +10,7 @@ import { Card, CardContent } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { toast } from "~/hooks/use-toast";
+import { useThemeStore } from "~/store/themeStore";
 
 export default function New() {
   return (
@@ -20,6 +21,7 @@ export default function New() {
 }
 
 function Page() {
+  const theme = useThemeStore((state) => state.theme);
   const router = useRouter();
   const [tags, setTags] = useState<string[]>([]);
   const [tagList, setTagList] = useState<string[]>([])
@@ -107,14 +109,14 @@ function Page() {
 
     if (isLoading) {
       return (
-        <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+        <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
           <LoaderCircle className="animate-spin" />
         </div>
       );
     }
 
   return (
-    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+    <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
       <div className="fixed top-0 mb-5 flex w-full max-w-md flex-col justify-around bg-white pt-5 text-center">
         <div className="mb-3 flex">
           {/* <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -183,7 +185,7 @@ function Page() {
                   <RadioGroupItem
                     value="public"
                     id="public"
-                    className="border-red-400"
+                    className={`border-theme${theme}-primary`}
                   />
                   <Label htmlFor="public">
                     公開（他の人も見ることができます）
@@ -193,7 +195,7 @@ function Page() {
                   <RadioGroupItem
                     value="private"
                     id="private"
-                    className="border-red-400"
+                    className={`border-theme${theme}-primary`}
                   />
                   <Label htmlFor="private">
                     非公開（外部には公開されません）
@@ -206,7 +208,7 @@ function Page() {
           <div className="my-10 flex justify-center">
             <Button
               onClick={handleCreateDiary}
-              className="w-[80%] rounded-full bg-red-400 text-xl hover:bg-rose-500 mt-6"
+              className={`w-[80%] rounded-full bg-theme${theme}-primary text-xl hover:bg-theme${theme}-hover mt-6`}
             >
               作成する！
             </Button>

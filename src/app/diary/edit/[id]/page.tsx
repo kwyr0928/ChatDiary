@@ -26,6 +26,7 @@ import {
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { useToast } from "~/hooks/use-toast";
+import { useThemeStore } from "~/store/themeStore";
 
 type ChatLogEntry = {
   message: string;
@@ -50,6 +51,7 @@ type ApiResponse = {
 };
 
 export default function Page({ params }: { params: Promise<{ id: number }> }) {
+    const theme = useThemeStore((state) => state.theme);
   const { toast } = useToast();
   const [isPublic, setIsPublic] = useState("private");
   const [isOpen, setIsOpen] = useState(false);
@@ -186,19 +188,19 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
 
   if (isLoading) {
     return (
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
         <LoaderCircle className="animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+    <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
       <div className="fixed top-0 flex w-full bg-white max-w-md items-center justify-between pb-5 pt-5 text-center">
         {isChanged ? (
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger onClick={() => setIsOpen(true)} className="pl-3">
-              <IoChevronBackSharp color="#f87171" size={"30px"} />
+              <IoChevronBackSharp size={"30px"} className={`text-theme${theme}-primary`}/>
             </DialogTrigger>
             <DialogContent className="w-[80%]">
               <DialogHeader>
@@ -212,7 +214,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
               <div className="flex justify-around">
                 <div className="my-2">
                   <Button
-                    className="w-[100px] rounded-full border border-red-400 bg-white text-red-400 hover:border-transparent hover:bg-red-400 hover:text-white"
+                    className={`w-[100px] rounded-full border border-theme${theme}-primary bg-white text-theme${theme}-primary hover:border-transparent hover:bg-theme0-hover hover:text-white`}
                     onClick={() => setIsOpen(false)}
                   >
                     いいえ
@@ -220,7 +222,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
                 </div>
                 <Link href={`/diary/detail/${diaryId}`}>
                   <div className="my-2">
-                    <Button className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500">
+                    <Button className={`w-[100px] rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}>
                       はい
                     </Button>
                   </div>
@@ -230,12 +232,12 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           </Dialog>
         ) : (
           <Link className="ml-3" href={`/diary/detail/${diaryId}`}>
-            <IoChevronBackSharp color="#f87171" size={"30px"} />
+            <IoChevronBackSharp size={"30px"} className={`text-theme${theme}-primary`}/>
           </Link>
         )}
         <p className="text-lg text-gray-700">{diaryDetail?.diaryData.title}</p>
           <div onClick={handleSave}>
-            <RiSave3Line size={"35px"} color="#f87171" className="mr-5" />
+            <RiSave3Line size={"35px"} className={`text-theme${theme}-primary mr-5`}/>
           </div>
       </div>
       <div className="mt-[60px] w-[85%]">
@@ -291,7 +293,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
                   <RadioGroupItem
                     value="public"
                     id="public"
-                    className="border-red-400"
+                    className={`border-theme${theme}-primary`}
                   />
                   <Label htmlFor="public">
                     公開（他の人も見ることができます）
@@ -301,7 +303,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
                   <RadioGroupItem
                     value="private"
                     id="private"
-                    className="border-red-400"
+                    className={`border-theme${theme}-primary`}
                   />
                   <Label htmlFor="private">
                     非公開（外部には公開されません）
@@ -325,7 +327,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         ))}
         <Dialog open={isOpen2} onOpenChange={setIsOpen2}>
           <div className="w-[60%] mt-10 mx-auto">
-            <Button onClick={() => setIsOpen2(true)} className="w-full rounded-full bg-red-400 hover:bg-rose-500">
+            <Button onClick={() => setIsOpen2(true)} className={`w-full rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}>
               日記を削除
             </Button>
           </div>
@@ -339,7 +341,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             <div className="flex justify-around">
               <div className="my-2">
                 <Button
-                  className="w-[100px] rounded-full border border-red-400 bg-white text-red-400 hover:border-transparent hover:bg-red-400 hover:text-white"
+                  className={`w-[100px] rounded-full border border-theme${theme}-primary bg-white text-theme${theme}-primary hover:border-transparent hover:bg-theme${theme}-hover hover:text-white`}
                   onClick={() => setIsOpen2(false)}
                 >
                   いいえ
@@ -348,7 +350,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
               <Link href={"/home"}>
                 <div className="my-2">
                   <Button
-                    className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500"
+                    className={`w-[100px] rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}
                     onClick={handleDelete}
                   >
                     はい

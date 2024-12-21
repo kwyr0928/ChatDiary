@@ -16,6 +16,7 @@ import { Button } from "~/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { toast } from "~/hooks/use-toast";
+import { useThemeStore } from '~/store/themeStore';
 
 type Diary = {
   id: string;
@@ -41,6 +42,7 @@ export default function Home() {
 }
 
 function Page() {
+  const theme = useThemeStore((state) => state.theme);
   const [keyword, setKeyword] = useState("");
   const [diaryList, setDiaryList] = useState<ApiResponse>();
   const [shareData, setShareData] = useState();
@@ -56,6 +58,7 @@ function Page() {
     const router = useRouter();
 
   useEffect(() => {
+    console.log(theme);
     const fetchDiaries = async () => {
       // 日記一覧取得
       try {
@@ -144,14 +147,14 @@ function Page() {
 
     if (isLoading) {
       return (
-        <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+        <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
           <LoaderCircle className="animate-spin" />
         </div>
       );
     }
 
   return (
-    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
+    <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-theme${theme}-background text-gray-600`}>
       <div className="mx-auto mb-[140px] mt-[80px] w-[85%]">
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent className="w-[80%]">
@@ -164,7 +167,7 @@ function Page() {
                 {shareData?.share.summary}
               </DialogDescription>
                   <div className="my-2 mx-auto">
-                    <Button className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500" onClick={() => (setIsOpen(false))}>
+                    <Button className={`w-[100px] rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`} onClick={() => (setIsOpen(false))}>
                       見た！
                     </Button>
                   </div>
@@ -193,9 +196,9 @@ function Page() {
         )}
         {/* </ScrollArea> */}
       </div>
-      <div className="fixed top-0 max-w-md w-full bg-red-50 pb-4 pt-4">
+      <div className={`fixed top-0 max-w-md w-full bg-theme${theme}-background pb-4 pt-4`}>
         <div className="flex items-center mx-6 space-x-3">
-        <IoSearchSharp size={"30px"} color="#EB6B6B" />
+        <IoSearchSharp size={"30px"} className={`text-theme${theme}-primary`} />
         <Input
           placeholder="日記を検索"
           value={keyword}
@@ -205,14 +208,14 @@ function Page() {
         </div>
       </div>
       <div onClick={initializeDiary} className="fixed bottom-24 flex w-full max-w-md justify-end pr-4">
-        <IoAddCircleSharp size={"70px"} color="#f87171" />
+        <IoAddCircleSharp size={"70px"} className={`text-theme${theme}-primary`} />
       </div>
       <div className="fixed bottom-0 flex w-full max-w-md justify-around bg-white py-5">
         <Link href={"/setting"}>
           <IoCogSharp size={"50px"} color="gray" />
         </Link>
         <Link href={"/home"}>
-          <IoHomeSharp size={"50px"} color="#f87171" />
+          <IoHomeSharp size={"50px"} className={`text-theme${theme}-primary`} />
         </Link>
         <Link href={"/feedback"}>
           <IoBarChartSharp size={"50px"} color="gray" />

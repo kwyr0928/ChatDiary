@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { IoBarChartSharp, IoCogSharp, IoHomeSharp } from "react-icons/io5";
 import { Card, CardContent } from "~/components/ui/card";
 import { toast } from "~/hooks/use-toast";
+import { useThemeStore } from "~/store/themeStore";
 
 type FeedbackResponse = {
   message: string;
@@ -15,6 +16,7 @@ type FeedbackResponse = {
 };
 
 export default function Page() {
+   const theme = useThemeStore((state) => state.theme);
   const [isLoading, setIsLoading] = useState(true);
   const [feedback, setFeedback] = useState<FeedbackResponse>();
   const now = new Date();
@@ -57,14 +59,14 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
         <LoaderCircle className="animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-red-50 text-gray-600">
+    <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-theme${theme}-background text-gray-600`}>
       <div className="mx-auto mb-[110px] w-[85%]">
         <p className="mb-5 mt-8 w-full text-left text-xl font-bold">
         {year}年{month}月の継続状況
@@ -102,7 +104,7 @@ export default function Page() {
           <IoHomeSharp size={"50px"} color="gray" />
         </Link>
         <Link href={"/feedback"}>
-          <IoBarChartSharp size={"50px"} color="#f87171" />
+          <IoBarChartSharp size={"50px"} className={`text-theme${theme}-primary`} />
         </Link>
       </div>
     </div>

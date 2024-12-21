@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { IoChevronDownSharp } from "react-icons/io5";
+import { useThemeStore } from "~/store/themeStore";
 import Tag from "./tag";
 import { Button } from "./ui/button";
 import {
@@ -24,6 +25,7 @@ import { Separator } from "./ui/separator";
 export default function InputTag(props: { initialTags: string[], initialTagList: string[], onChangeTags: (updatedTags: string[]) => void }) {
     const maxTagLength: number = 12
     const { initialTags, initialTagList, onChangeTags = () => { } } = props
+        const theme = useThemeStore((state) => state.theme);
     const [tags, setTags] = useState<string[]>(initialTags)
     const [text, setText] = useState<string>("")
     const [error, setError] = useState("")
@@ -95,7 +97,7 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
                 )}
                 {/* タグ一覧リスト */}
                 <div className="flex items-center w-full mb-2">
-                    <div className="flex h-10 rounded-md border border-input bg-background text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none md:text-sm w-4/5 mr-3 border-red-400">
+                    <div className={`flex h-10 rounded-md border border-input bg-background text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none md:text-sm w-4/5 mr-3 border-theme${theme}-primary`}>
                         <Input
                             type="text"
                             className="bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 border-none"
@@ -141,7 +143,7 @@ export default function InputTag(props: { initialTags: string[], initialTagList:
                         </Popover>
                     </div>
                     <Button
-                        className="bg-red-400 hover:bg-rose-500"
+                        className={`bg-theme0-primary hover:bg-theme0-hover`}
                         onClick={() => addTags(text)} >追加
                     </Button>
                 </div>
