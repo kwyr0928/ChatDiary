@@ -76,6 +76,21 @@
     --color-background: theme3-background;
     --color-hover: theme3-hover;
   }
+  .theme-4 {
+    --color-primary: theme4-primary;
+    --color-background: theme4-background;
+    --color-hover: theme4-hover;
+  }
+  .theme-5 {
+    --color-primary: theme5-primary;
+    --color-background: theme5-background;
+    --color-hover: theme5-hover;
+  }
+  .theme-6 {
+    --color-primary: theme6-primary;
+    --color-background: theme6-background;
+    --color-hover: theme6-hover;
+  }
 }
 @layer base {
   * {

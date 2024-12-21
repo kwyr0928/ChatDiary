@@ -45,7 +45,7 @@ export default function TagListSetting(props: { initialList: string[], onDeleteT
     return (
         <div className={listClassName()}>
             <div className="flex items-center justify-between pr-3 py-2">
-                <span className="text-lg font-bold pl-3">タグ一覧</span>
+                <span className="text-lg font-bold pl-3 text-gray-600">タグ一覧</span>
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
                     <button
                         onClick={() => {

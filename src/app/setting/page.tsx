@@ -237,14 +237,14 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
+      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background`}>
         <LoaderCircle className="animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className={`mx-auto min-h-screen w-full max-w-md bg-theme${theme}-background text-gray-600`}>
+    <div className={`mx-auto min-h-screen w-full max-w-md bg-theme${theme}-background`}>
       <div className="mx-auto flex flex-col items-center">
         <div className="ml-8 mr-auto">
           <p className="mt-8 w-full text-left text-xl font-bold">
@@ -268,13 +268,17 @@ export default function Page() {
             テーマカラー
             <div className="flex space-x-4 mt-3 mb-16">
               {/* テーマカラー変更4 */}
-              <div className="w-8 h-8 bg-red-600 rounded-full" onClick= {() => handleThemeChange(0)}>
+              <div className="w-8 h-8 bg-theme0-primary rounded-full" onClick= {() => handleThemeChange(0)}>
               </div>
-              <div className="w-8 h-8 bg-blue-600 rounded-full" onClick={() => handleThemeChange(1)}>
+              <div className="w-8 h-8 bg-theme1-primary rounded-full" onClick={() => handleThemeChange(1)}>
               </div>
-              <div className="w-8 h-8 bg-yellow-600 rounded-full" onClick={() => handleThemeChange(2)}>
+              <div className="w-8 h-8 bg-theme2-primary rounded-full" onClick={() => handleThemeChange(2)}>
               </div>
-              <div className="w-8 h-8 bg-black rounded-full" onClick={() => handleThemeChange(3)}>
+              <div className="w-8 h-8 bg-theme3-primary rounded-full" onClick={() => handleThemeChange(3)}>
+              </div>
+              <div className="w-8 h-8 bg-theme4-primary rounded-full" onClick={() => handleThemeChange(4)}>
+              </div>
+              <div className="w-8 h-8 bg-theme5-hover rounded-full" onClick={() => handleThemeChange(5)}>
               </div>
             </div>
           </div>
