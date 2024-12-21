@@ -3,8 +3,6 @@ import { persist } from "zustand/middleware";
 
 type ThemeState = {
   theme: number | null;
-  text: string | null;
-  button: string | null;
   setTheme: (theme: number) => void;
 };
 
