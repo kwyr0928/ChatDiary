@@ -12,6 +12,25 @@ import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { toast } from "~/hooks/use-toast";
 import { useThemeStore } from "~/store/themeStore";
 
+type GetTagResponse = {
+  message: string;
+  tagList: string[];
+}
+
+type DiaryData = {
+  id: string;
+  userId: string;
+  title: string;
+  summary: string;
+  isPublic: boolean;
+  created_at: string;
+}
+
+type UpdateDiaryResponse = {
+  message: string;
+  diaryData: DiaryData;
+}
+
 export default function New() {
   return (
     <Suspense>
@@ -29,36 +48,61 @@ function Page() {
   const [tags, setTags] = useState<string[]>([]);
   const [tagList, setTagList] = useState<string[]>([])
   const [isPublic, setIsPublic] = useState("private");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const diaryId = searchParams.get("diaryId");
+  const [isSession, setIsSession] = useState(false);
 
   useEffect(() => {
     const fetchTagNames = async () => {
       try {
+        if( res == undefined ) {
+        router.push("/home");
+        throw new Error("エラーが発生しました。もう一度やり直してください。");
+        }
         const response = await fetch(`/api/diary/tag`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
         })
-        const responseData = await response.json();
-        console.log(responseData.message);
+        const responseData = (await response.json()) as GetTagResponse;
+        console.log(responseData);
         if (response.ok) {
+          setIsSession(true);
           setTagList(responseData.tagList);
-        } else {
-          throw new Error(responseData);
+        } else { // 401 500
+          let errorMessage = '';
+          switch (response.status) {
+            case 401:
+              errorMessage = '認証エラー（401）: ログインが必要です。';
+              router.push("/signin");
+              break;
+              case 500:
+                errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+                break;
+            default:
+              errorMessage = '予期しないエラーが発生しました。';
+              break;
+          }
+          throw new Error(errorMessage);
         }
       } catch (error) {
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "予期しないエラーが発生しました";
-        // エラーメッセージ表示　普通は出ないはず
+        console.log(error);
+        if (error instanceof Error) {
         toast({
           variant: "destructive",
-          description: errorMessage,
+          description: error.message,
         });
-
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
+      } finally {
+        if(isSession){
+          setIsLoading(false); // ローディングを終了
+        }
       }
     }
     void fetchTagNames();
@@ -71,6 +115,7 @@ function Page() {
   }, [tagList]);
 
   const handleCreateDiary = async () => {
+    setIsLoading(true);
     sessionStorage.setItem("showDialog", "true");
     try {
       const response = await fetch(`/api/diary/${diaryId}`, {
@@ -84,72 +129,66 @@ function Page() {
           isPublic: isPublic === "public",
         }),
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as UpdateDiaryResponse;
       console.log(responseData);
       if (response.ok) {
-        router.push("/home");
-      } else {
-        sessionStorage.removeItem("showDialog");
-        throw new Error(responseData);
+        setIsSession(true);
+      router.push("/home");
+    } else { // 401 500
+      sessionStorage.removeItem("showDialog");
+      let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
       }
+      throw new Error(errorMessage);
+    }
     } catch (error) {
-      // 入力エラーメッセージ表示
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "予期しないエラーが発生しました";
-      // エラーメッセージ表示　普通は出ないはず
-      toast({
-        variant: "destructive",
-        description: errorMessage,
-      });
+      console.log(error);
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
     } finally {
-      setIsLoading(false); // ローディングを終了
+      if(isSession){
+        setIsLoading(false); // ローディングを終了
+      }
     }
   };
+  
+    useEffect(() => {
+      if(isSession){
+        setIsLoading(false); // ローディングを終了
+      }
+    }, [isSession]);
 
-  if (isLoading) {
-    return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
-        <LoaderCircle className="animate-spin" />
-      </div>
-    );
-  }
+    if (isLoading) {
+      return (
+        <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
+          <LoaderCircle className="animate-spin" />
+        </div>
+      );
+    }
 
   return (
     <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
       <div className="fixed top-0 mb-5 flex w-full max-w-md flex-col justify-around bg-white pt-5 text-center">
         <div className="mb-3 flex">
-          {/* <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5">
-              <IoChevronBackSharp color="#f87171" size={"30px"} />
-            </DialogTrigger>
-            <DialogContent className="w-[80%]">
-              <DialogHeader>
-                <DialogTitle className="mt-5">編集内容を削除して戻りますか？</DialogTitle>
-              </DialogHeader>
-              <DialogDescription className="text-center text-gray-500">
-                作成した日記は削除されます
-              </DialogDescription>
-              <div className="flex justify-around">
-                <div className="my-2">
-                  <Button
-                    className="w-[100px] rounded-full bg-white hover:bg-red-400 text-red-400 hover:text-white border border-red-400 hover:border-transparent"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    いいえ
-                  </Button>
-                </div>
-                <Link href={"/home"}>
-                  <div className="my-2">
-                    <Button className="w-[100px] rounded-full bg-red-400 hover:bg-rose-500">
-                      はい
-                    </Button>
-                  </div>
-                </Link>
-              </div>
-            </DialogContent>
-          </Dialog> */}
           <p className="mx-auto my-auto text-lg">
             {new Date().toLocaleString("ja-JP", {
               year: "numeric",

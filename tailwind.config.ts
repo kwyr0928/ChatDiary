@@ -1,4 +1,5 @@
 import { type Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 import { fontFamily } from "tailwindcss/defaultTheme";
 
 export default {
@@ -160,5 +161,5 @@ export default {
     "data-[state=checked]:bg-theme6-primary",
     "data-[state=checked]:border-theme6-primary",
   ],
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 } satisfies Config;

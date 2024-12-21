@@ -23,8 +23,8 @@ import { Separator } from "./ui/separator";
 
 // タグ編集フォームUI
 export default function InputTag(props: { initialTags: string[], initialTagList: string[], onChangeTags: (updatedTags: string[]) => void }) {
-    const maxTagLength: number = 12
-    const { initialTags, initialTagList, onChangeTags = () => { } } = props
+    const maxTagLength = 12;
+    const { initialTags, initialTagList, onChangeTags } = props
         const theme = useThemeStore((state) => state.theme);
     const [tags, setTags] = useState<string[]>(initialTags)
     const [text, setText] = useState<string>("")

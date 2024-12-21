@@ -2,8 +2,8 @@
 
 import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   IoAddCircleSharp,
   IoBarChartSharp,
@@ -27,38 +27,42 @@ type Diary = {
   created_at: string;
 };
 
-type ApiResponse = {
+type GetDiaryResponse = {
   message: string;
   diaries: Diary[];
   tagList: string[];
 };
 
-export default function Home() {
-  return (
-    <Suspense>
-      <Page />
-    </Suspense>
-  );
+type ShareData = {
+  summary: string;
 }
 
-function Page() {
+type GetShareResponse = {
+  message: string;
+  share: ShareData;
+}
+
+type StartChatResponse = {
+  message: string;
+  diaryId: string;
+}
+
+export default function Page() {
   const theme = useThemeStore((state) => state.theme);
   const [keyword, setKeyword] = useState("");
-  const [diaryList, setDiaryList] = useState<ApiResponse>();
-  const [shareData, setShareData] = useState();
+  const [diaryList, setDiaryList] = useState<GetDiaryResponse>();
+  const [shareData, setShareData] = useState("");
   const filteredDiary = diaryList
     ? diaryList.diaries.filter((d) =>
         JSON.stringify(d).toLowerCase().includes(keyword.toLowerCase()),
       )
     : []; // 検索
     const [isOpen, setIsOpen] = useState(false);
-    const params = useSearchParams();
-    const diaryId = params.get("diaryId");
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
+    const [isSession, setIsSession] = useState(false);
 
   useEffect(() => {
-    console.log(theme);
     const fetchDiaries = async () => {
       // 日記一覧取得
       try {
@@ -71,46 +75,84 @@ function Page() {
             "Content-Type": "application/json",
           },
         });
-        const responseData = await response.json();
+        const responseData = (await response.json()) as GetShareResponse;
         console.log(responseData);
         if (response.ok) {
-          setShareData(responseData);
+          setIsSession(true);
+          setShareData(responseData.share.summary);
           sessionStorage.removeItem("showDialog");
-        } else {
-          throw new Error(responseData);
+        } else { // 401 500
+          let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+        case 500:
+          errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+          break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
         }
       }
-        const response = await fetch(`/api/diary`, {
+      const response = await fetch(`/api/diary`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
         });
-        const responseData = await response.json();
+        const responseData = (await response.json()) as GetDiaryResponse;
         console.log(responseData);
         if (response.ok) {
+          setIsSession(true);
           setDiaryList(responseData);
-        } else {
-          throw new Error(responseData);
+        } else { // 401 500
+          let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
         }
       } catch (error) {
-        // 入力エラーメッセージ表示
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "予期しないエラーが発生しました";
-        // エラーメッセージ表示　普通は出ないはず
-        toast({
-          variant: "destructive",
-          description: errorMessage,
-        });
+        if (error instanceof Error) {
+          toast({
+            variant: "destructive",
+            description: error.message,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            description: "予期しないエラーが発生しました。",
+          });
+        }
       } finally {
+        if(isSession){
         setIsLoading(false); // ローディングを終了
+      }
       }
     };
 
     void fetchDiaries();
   }, []);
+
+  useEffect(() => {
+    if(isSession){
+      setIsLoading(false); // ローディングを終了
+    }
+  }, [isSession]);
+
 
     const initializeDiary = async () => {
       // 日記作成
@@ -122,26 +164,43 @@ function Page() {
             "Content-Type": "application/json",
           },
         });
-        const responseData = await response.json();
+        const responseData = (await response.json()) as StartChatResponse;
         console.log(responseData);
         if (response.ok) {
+          setIsSession(true);
           router.push(`/diary/chat?diaryId=${responseData.diaryId}`);
-        } else {
-          throw new Error(responseData);
+        } else { // 401 500
+          let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            setIsLoading(false); // ローディングを終了
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          setIsLoading(false); // ローディングを終了
+          break;
+      }
+      throw new Error(errorMessage);
         }
       } catch (error) {
-        // 入力エラーメッセージ表示
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "予期しないエラーが発生しました";
-        // エラーメッセージ表示　普通は出ないはず
+        console.log(error);
+        if (error instanceof Error) {
         toast({
           variant: "destructive",
-          description: errorMessage,
+          description: error.message,
         });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
       } finally {
-        setIsLoading(false); // ローディングを終了
       }
     };
 
@@ -164,7 +223,7 @@ function Page() {
                 </DialogTitle>
               </DialogHeader>
               <DialogDescription className="text-gray-500 my-3">
-                {shareData?.share.summary}
+                {shareData}
               </DialogDescription>
                   <div className="my-2 mx-auto">
                     <Button className={`w-[100px] rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`} onClick={() => (setIsOpen(false))}>

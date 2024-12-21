@@ -4,11 +4,13 @@ import { useEffect, useRef } from "react";
 
 // 可変テキストエリア
 export default function ResizeTextarea(props: { className: string, text: string, onChange?: (newValue: string) => void, isLimit?: boolean }) {
-    const { className, text, onChange = () => { }, isLimit } = props
+    const { className, text, onChange, isLimit } = props
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
     const resize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        if (onChange) {
         onChange(e.target.value)
+    }
         if (textareaRef.current) {
             textareaRef.current.style.height = "auto"
             textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`

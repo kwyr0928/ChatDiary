@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderCircle } from "lucide-react";
+import { Check, LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,14 +17,39 @@ import {
 import { toast } from "~/hooks/use-toast";
 import { useThemeStore } from "~/store/themeStore";
 
+type GetTagResponse = {
+  message: string;
+  tagList: string[];
+}
+
+type GetUserResponse = {
+  message: string;
+  email: string;
+  theme: number;
+}
+
+type SignOutResponse = {
+  message: string;
+}
+
+type DeleteResponse = {
+  message: string;
+}
+
+type UpdateThemeResponse = {
+  message: string;
+  theme: number;
+}
+
 export default function Page() {
   const theme = useThemeStore((state) => state.theme);
   const setTheme = useThemeStore((state) => state.setTheme);
   const [tags, setTags] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false); // 退会確認ダイアログ
   const [email, setEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const [isSession, setIsSession] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -37,16 +62,27 @@ export default function Page() {
             "Content-Type": "application/json",
           },
         });
-        const tagResponseData = await tagResponse.json();
+        const tagResponseData = (await tagResponse.json()) as GetTagResponse;
         console.log(tagResponseData);
         if (tagResponse.ok) {
+          setIsSession(true);
           setTags(tagResponseData.tagList);
-        } else {
-          throw new Error(
-            tagResponseData.message || "タグの取得に失敗しました",
-          );
+        } else { // 401 500
+          let errorMessage = '';
+      switch (tagResponse.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
         }
-
         // Fetch Email
         const emailResponse = await fetch(`/api/user`, {
           method: "GET",
@@ -54,45 +90,48 @@ export default function Page() {
             "Content-Type": "application/json",
           },
         });
-        const emailResponseData = await emailResponse.json();
+        const emailResponseData = (await emailResponse.json()) as GetUserResponse;
         console.log(emailResponseData);
         if (emailResponse.ok) {
+          setIsSession(true);
           setEmail(emailResponseData.email);
-        } else {
-          throw new Error(
-            emailResponseData.message || "メールアドレスの取得に失敗しました",
-          );
+        } else { // 401 500
+          let errorMessage = '';
+      switch (emailResponse.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
         }
       } catch (error) {
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "予期しないエラーが発生しました";
-        // エラーメッセージ表示　普通は出ないはず
+        console.log(error);
+        if (error instanceof Error) {
         toast({
           variant: "destructive",
-          description: errorMessage,
+          description: error.message,
         });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
       } finally {
+        if(isSession){
         setIsLoading(false); // ローディングを終了
+      }
       }
     };
     void fetchInitialData();
   }, []);
-
-  // useEffect(() => {
-  // idメアド取得 (JWT取得？ api/user/[id]？)
-  // const getUser = async () => {
-  //   const response = await fetch(`/api/user/[id]`);
-  //   if (response.ok) {
-  //     const data = await response.json();
-  //     setUser({ ...user, id: data.id, email: data.email })
-  //   } else {
-  //     console.error("Failed to fetch");
-  //   }
-  // };
-  // getUser();
-  // }, [])
 
   // 退会処理
   const handleDeleteUser = async () => {
@@ -104,26 +143,43 @@ export default function Page() {
           "Content-Type": "application/json",
         },
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as DeleteResponse;
       console.log(responseData);
       if (response.ok) {
+        setIsSession(true);
         router.push("/setting/delete/complete");
-      } else {
-        throw new Error(responseData);
+      } else { // 401 500
+        let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            setIsLoading(false); // ローディングを終了
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          setIsLoading(false); // ローディングを終了
+          break;
+      }
+      throw new Error(errorMessage);
       }
     } catch (error) {
-      // 入力エラーメッセージ表示
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "予期しないエラーが発生しました";
-      // エラーメッセージ表示　普通は出ないはず
-      toast({
-        variant: "destructive",
-        description: errorMessage,
-      });
+      console.log(error);
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
     } finally {
-      setIsLoading(false); // ローディングを終了
     }
   };
 
@@ -136,26 +192,39 @@ export default function Page() {
           "Content-Type": "application/json",
         },
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as SignOutResponse;
       console.log(responseData);
       if (response.ok) {
+        setTheme(0);
         router.push("/signin");
-      } else {
-        throw new Error(responseData);
+      } else { // 500
+        let errorMessage = '';
+      switch (response.status) {
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            setIsLoading(false); // ローディングを終了
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          setIsLoading(false); // ローディングを終了
+          break;
+      }
+      throw new Error(errorMessage);
       }
     } catch (error) {
-      // 入力エラーメッセージ表示
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "予期しないエラーが発生しました";
-      // エラーメッセージ表示　普通は出ないはず
-      toast({
-        variant: "destructive",
-        description: errorMessage,
-      });
+      console.log(error);
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
     } finally {
-      setIsLoading(false); // ローディングを終了
     }
   };
 
@@ -171,28 +240,46 @@ export default function Page() {
           theme: themeNum,
         }),
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as UpdateThemeResponse;
       console.log(responseData);
       if (response.ok) {
+        setIsSession(true);
         toast({
           description: "テーマカラーを変更しました！",
         });
-      } else {
-        throw new Error(responseData);
+      } else { // 401 500
+        let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
       }
     } catch (error) {
-      // 入力エラーメッセージ表示
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "予期しないエラーが発生しました";
-      // エラーメッセージ表示　普通は出ないはず
-      toast({
-        variant: "destructive",
-        description: errorMessage,
-      });
+      console.log(error);
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
     } finally {
-      setIsLoading(false); // ローディングを終了
+      if(isSession){
+        setIsLoading(false); // ローディングを終了
+      }
     }
   };
 
@@ -207,33 +294,57 @@ export default function Page() {
         },
         body: JSON.stringify({ names: deleteTags }),
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as DeleteResponse;
       console.log(responseData);
       if (response.ok) {
+        setIsSession(true);
         setTags((prevItems) =>
           prevItems.filter((item) => !deleteTags.includes(item)),
         );
         toast({
           description: "タグを削除しました。",
         });
-      } else {
-        throw new Error(responseData);
+      } else { // 401 500
+        let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
       }
     } catch (error) {
-      // 入力エラーメッセージ表示
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "予期しないエラーが発生しました";
-      // エラーメッセージ表示　普通は出ないはず
-      toast({
-        variant: "destructive",
-        description: errorMessage,
-      });
+      console.log(error);
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
     } finally {
-      setIsLoading(false); // ローディングを終了
+       if(isSession){
+        setIsLoading(false); // ローディングを終了
+      }
     }
   };
+
+  useEffect(() => {
+    if(isSession){
+      setIsLoading(false); // ローディングを終了
+    }
+  }, [isSession]);
 
   if (isLoading) {
     return (
@@ -266,7 +377,7 @@ export default function Page() {
           <div className="mt-6 ml-8 mr-auto">
           <div className="mb-4 w-full text-left text-xl font-bold">
             テーマカラー
-            <div className="flex space-x-4 mt-3 mb-16">
+            <div className="flex space-x-4 mt-5 mb-16">
               {/* テーマカラー変更4 */}
               <div className="w-8 h-8 bg-theme0-primary rounded-full" onClick= {() => handleThemeChange(0)}>
               </div>
@@ -282,7 +393,6 @@ export default function Page() {
               </div>
             </div>
           </div>
-
         </div>
 
       <div className="mx-auto mt-5 w-[60%]">
@@ -344,3 +454,4 @@ export default function Page() {
     </div>
   );
 }
+

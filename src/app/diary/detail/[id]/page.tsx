@@ -27,11 +27,6 @@ import { Label } from "~/components/ui/label";
 import { useToast } from "~/hooks/use-toast";
 import { useThemeStore } from "~/store/themeStore";
 
-type ChatLogEntry = {
-  message: string;
-  response: string | null;
-};
-
 type DiaryData = {
   id: string;
   userId: string;
@@ -39,25 +34,35 @@ type DiaryData = {
   summary: string;
   isPublic: boolean;
   created_at: string;
-};
+}
 
-type ApiResponse = {
+type ChatLogEntry = {
+  message: string;
+  response: string | null;
+}
+
+type GetDiaryResponse = {
   message: string;
   diaryData: DiaryData;
   tags: string[];
   tagList: string[];
   chatLog: ChatLogEntry[];
-};
+}
+
+type DeleteDiaryResponse = {
+  message: string;
+}
 
 export default function Page({ params }: { params: Promise<{ id: number }> }) {
    const theme = useThemeStore((state) => state.theme);
-  const [diaryDetail, setDiaryDetail] = useState<ApiResponse>();
+  const [diaryDetail, setDiaryDetail] = useState<GetDiaryResponse>();
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const diary = use(params);
   const diaryId = diary.id;
+  const [isSession, setIsSession] = useState(false);
 
   useEffect(() => {
     const fetchDiaryDetails = async () => {
@@ -68,26 +73,45 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             "Content-Type": "application/json",
           },
         });
-        const responseData = await response.json();
+        const responseData = (await response.json()) as GetDiaryResponse;
         console.log(responseData);
         if (response.ok) {
+          setIsSession(true);
           setDiaryDetail(responseData);
-        } else {
-          throw new Error(responseData);
+        } else { // 401 500
+          let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            router.push("/home");
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
         }
       } catch (error) {
-        // 入力エラーメッセージ表示
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "予期しないエラーが発生しました";
-        // エラーメッセージ表示　普通は出ないはず
+        console.log(error);
+        if (error instanceof Error) {
         toast({
           variant: "destructive",
-          description: errorMessage,
+          description: error.message,
         });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
       } finally {
-        setIsLoading(false); // ローディングを終了
+        if(isSession){
+          setIsLoading(false); // ローディングを終了
+        }
       }
     };
     void fetchDiaryDetails();
@@ -102,31 +126,50 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           "Content-Type": "application/json",
         },
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as DeleteDiaryResponse;
       console.log(responseData);
       if (response.ok) {
         toast({
           description: "日記を削除しました。",
         });
         router.push("/home");
-      } else {
-        throw new Error(responseData);
+      } else { // 500
+        let errorMessage = '';
+      switch (response.status) {
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
       }
     } catch (error) {
-      // 入力エラーメッセージ表示
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "予期しないエラーが発生しました";
-      // エラーメッセージ表示　普通は出ないはず
-      toast({
-        variant: "destructive",
-        description: errorMessage,
-      });
+      console.log(error);
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
     } finally {
-      setIsLoading(false); // ローディングを終了
+      if(isSession){
+        setIsLoading(false); // ローディングを終了
+      }
     }
   };
+
+  useEffect(() => {
+    if(isSession){
+      setIsLoading(false); // ローディングを終了
+    }
+  }, [isSession]);
 
   if (isLoading) {
     return (

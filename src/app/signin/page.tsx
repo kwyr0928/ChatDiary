@@ -10,6 +10,25 @@ import { Input } from "~/components/ui/input";
 import { toast } from "~/hooks/use-toast";
 import { useThemeStore } from "~/store/themeStore";
 
+type Session = {
+  user: {
+    email: string;
+    id: string;
+  };
+  expires: string;
+};
+
+type SignInResponse = {
+  message: string;
+  session: Session;
+};
+
+type GetUserResponse = {
+  message: string;
+  email: string;
+  theme: number;
+}
+
 export default function Page() {
   const setTheme = useThemeStore((state) => state.setTheme);
   const [email, setEmail] = useState("");
@@ -55,7 +74,7 @@ export default function Page() {
         },
         body: JSON.stringify({ email: email, password: password }),
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as SignInResponse;
       console.log(responseData);
       if (response.ok) {
         try {
@@ -65,28 +84,71 @@ export default function Page() {
               "Content-Type": "application/json",
             },
           });
-          const responseData = await response.json();
+          const responseData = (await response.json()) as GetUserResponse;
           console.log(responseData);
           if (response.ok) {
             setTheme(responseData.theme);
             router.push("/home");
-                    } else {
-            throw new Error(responseData);
+                    } else { // 401 500
+            let errorMessage = '';
+      switch (response.status) {
+        case 401:
+          errorMessage = '認証エラー（401）: ログインが必要です。';
+          router.push("/signin");
+          break;
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            setIsLoading(false); // ローディングを終了
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          setIsLoading(false); // ローディングを終了
+          break;
+      }
+      throw new Error(errorMessage);
           }
         } catch (error) {
           console.log(error);
-        }
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
       } else {
-        throw new Error(responseData);
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
+        }
+      } else { // 500
+        let errorMessage = '';
+      switch (response.status) {
+          case 500:
+            errorMessage = 'ログインエラー（500）：メールアドレスまたはパスワードが間違っています。';
+            setIsLoading(false); // ローディングを終了
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          setIsLoading(false); // ローディングを終了
+          break;
+      }
+      throw new Error(errorMessage);
       }
     } catch (error) {
-      // 入力エラーメッセージ表示
-      toast({
-        variant: "destructive",
-        description: "メールアドレスかパスワードが間違っています",
-      });
+      console.log(error);
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
     } finally {
-      setIsLoading(false); // ローディングを終了
     }
   };
 
@@ -117,6 +179,7 @@ export default function Page() {
             className="h-12 rounded-full border-gray-200 px-4"
             placeholder="メールアドレス"
             value={email}
+            autoComplete="email"
             onChange={(e) => validateEmail(e.target.value)}
           />
           {emailError && <p className="text-xs text-red-500">{emailError}</p>}
@@ -135,6 +198,7 @@ export default function Page() {
               className="h-12 w-full rounded-full border-gray-200 px-4 pr-12"
               placeholder="パスワード"
               value={password}
+              autoComplete="new-password"
               onChange={(e) => validatePassword(e.target.value)}
             />
             <button

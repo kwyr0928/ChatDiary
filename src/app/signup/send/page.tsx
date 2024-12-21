@@ -1,9 +1,13 @@
 "use client";
 
 import { LoaderCircle } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import { useToast } from "~/hooks/use-toast";
+
+type ReMailResponse = {
+  message: string;
+}
 
 export default function Send() {
   return (
@@ -14,11 +18,43 @@ export default function Send() {
 }
 
 function Page() {
+  const router = useRouter();
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSession, setIsSession] = useState(false);
   const [isSending, setIsSending] = useState(false); // 送信中かどうか
   const params = useSearchParams();
   const email = params.get("email");
   const userId = params.get("userId");
+
+  useEffect(() => {
+    setIsLoading(true);
+    try {
+    if (email == undefined || userId == undefined) {
+      router.push("/signup");
+      throw new Error("処理に失敗しました。もう一度やり直してください。");
+    } else {
+      setIsSession(true);
+    }
+  } catch (error) {
+    console.log(error);
+      if (error instanceof Error) {
+      toast({
+        variant: "destructive",
+        description: error.message,
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        description: "予期しないエラーが発生しました。",
+      });
+    }
+  } finally {
+    if(isSession){
+      setIsLoading(false); // ローディングを終了
+    }
+  }
+  }, []);
   
   const handleRemail = async () => {
     if (isSending) return;
@@ -35,29 +71,56 @@ function Page() {
           email: email
          }),
       });
-      const responseData = await response.json();
+      const responseData = (await response.json()) as ReMailResponse;
       console.log(responseData);
       if (response.ok) {
         toast({
           description: "メールを再送しました！",
         });
-      } else {
-        throw new Error(responseData);
+      } else { // 500
+        let errorMessage = '';
+      switch (response.status) {
+          case 500:
+            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            break;
+        default:
+          errorMessage = '予期しないエラーが発生しました。';
+          break;
+      }
+      throw new Error(errorMessage);
       }
     } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "予期しないエラーが発生しました";
-      // 入力エラーメッセージ表示　普通は出ないはず
-      toast({
-        variant: "destructive",
-        description: errorMessage,
-      });
+      console.log(error);
+        if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "予期しないエラーが発生しました。",
+        });
+      }
     } finally {
       setIsSending(false); // 送信完了
     }
   };
+
+  useEffect(() => {
+    if(isSession){
+      setIsLoading(false); // ローディングを終了
+    }
+  }, [isSession]);
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+        <LoaderCircle className="animate-spin" />
+      </div>
+    );
+  }
+
 
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
@@ -80,19 +143,6 @@ function Page() {
     </div>
       }
       </div>
-      {/* 実装完了次第削除予定 */}
-      {/* <div className="absolute bottom-0 flex flex-col">
-        <Link href={`/signup/complete?email=${email}`}>
-          <button type="button" className="bg-red-400 px-3 py-1 text-white">
-            メール内URLをクリック
-          </button>
-        </Link>
-        <Link href={`/signup/expired?email=${email}`}>
-          <button type="button" className="bg-red-400 px-3 py-1 text-white">
-            メール内URLをクリック（期限切れ）
-          </button>
-        </Link>
-      </div> */}
     </div>
   );
 }

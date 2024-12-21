@@ -17,7 +17,7 @@ import { Button } from "./ui/button";
 
 export default function TagListSetting(props: { initialList: string[], onDeleteTags: (updatedTags: string[]) => void }) {
     const theme = useThemeStore((state) => state.theme);
-    const { initialList, onDeleteTags = () => { } } = props
+    const { initialList, onDeleteTags } = props
     const [tagList, setTagList] = useState<string[]>(initialList) // タグリスト
     const [deleteTags, setDeleteTags] = useState<string[]>([]) // 削除するタグ
     const [isOpen, setIsOpen] = useState(false); // タグ削除確認ダイアログ
