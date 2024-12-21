@@ -179,9 +179,11 @@ export default function Page() {
           break;
           case 500:
             errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            setIsLoading(false); // ローディングを終了
             break;
         default:
           errorMessage = '予期しないエラーが発生しました。';
+          setIsLoading(false); // ローディングを終了
           break;
       }
       throw new Error(errorMessage);
@@ -200,9 +202,6 @@ export default function Page() {
         });
       }
       } finally {
-        if(isSession){
-          setIsLoading(false); // ローディングを終了
-        }
       }
     };
 

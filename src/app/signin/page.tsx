@@ -90,9 +90,11 @@ export default function Page() {
           break;
           case 500:
             errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            setIsLoading(false); // ローディングを終了
             break;
         default:
           errorMessage = '予期しないエラーが発生しました。';
+          setIsLoading(false); // ローディングを終了
           break;
       }
       throw new Error(errorMessage);
@@ -116,9 +118,11 @@ export default function Page() {
       switch (response.status) {
           case 500:
             errorMessage = 'ログインエラー（500）：メールアドレスまたはパスワードが間違っています。';
+            setIsLoading(false); // ローディングを終了
             break;
         default:
           errorMessage = '予期しないエラーが発生しました。';
+          setIsLoading(false); // ローディングを終了
           break;
       }
       throw new Error(errorMessage);
@@ -137,7 +141,6 @@ export default function Page() {
         });
       }
     } finally {
-      setIsLoading(false); // ローディングを終了
     }
   };
 
