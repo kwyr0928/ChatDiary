@@ -1,6 +1,7 @@
 import { getTodayContinuation } from "~/server/repository/getdata";
+import { updateDiary } from "~/server/repository/updatedata";
 import { connectDiaryTag, createContinuation, createMonthlyFB, createNewUser, createTag, initializeDiary } from "~/server/service/create";
-import { getDiariesAndTag, getLastMonthFB, getMonthlyContinuation, getRecentTagNamesByUserId } from "~/server/service/fetch";
+import { getDiariesAndTag, getLastMonthFB, getMonthlyContinuation, getOtherUserDiary, getRecentTagNamesByUserId } from "~/server/service/fetch";
 
 describe("getDiariesAndTag", () => {
   test("正常系", async () => {
@@ -90,5 +91,30 @@ describe("getMonthlyContinuation", () => {
     const continuation = await getMonthlyContinuation(user?.id as unknown as string, new Date(2024, 11, 5));
     expect(continuation).not.toBeNull();
     expect(continuation).toEqual([true, false, true, true, false]);
+  });
+});
+
+describe("getOtherUserDiary", () => {
+  test("正常系", async () => {
+    const email = "xxx@gmail.com";
+    const hashedPassword = "pass";
+    const user = await createNewUser(email, hashedPassword);
+    const email2 = "yyy@gmail.com";
+    const hashedPassword2 = "pass2";
+    const user2 = await createNewUser(email2, hashedPassword2);
+
+    await initializeDiary(user?.id as unknown as string);
+
+    const summary = "誰かの日記";
+    const diary1 = await initializeDiary(user2?.id as unknown as string);
+    await updateDiary(diary1?.id as unknown as string, summary, true);
+    const diary2 = await initializeDiary(user2?.id as unknown as string);
+    await updateDiary(diary2?.id as unknown as string, summary, true);
+    const diary3 = await initializeDiary(user2?.id as unknown as string);
+    await updateDiary(diary3?.id as unknown as string, summary, true);
+
+    const data = await getOtherUserDiary(user?.id as unknown as string);
+    expect(data).not.toBeNull();
+    expect(data?.summary).toEqual(summary);
   });
 });
