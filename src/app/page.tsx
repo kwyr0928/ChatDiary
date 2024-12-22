@@ -61,7 +61,7 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600`}>
+      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}>
         <Image
           src="/logo.png"
           alt="logo"
@@ -75,7 +75,7 @@ export default function Page() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600">
       <Image
         src="/logo.png"
         alt="logo"

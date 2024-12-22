@@ -133,7 +133,7 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600">
         <LoaderCircle className="animate-spin" />
       </div>
     );
@@ -141,7 +141,7 @@ export default function Page() {
 
 
   return (
-    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600">
       <Link href={"/signin"} className="absolute left-7 top-9">
         <IoChevronBackSharp color="#f87171" size={"30px"} />
       </Link>
@@ -241,7 +241,7 @@ export default function Page() {
           <Button
             type="submit"
             disabled={!!isError}
-            className="mt-6 w-full rounded-full bg-red-400 text-xl hover:bg-rose-500"
+            className="mt-6 w-full rounded-full bg-theme0-primary text-xl hover:bg-theme0-hover"
           >
             登録
           </Button>
