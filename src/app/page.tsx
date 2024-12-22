@@ -13,6 +13,7 @@ type GetUserResponse = {
 }
 
 export default function Page() {
+  const theme = useThemeStore((state) => state.theme);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const setTheme = useThemeStore((state) => state.setTheme);
@@ -61,7 +62,7 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600`}>
+      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
         <Image
           src="/logo.png"
           alt="logo"
@@ -75,7 +76,7 @@ export default function Page() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+    <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
       <Image
         src="/logo.png"
         alt="logo"
