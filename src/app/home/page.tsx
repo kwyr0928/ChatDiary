@@ -449,7 +449,7 @@ export default function Page() {
               href={`/diary/detail/${d.id}`}
               className="focus:outline-none focus-visible:outline-none focus-visible:ring-0"
             >
-              <DiaryCard key={index} title={d.title} summary={d.summary} />
+              <DiaryCard key={index} title={d.title} summary={d.summary} isPublic={d.isPublic} tags={d.tags} />
             </Link>
           ))
         ) : keyword == "" ? (
