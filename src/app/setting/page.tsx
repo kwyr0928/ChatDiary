@@ -69,19 +69,19 @@ export default function Page() {
           setTags(tagResponseData.tagList);
         } else { // 401 500
           let errorMessage = '';
-      switch (tagResponse.status) {
-        case 401:
-          errorMessage = '認証エラー（401）: ログインが必要です。';
-          router.push("/signin");
-          break;
-          case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
-            break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          break;
-      }
-      throw new Error(errorMessage);
+          switch (tagResponse.status) {
+            case 401:
+              errorMessage = '認証エラー（401）: ログインが必要です。';
+              router.push("/signin");
+              break;
+            case 500:
+              errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+              break;
+            default:
+              errorMessage = '予期しないエラーが発生しました。';
+              break;
+          }
+          throw new Error(errorMessage);
         }
         // Fetch Email
         const emailResponse = await fetch(`/api/user`, {
@@ -97,37 +97,37 @@ export default function Page() {
           setEmail(emailResponseData.email);
         } else { // 401 500
           let errorMessage = '';
-      switch (emailResponse.status) {
-        case 401:
-          errorMessage = '認証エラー（401）: ログインが必要です。';
-          router.push("/signin");
-          break;
-          case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
-            break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          break;
-      }
-      throw new Error(errorMessage);
+          switch (emailResponse.status) {
+            case 401:
+              errorMessage = '認証エラー（401）: ログインが必要です。';
+              router.push("/signin");
+              break;
+            case 500:
+              errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+              break;
+            default:
+              errorMessage = '予期しないエラーが発生しました。';
+              break;
+          }
+          throw new Error(errorMessage);
         }
       } catch (error) {
         console.log(error);
         if (error instanceof Error) {
-        toast({
-          variant: "destructive",
-          description: error.message,
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          description: "予期しないエラーが発生しました。",
-        });
-      }
+          toast({
+            variant: "destructive",
+            description: error.message,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            description: "予期しないエラーが発生しました。",
+          });
+        }
       } finally {
-        if(isSession){
-        setIsLoading(false); // ローディングを終了
-      }
+        if (isSession) {
+          setIsLoading(false); // ローディングを終了
+        }
       }
     };
     void fetchInitialData();
@@ -150,25 +150,25 @@ export default function Page() {
         router.push("/setting/delete/complete");
       } else { // 401 500
         let errorMessage = '';
-      switch (response.status) {
-        case 401:
-          errorMessage = '認証エラー（401）: ログインが必要です。';
-          router.push("/signin");
-          break;
+        switch (response.status) {
+          case 401:
+            errorMessage = '認証エラー（401）: ログインが必要です。';
+            router.push("/signin");
+            break;
           case 500:
             errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
             setIsLoading(false); // ローディングを終了
             break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          setIsLoading(false); // ローディングを終了
-          break;
-      }
-      throw new Error(errorMessage);
+          default:
+            errorMessage = '予期しないエラーが発生しました。';
+            setIsLoading(false); // ローディングを終了
+            break;
+        }
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.log(error);
-        if (error instanceof Error) {
+      if (error instanceof Error) {
         toast({
           variant: "destructive",
           description: error.message,
@@ -199,21 +199,21 @@ export default function Page() {
         router.push("/signin");
       } else { // 500
         let errorMessage = '';
-      switch (response.status) {
+        switch (response.status) {
           case 500:
             errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
             setIsLoading(false); // ローディングを終了
             break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          setIsLoading(false); // ローディングを終了
-          break;
-      }
-      throw new Error(errorMessage);
+          default:
+            errorMessage = '予期しないエラーが発生しました。';
+            setIsLoading(false); // ローディングを終了
+            break;
+        }
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.log(error);
-        if (error instanceof Error) {
+      if (error instanceof Error) {
         toast({
           variant: "destructive",
           description: error.message,
@@ -236,7 +236,7 @@ export default function Page() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-        },body: JSON.stringify({
+        }, body: JSON.stringify({
           theme: themeNum,
         }),
       });
@@ -249,23 +249,23 @@ export default function Page() {
         });
       } else { // 401 500
         let errorMessage = '';
-      switch (response.status) {
-        case 401:
-          errorMessage = '認証エラー（401）: ログインが必要です。';
-          router.push("/signin");
-          break;
+        switch (response.status) {
+          case 401:
+            errorMessage = '認証エラー（401）: ログインが必要です。';
+            router.push("/signin");
+            break;
           case 500:
             errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
             break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          break;
-      }
-      throw new Error(errorMessage);
+          default:
+            errorMessage = '予期しないエラーが発生しました。';
+            break;
+        }
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.log(error);
-        if (error instanceof Error) {
+      if (error instanceof Error) {
         toast({
           variant: "destructive",
           description: error.message,
@@ -277,7 +277,7 @@ export default function Page() {
         });
       }
     } finally {
-      if(isSession){
+      if (isSession) {
         setIsLoading(false); // ローディングを終了
       }
     }
@@ -306,23 +306,23 @@ export default function Page() {
         });
       } else { // 401 500
         let errorMessage = '';
-      switch (response.status) {
-        case 401:
-          errorMessage = '認証エラー（401）: ログインが必要です。';
-          router.push("/signin");
-          break;
+        switch (response.status) {
+          case 401:
+            errorMessage = '認証エラー（401）: ログインが必要です。';
+            router.push("/signin");
+            break;
           case 500:
             errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
             break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          break;
-      }
-      throw new Error(errorMessage);
+          default:
+            errorMessage = '予期しないエラーが発生しました。';
+            break;
+        }
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.log(error);
-        if (error instanceof Error) {
+      if (error instanceof Error) {
         toast({
           variant: "destructive",
           description: error.message,
@@ -334,14 +334,14 @@ export default function Page() {
         });
       }
     } finally {
-       if(isSession){
+      if (isSession) {
         setIsLoading(false); // ローディングを終了
       }
     }
   };
 
   useEffect(() => {
-    if(isSession){
+    if (isSession) {
       setIsLoading(false); // ローディングを終了
     }
   }, [isSession]);
@@ -356,30 +356,31 @@ export default function Page() {
 
   return (
     <div className={`mx-auto min-h-screen w-full max-w-md bg-theme${theme}-background text-gray-600`}>
-      <div className="mx-auto flex flex-col items-center">
-        <div className="ml-8 mr-auto">
-          <p className="mt-8 w-full text-left text-xl font-bold">
-            アカウント情報
-          </p>
-          <p className="text-md mt-2 w-full text-left">
-            メールアドレス：{email}
-          </p>
+      <div className="mb-[80px]">
+        <div className="mx-auto flex flex-col items-center">
+          <div className="ml-8 mr-auto">
+            <p className="mt-8 w-full text-left text-xl font-bold">
+              アカウント情報
+            </p>
+            <p className="text-md mt-2 w-full text-left">
+              メールアドレス：{email}
+            </p>
+          </div>
+
+          <div className="ml-8 mr-auto mt-12">
+            <p className="mb-4 w-full text-left text-xl font-bold">タグの編集</p>
+          </div>
+          <div className="w-[85%]">
+            <TagListSetting initialList={tags} onDeleteTags={handleDeleteTag} />
+          </div>
         </div>
 
-        <div className="ml-8 mr-auto mt-12">
-          <p className="mb-4 w-full text-left text-xl font-bold">タグの編集</p>
-        </div>
-        <div className="w-[85%]">
-          <TagListSetting initialList={tags} onDeleteTags={handleDeleteTag} />
-        </div>
-      </div>
-
-          <div className="mt-6 ml-8 mr-auto">
+        <div className="mt-6 ml-8 mr-auto">
           <div className="mb-4 w-full text-left text-xl font-bold">
             テーマカラー
             <div className="flex space-x-4 mt-5 mb-16">
               {/* テーマカラー変更4 */}
-              <div className="w-8 h-8 bg-theme0-primary rounded-full" onClick= {() => handleThemeChange(0)}>
+              <div className="w-8 h-8 bg-theme0-primary rounded-full" onClick={() => handleThemeChange(0)}>
               </div>
               <div className="w-8 h-8 bg-theme1-primary rounded-full" onClick={() => handleThemeChange(1)}>
               </div>
@@ -395,50 +396,51 @@ export default function Page() {
           </div>
         </div>
 
-      <div className="mx-auto mt-5 w-[60%]">
-        <Button
-          onClick={handleSignOut}
-          className="w-full rounded-full bg-gray-400 hover:bg-gray-500"
-        >
-          ログアウトする
-        </Button>
-      </div>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <div className="mx-auto mt-6 w-[60%]">
+        <div className="mx-auto mt-5 w-[60%]">
           <Button
-            className={`w-full rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}
-            onClick={() => setIsOpen(true)}
+            onClick={handleSignOut}
+            className="w-full rounded-full bg-gray-400 hover:bg-gray-500"
           >
-            アカウントを削除する
+            ログアウトする
           </Button>
         </div>
-        <DialogContent className="w-[80%]">
-          <DialogHeader>
-            <DialogTitle className="mt-3">本当に退会しますか？</DialogTitle>
-          </DialogHeader>
-          <DialogDescription className="text-center text-gray-500">
-            作成した日記はすべて削除されます
-          </DialogDescription>
-          <div className="flex justify-around">
-            <div className="my-2">
-              <Button
-                className={`w-[100px] rounded-full border border-theme${theme}-primary bg-white text-theme${theme}-primary hover:border-transparent hover:bg-theme${theme}-hover hover:text-white`}
-                onClick={() => setIsOpen(false)}
-              >
-                いいえ
-              </Button>
-            </div>
-            <div className="my-2">
-              <Button
-                onClick={handleDeleteUser}
-                className={`w-[100px] rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}
-              >
-                はい
-              </Button>
-            </div>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <div className="mx-auto mt-6 w-[60%] pb-10">
+            <Button
+              className={`w-full rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}
+              onClick={() => setIsOpen(true)}
+            >
+              アカウントを削除する
+            </Button>
           </div>
-        </DialogContent>
-      </Dialog>
+          <DialogContent className="w-[80%]">
+            <DialogHeader>
+              <DialogTitle className="mt-3">本当に退会しますか？</DialogTitle>
+            </DialogHeader>
+            <DialogDescription className="text-center text-gray-500">
+              作成した日記はすべて削除されます
+            </DialogDescription>
+            <div className="flex justify-around">
+              <div className="my-2">
+                <Button
+                  className={`w-[100px] rounded-full border border-theme${theme}-primary bg-white text-theme${theme}-primary hover:border-transparent hover:bg-theme${theme}-hover hover:text-white`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  いいえ
+                </Button>
+              </div>
+              <div className="my-2">
+                <Button
+                  onClick={handleDeleteUser}
+                  className={`w-[100px] rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}
+                >
+                  はい
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
 
       <div className="fixed bottom-0 flex w-full max-w-md justify-around bg-white py-5">
         <Link href={"/setting"}>
