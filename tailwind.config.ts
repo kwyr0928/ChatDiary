@@ -100,6 +100,15 @@ export default {
           hover: "#A5A5A5",
         },
       },
+      keyframes: {
+        bounce: {
+          '0%, 100%': { transform: 'translateY(-30%)' },
+          '20%, 80%': { transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        loadingBounce: 'bounce 2s ease-in-out infinite',
+      },
     },
   },
   // テーマカラー変更2 1色8種類　事前に生成　先に別の方法あるかな？
@@ -161,5 +170,7 @@ export default {
     "data-[state=checked]:bg-theme6-primary",
     "data-[state=checked]:border-theme6-primary",
   ],
-  plugins: [tailwindcssAnimate],
+  plugins: [
+    tailwindcssAnimate
+  ],
 } satisfies Config;

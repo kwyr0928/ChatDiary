@@ -1,6 +1,5 @@
 "use client";
 
-import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -72,6 +71,8 @@ export default function Page() {
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
     const [isSession, setIsSession] = useState(false);
+
+    const loadingText = "日記読み込み中..."
 
     const toggleSortOrder = () => {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -226,8 +227,16 @@ export default function Page() {
 
     if (isLoading) {
       return (
-        <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
-          <LoaderCircle className="animate-spin" />
+        <div className={`mx-auto flex min-h-screen w-full max-w-md items-center justify-center bg-theme${theme}-background text-gray-600`}>
+          {loadingText.split("").map((char, index) => (
+            <span
+            key={index}
+            style={{ animationDelay: `${index * 0.1}s` }}
+            className={`animate-loadingBounce pb-4 text-3xl italic font-semibold tracking-widest font-sans flex-col`}
+          >
+            {char}
+          </span>
+          ))}
         </div>
       );
     }
