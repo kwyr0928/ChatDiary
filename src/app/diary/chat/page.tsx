@@ -337,26 +337,30 @@ function Page() {
         ))}
       </div>
       {/* チャット欄 */}
-      <div className={`fixed bottom-0 flex w-full max-w-md items-end justify-center bg-theme${theme}-background pb-5 pt-3`}>
+      <div className={`fixed bottom-0 w-full max-w-md items-end justify-center bg-theme${theme}-background pb-5 pt-3`}>
         {isSending ? (
           // 送信中の表示
-          <LoaderCircle className="w-[300px] animate-spin" />
+          <LoaderCircle className="w-[360px] animate-spin" />
         ) : isGenerating ? (
-          // 回答生成中の表示
-          <p className="w-[300px] text-center">回答生成中...</p>
+          // 日記生成中の表示
+          <p className="w-[360px] text-center">日記生成中...</p>
         ) : (
-          <div className="flex items-end justify-center space-x-2">
-            <ResizeTextarea
-              className="w-[300px] resize-none rounded border p-1 focus:outline-none"
-              text={inputText}
-              onChange={(text) => setInputText(text)}
-              isLimit={true}
-            />
-            <IoSendSharp
-              onClick={handleSend}
-              size={"30px"}
-              className={`pb-1 text-theme${theme}-primary`}
-            />
+          <div>
+            <p className="w-[360px] text-xs text-center pb-1">日記生成まであと <span className="text-sm font-bold">{5-count}</span> メッセージ</p>
+            <div className="flex items-end justify-center space-x-2">
+              <ResizeTextarea
+                className="w-[300px] resize-none rounded border p-1 focus:outline-none"
+                text={inputText}
+                onChange={(text) => setInputText(text)}
+                isLimit={true}
+                placeholder={count >= 1 ? "AIと会話して思い出を振り返りましょう" : "今日はどんなことがありましたか？"}
+              />
+              <IoSendSharp
+                onClick={handleSend}
+                size={"30px"}
+                className={`pb-1 text-theme${theme}-primary`}
+              />
+            </div>
           </div>
         )}
       </div>

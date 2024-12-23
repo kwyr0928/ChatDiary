@@ -36,8 +36,8 @@ export default function TagListSetting(props: { initialList: string[], onDeleteT
 
         if(tagList.length <= 1) classes.push("h-23")
         if(tagList.length == 2) classes.push("h-30")
-        if(tagList.length == 3) classes.push("h-44")
-        if(tagList.length >= 4) classes.push("h-52")
+        if(tagList.length == 3) classes.push("h-42")
+        if(tagList.length >= 4) classes.push("h-48")
 
         return classes.join(" ");
     }

@@ -201,7 +201,7 @@ function Page() {
         </div>
       </div>
       <div className="mb-auto mt-[70px] w-[85%]">
-        <p className="mt-5 mb-3 text-left text-lg">生成された日記を修正</p>
+        <p className="mt-5 mb-3 text-left text-lg">生成された日記（修正可）</p>
         <ResizeTextarea
           className="h-36 w-full resize-none rounded border border-gray-300 p-2 px-5 py-3 text-gray-600 focus:outline-none"
           text={text}

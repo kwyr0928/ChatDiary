@@ -30,6 +30,7 @@ type GetUserResponse = {
 }
 
 export default function Page() {
+  const theme = useThemeStore((state) => state.theme);
   const setTheme = useThemeStore((state) => state.setTheme);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -154,14 +155,14 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
         <LoaderCircle className="animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-red-50 text-gray-600">
+    <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
       <Image
         src="/logo.png"
         alt="logo"
@@ -218,7 +219,7 @@ export default function Page() {
           <Button
             type="submit"
             disabled={!!isError}
-            className="rounded-full　w-full mb-2 mt-6 bg-red-400 text-xl hover:bg-rose-500"
+            className={`rounded-full　w-full mb-2 mt-6 bg-theme${theme}-primary text-xl hover:bg-theme${theme}-hover`}
           >
             ログイン
           </Button>
