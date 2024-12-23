@@ -135,7 +135,7 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
+      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme-background text-gray-600`}>
         <LoaderCircle className="animate-spin" />
       </div>
     );
@@ -143,7 +143,7 @@ export default function Page() {
 
 
   return (
-    <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
+    <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme$-background text-gray-600`}>
       <Link href={"/signin"} className="absolute left-7 top-9">
         <IoChevronBackSharp className={`text-theme${theme}-primary`} size={"30px"} />
       </Link>

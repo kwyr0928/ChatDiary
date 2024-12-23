@@ -117,7 +117,7 @@ function Page() {
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
+      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}>
         <LoaderCircle className="animate-spin" />
       </div>
     );
@@ -125,7 +125,7 @@ function Page() {
 
 
   return (
-    <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
+    <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}>
       <div className="flex h-[350px] w-[80%] flex-col items-center justify-center rounded-md bg-white">
         <p className="mb-8 mt-2 text-xl font-bold">メールアドレス認証</p>
         <p className="mb-10 text-center leading-8">
