@@ -160,17 +160,17 @@ export default function Page() {
         }
       } finally {
         if(isSession){
-        setIsLoading(false); // ローディングを終了
+        //setIsLoading(false); // ローディングを終了
       }
       }
     };
 
-    void fetchDiaries();
+    //void fetchDiaries();
   }, []);
 
   useEffect(() => {
     if(isSession){
-      setIsLoading(false); // ローディングを終了
+      //setIsLoading(false); // ローディングを終了
     }
   }, [isSession]);
 
@@ -227,12 +227,12 @@ export default function Page() {
 
     if (isLoading) {
       return (
-        <div className={`mx-auto flex min-h-screen w-full max-w-md items-center justify-center bg-theme${theme}-background text-gray-600`}>
+        <div className={`mx-auto flex min-h-screen w-full max-w-md items-center justify-center bg-theme0-background text-rose-950`}>
           {loadingText.split("").map((char, index) => (
             <span
             key={index}
             style={{ animationDelay: `${index * 0.1}s` }}
-            className={`animate-loadingBounce pb-4 text-3xl italic font-semibold tracking-widest font-sans flex-col`}
+            className={`animate-loadingBounce pb-4 text-3xl italic font-medium tracking-wider font-mplus flex-col`}
           >
             {char}
           </span>

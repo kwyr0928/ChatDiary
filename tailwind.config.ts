@@ -9,6 +9,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
+        mplus: ["'M PLUS Rounded 1c'", 'sans-serif'],
       },
       borderRadius: {
         lg: "var(--radius)",
