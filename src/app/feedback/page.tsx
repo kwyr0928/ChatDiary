@@ -1,6 +1,5 @@
 "use client";
 
-import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -18,13 +17,14 @@ type FeedbackResponse = {
 
 export default function Page() {
   const router = useRouter();
-   const theme = useThemeStore((state) => state.theme);
+  const theme = useThemeStore((state) => state.theme);
   const [isLoading, setIsLoading] = useState(true);
   const [feedback, setFeedback] = useState<FeedbackResponse>();
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth() + 1;
   const [isSession, setIsSession] = useState(false);
+  const loadingText = "フィードバック作成中..."
 
   useEffect(() => {
     const fetchFeedBack = async () => {
@@ -42,35 +42,35 @@ export default function Page() {
           setFeedback(responseData);
         } else { // 401 500
           let errorMessage = '';
-      switch (response.status) {
-        case 401:
-          errorMessage = '認証エラー（401）: ログインが必要です。';
-          router.push("/signin");
-          break;
-          case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
-            break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          break;
-      }
-      throw new Error(errorMessage);
+          switch (response.status) {
+            case 401:
+              errorMessage = '認証エラー（401）: ログインが必要です。';
+              router.push("/signin");
+              break;
+            case 500:
+              errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+              break;
+            default:
+              errorMessage = '予期しないエラーが発生しました。';
+              break;
+          }
+          throw new Error(errorMessage);
         }
       } catch (error) {
         console.log(error);
         if (error instanceof Error) {
-        toast({
-          variant: "destructive",
-          description: error.message,
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          description: "予期しないエラーが発生しました。",
-        });
-      }
+          toast({
+            variant: "destructive",
+            description: error.message,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            description: "予期しないエラーが発生しました。",
+          });
+        }
       } finally {
-        if(isSession){
+        if (isSession) {
           setIsLoading(false); // ローディングを終了
         }
       }
@@ -79,16 +79,24 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    if(isSession){
+    if (isSession) {
       setIsLoading(false); // ローディングを終了
     }
   }, [isSession]);
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
-        <LoaderCircle className="animate-spin" />
-      </div>
+      <div className={`mx-auto flex min-h-screen w-full max-w-md items-center justify-center bg-theme0-background text-rose-950`}>
+          {loadingText.split("").map((char, index) => (
+            <span
+            key={index}
+            style={{ animationDelay: `${index * 0.1}s` }}
+            className={`animate-loadingBounce pb-4 text-3xl italic font-medium tracking-wider font-mplus flex-col`}
+          >
+            {char}
+          </span>
+          ))}
+        </div>
     );
   }
 
@@ -96,17 +104,16 @@ export default function Page() {
     <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-theme${theme}-background text-gray-600`}>
       <div className="mx-auto mb-[110px] w-[85%]">
         <p className="mb-5 mt-8 w-full text-left text-xl font-bold">
-        {year}年{month}月の継続状況
+          {year}年{month}月の継続状況
         </p>
         <div className="grid grid-cols-7 items-center place-items-center gap-3">
-            {feedback?.continuation.map((isActive, index) => (
-              <div
-                key={index}
-                className={`h-4 w-4 rounded-full ${
-                  isActive ? "bg-green-500" : "bg-gray-300"
+          {feedback?.continuation.map((isActive, index) => (
+            <div
+              key={index}
+              className={`h-4 w-4 rounded-full ${isActive ? "bg-green-500" : "bg-gray-300"
                 } `}
-              />
-            ))}
+            />
+          ))}
         </div>
         <p className="mb-3 mt-8 w-full text-left text-xl font-bold">
           先月のまとめ

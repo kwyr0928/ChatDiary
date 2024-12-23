@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderCircle, Plus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -77,31 +77,33 @@ export default function Page() {
   const [isTagPopoverOpen, setIsTagPopoverOpen] = useState(false);
   const filteredDiary = diaryList
     ? diaryList.diaries
-        .filter((d) =>
-          JSON.stringify(d).toLowerCase().includes(keyword.toLowerCase()),
-        )
-        .filter((d) => {
-          if (filterPublic === "public") return d.isPublic;
-          if (filterPublic === "private") return !d.isPublic;
-          return true; // "all" の場合
-        })
-        .filter((d) => {
-          if (selectedTags.length === 0) return true;
-          return selectedTags.some((tag) => d.tags.includes(tag));
-        })
-        .sort((a, b) =>
-          sortOrder === "asc"
-            ? new Date(a.created_at).getTime() -
-              new Date(b.created_at).getTime()
-            : new Date(b.created_at).getTime() -
-              new Date(a.created_at).getTime(),
-        )
+      .filter((d) =>
+        JSON.stringify(d).toLowerCase().includes(keyword.toLowerCase()),
+      )
+      .filter((d) => {
+        if (filterPublic === "public") return d.isPublic;
+        if (filterPublic === "private") return !d.isPublic;
+        return true; // "all" の場合
+      })
+      .filter((d) => {
+        if (selectedTags.length === 0) return true;
+        return selectedTags.some((tag) => d.tags.includes(tag));
+      })
+      .sort((a, b) =>
+        sortOrder === "asc"
+          ? new Date(a.created_at).getTime() -
+          new Date(b.created_at).getTime()
+          : new Date(b.created_at).getTime() -
+          new Date(a.created_at).getTime(),
+      )
     : []; // 検索
 
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const [isSession, setIsSession] = useState(false);
+
+  const loadingText = "日記読み込み中..."
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
@@ -255,11 +257,18 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div
-        className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}
-      >
-        <LoaderCircle className="animate-spin" />
+      <div className={`mx-auto flex min-h-screen w-full max-w-md items-center justify-center bg-theme0-background text-rose-950`}>
+        {loadingText.split("").map((char, index) => (
+          <span
+            key={index}
+            style={{ animationDelay: `${index * 0.1}s` }}
+            className={`animate-loadingBounce pb-4 text-3xl italic font-medium tracking-wider font-mplus flex-col`}
+          >
+            {char}
+          </span>
+        ))}
       </div>
+
     );
   }
 
