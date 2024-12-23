@@ -86,7 +86,7 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md items-center justify-center bg-theme0-background text-rose-950`}>
+      <div className={`mx-auto flex min-h-screen w-full max-w-md items-center justify-center bg-theme${theme}-background text-rose-950`}>
           {loadingText.split("").map((char, index) => (
             <span
             key={index}
