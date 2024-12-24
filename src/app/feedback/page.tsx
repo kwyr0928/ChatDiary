@@ -24,7 +24,7 @@ export default function Page() {
   const year = now.getFullYear();
   const month = now.getMonth() + 1;
   const [isSession, setIsSession] = useState(false);
-  const loadingText = "フィードバック作成中..."
+  const loadingText = "読み込み中..."
 
   useEffect(() => {
     const fetchFeedBack = async () => {

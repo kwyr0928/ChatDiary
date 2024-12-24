@@ -103,7 +103,7 @@ export default function Page() {
   const router = useRouter();
   const [isSession, setIsSession] = useState(false);
 
-  const loadingText = "日記読み込み中..."
+  const loadingText = "読み込み中..."
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
