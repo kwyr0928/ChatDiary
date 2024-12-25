@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { diaryAndTagSchema, getSummary } from "~/lib/schemas";
+import type { z } from "zod";
+import { type diaryAndTagSchema, getSummary } from "~/lib/schemas";
 import { getDateDiariesByUserId, getDiaryData, getHistoryData, getMonthlyFeedBack, getOtherUserDiaryData, getRecentTagsByUserId, getTagByID, getTagConnectionsByDiary, getTodayContinuation } from "../repository/getdata";
 
 export const getDiariesAndTag = async (diaryId: string) => {
@@ -67,11 +67,11 @@ export const getRecentTagNamesByUserId = async (userId: string) => {
 export const getLastMonthFB = async (userId: string, target: number) => {
   try {
     const fb = await getMonthlyFeedBack(userId, target);
-    if (fb == null) return null
+    if (fb == null) return null;
 
     return fb;
   } catch (error) {
-    console.error("Error in getRecentTagNamesByUserId:", error);
+    console.error("Error in getLastMonthFB:", error);
     return null;
   }
 }
@@ -104,7 +104,7 @@ export const getMonthlyContinuation = async (userId: string, today: Date) => {
 export const getOtherUserDiary = async (userId: string) => {
   try {
     const diary = await getOtherUserDiaryData(userId);
-    if (diary == null) return null
+    if (diary == null) return null;
 
     return getSummary.parse(diary);
   } catch (error) {
@@ -122,7 +122,7 @@ export const getMonthlyDiariesByUserId = async (userId: string, yearMonth: numbe
     const startDate = new Date(year, month - 1, 1); // 月は0-basedなので-1
     const endDate = new Date(year, month, 0, 23, 59, 59, 999); // 月末日を計算
     const diary = await getDateDiariesByUserId(userId, startDate, endDate);
-    if (diary == null) return null
+    if (diary == null) return null;
 
     return getSummary.parse(diary);
   } catch (error) {
