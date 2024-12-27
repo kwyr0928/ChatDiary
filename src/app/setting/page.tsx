@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderCircle } from "lucide-react";
+import { Check, LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -380,17 +380,23 @@ export default function Page() {
             テーマカラー
             <div className="flex space-x-4 mt-5 mb-16">
               {/* テーマカラー変更4 */}
-              <div className="w-8 h-8 bg-theme0-primary rounded-full" onClick={() => handleThemeChange(0)}>
+              <div className="w-8 h-8 bg-theme0-primary rounded-full flex items-center justify-center" onClick={() => handleThemeChange(0)}>
+                {theme === 0 && <Check size={18} className="text-white"/>}
               </div>
-              <div className="w-8 h-8 bg-theme1-primary rounded-full" onClick={() => handleThemeChange(1)}>
+              <div className="w-8 h-8 bg-theme1-primary rounded-full flex items-center justify-center" onClick={() => handleThemeChange(1)}>
+                {theme === 1 && <Check size={18} className="text-white"/>}
               </div>
-              <div className="w-8 h-8 bg-theme2-primary rounded-full" onClick={() => handleThemeChange(2)}>
+              <div className="w-8 h-8 bg-theme2-primary rounded-full flex items-center justify-center" onClick={() => handleThemeChange(2)}>
+                {theme === 2 && <Check size={18} className="text-white"/>}
               </div>
-              <div className="w-8 h-8 bg-theme3-primary rounded-full" onClick={() => handleThemeChange(3)}>
+              <div className="w-8 h-8 bg-theme3-primary rounded-full flex items-center justify-center" onClick={() => handleThemeChange(3)}>
+                {theme === 3 && <Check size={18} className="text-white"/>}
               </div>
-              <div className="w-8 h-8 bg-theme4-primary rounded-full" onClick={() => handleThemeChange(4)}>
+              <div className="w-8 h-8 bg-theme4-primary rounded-full flex items-center justify-center" onClick={() => handleThemeChange(4)}>
+                {theme === 4 && <Check size={18} className="text-white"/>}
               </div>
-              <div className="w-8 h-8 bg-theme5-hover rounded-full" onClick={() => handleThemeChange(5)}>
+              <div className="w-8 h-8 bg-theme5-hover rounded-full flex items-center justify-center" onClick={() => handleThemeChange(5)}>
+                {theme === 5 && <Check size={18} className="text-white"/>}
               </div>
             </div>
           </div>

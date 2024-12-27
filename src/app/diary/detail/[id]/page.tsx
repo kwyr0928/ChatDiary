@@ -185,14 +185,14 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         <Link href={"/home"} className="pl-4">
           <IoChevronBackSharp size={"30px"} className={`text-theme${theme}-primary`} />
         </Link>
-        <p className="text-lg text-gray-700">{diaryDetail?.diaryData.title}</p>
+        <p className="text-lg text-gray-700 font-medium">{diaryDetail?.diaryData.title}</p>
         <Link href={`/diary/edit/${diaryId}`}>
           <GoPencil size={"33px"} className={`text-theme${theme}-primary mr-5`} />
         </Link>
       </div>
       <div className="mt-[60px] w-[85%]">
         <div className="flex items-center space-x-5">
-          <p className="mb-3 mt-10 text-left text-lg font-bold">日記本文</p>
+          <p className="mb-3 mt-10 text-left text-lg font-medium">日記本文</p>
         </div>
         {/* カード */}
         <Card className="text-gray-600 shadow-none">
@@ -209,7 +209,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             {diaryDetail?.diaryData.summary}
           </CardContent>
         </Card>
-        <p className="mt-7 text-left text-lg font-bold">公開状況</p>
+        <p className="mt-7 text-left text-lg font-medium">公開状況</p>
         <div className="justify-left mb-5 mt-4 flex">
           {diaryDetail?.diaryData.isPublic ? (
           <div className="flex items-center space-x-2">
