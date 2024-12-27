@@ -71,6 +71,34 @@ function Page() {
   const [isSession, setIsSession] = useState(false);
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && diaryId) {
+      const storedData = localStorage.getItem(`chat-${diaryId}`);
+      if (storedData) {
+        const { count: storedCount, messages: storedMessages, mode: storedMode } = JSON.parse(storedData) as { count: number; messages: { text: string; isAI: boolean }[]; mode: number };
+        setCount(storedCount);
+        setMessages(storedMessages);
+        setMode(storedMode);
+      }
+    }
+  }, [diaryId]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && diaryId) {
+      localStorage.setItem(`chat-${diaryId}`, JSON.stringify({
+        count,
+        messages,
+        mode
+      }));
+    }
+  }, [count, messages, mode, diaryId]);
+
+  const clearLocalStorage = () => {
+    if (typeof window !== 'undefined' && diaryId) {
+      localStorage.removeItem(`chat-${diaryId}`);
+    }
+  };
+
+  useEffect(() => {
     const start = async () => {
       setIsLoading(true);
       try {
@@ -153,6 +181,7 @@ function Page() {
         setIsSession(true);
         if (count + 1 >= 5) {
           await new Promise((resolve) => setTimeout(resolve, 1000));
+          clearLocalStorage();
           router.push(
             `/diary/new?res=${responseData.summary}&diaryId=${diaryId}`,
           );
@@ -215,6 +244,7 @@ function Page() {
       const responseData = (await response.json()) as DeleteResponse;
       console.log(responseData);
       if (response.ok) {
+        clearLocalStorage();
         router.push("/home");
       } else { // 500
         let errorMessage = '';
