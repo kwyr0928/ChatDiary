@@ -119,14 +119,14 @@ export default function Page() {
           先月のまとめ
         </p>
         {/* カード */}
-        <Card className="shadow-none">
+        <Card className={`shadow-none border-theme${theme}-background`}>
           <CardContent className="px-5 py-3">{feedback?.monthly}</CardContent>
         </Card>
         <p className="mb-3 mt-9  w-full text-left text-xl font-bold">
           あなたの分析
         </p>
         {/* カード */}
-        <Card className="mb-auto shadow-none">
+        <Card className={`mb-auto shadow-none border-theme${theme}-background`}>
           <CardContent className="px-5 py-3">{feedback?.analyses}</CardContent>
         </Card>
       </div>

@@ -300,14 +300,14 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             <IoChevronBackSharp size={"30px"} className={`text-theme${theme}-primary`}/>
           </Link>
         )}
-        <p className="text-lg text-gray-700">{diaryDetail?.diaryData.title}</p>
+        <p className="text-lg text-gray-700 font-medium">{diaryDetail?.diaryData.title}</p>
           <div onClick={handleSave}>
             <RiSave3Line size={"35px"} className={`text-theme${theme}-primary mr-5`}/>
           </div>
       </div>
       <div className="mt-[60px] w-[85%]">
         <div className="flex items-center space-x-5">
-          <p className="mt-10 mb-3 text-left text-lg font-bold">日記本文</p>
+          <p className="mt-10 mb-3 text-left text-lg font-medium">日記本文</p>
         </div>
         {!isSaving ? (
           <ResizeTextarea
@@ -324,7 +324,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             <LoaderCircle className="animate-spin" />
           </div>
         )}
-        <p className="mt-8 text-left text-lg font-bold">タグ</p>
+        <p className="mt-8 text-left text-lg font-medium">タグ</p>
         <div className="flex justify-center">
         {!isSaving ? (
           <InputTag
@@ -341,7 +341,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             </div>
           )}
         </div>
-        <p className="mt-7 text-left text-lg font-bold">公開状況</p>
+        <p className="mt-7 text-left text-lg font-medium">公開状況</p>
         {/* ラジオボタン */}
         <div className="mb-5 flex justify-left mt-4">
         {!isSaving ? (
@@ -381,7 +381,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             </div>
           )}
         </div>
-        <p className="mt-10 mb-3 text-lg">チャットログ</p>
+        <p className="mt-10 mb-3 text-lg font-medium">チャットログ</p>
       </div>
       <div className="mb-[140px]">
         {diaryDetail?.chatLog.map((chat, index) => (

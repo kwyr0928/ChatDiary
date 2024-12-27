@@ -305,7 +305,7 @@ export default function Page() {
                 <div
                   className={`flex w-fit border-b pb-1 border-theme${theme}-primary`}
                 >
-                  <p className="mr-1 text-sm">検索条件の追加</p>
+                  <p className="mr-1 text-xs font-medium">検索条件の追加</p>
                   <Plus
                     size={17}
                     className={`text-theme${theme}-primary my-auto`}
@@ -316,13 +316,13 @@ export default function Page() {
                     <p className="text-xs">{selectedTags.length}個のタグ</p>
                   )}
                   {filterPublic === "private" && (
-                    <p className="text-xs">/ 非公開のみ</p>
+                    <p className="text-xs">非公開のみ</p>
                   )}
                   {filterPublic === "public" && (
-                    <p className="text-xs">/ 公開のみ</p>
+                    <p className="text-xs">公開のみ</p>
                   )}
                   {sortOrder === "desc" && (
-                    <p className="text-xs">/ 投稿日が古い順</p>
+                    <p className="text-xs">投稿日が古い順</p>
                   )}
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -348,9 +348,9 @@ export default function Page() {
               >
                 <X size={17} />
               </button>
-              <div className="mb-4 flex space-x-10">
+              <div className="mb-4 flex space-x-8">
                 <div className="space-y-2">
-                  <p className="text-xs">タグ</p>
+                  <p className="text-xs font-medium">タグ</p>
                   {diaryList?.tagList.map((tag) => (
                     <div key={tag} className="flex items-center space-x-2">
                       <Checkbox
@@ -361,7 +361,7 @@ export default function Page() {
                       />
                       <label
                         htmlFor={tag}
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        className="text-xs font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
                         {tag}
                       </label>
@@ -369,41 +369,8 @@ export default function Page() {
                   ))}
                 </div>
                 <div className="ml-4 flex flex-col space-y-2">
-                  <RadioGroup
-                    defaultValue="all"
-                    value={filterPublic}
-                    className="flex flex-col"
-                    onValueChange={(value: "all" | "public" | "private") => {
-                      setFilterPublic(value);
-                    }}
-                  >
-                    <p className="text-xs">公開状況</p>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem
-                        value="all"
-                        id="all"
-                        className={`border-theme${theme}-primary`}
-                      />
-                      <Label htmlFor="all">すべて</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem
-                        value="public"
-                        id="public"
-                        className={`border-theme${theme}-primary`}
-                      />
-                      <Label htmlFor="public">公開</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem
-                        value="private"
-                        id="private"
-                        className={`border-theme${theme}-primary`}
-                      />
-                      <Label htmlFor="private">非公開</Label>
-                    </div>
-                  </RadioGroup>
-                  <p className="pt-5 text-xs">投稿日</p>
+                  
+                  <p className="text-xs font-medium">投稿日</p>
                   <RadioGroup
                     defaultValue="asc"
                     value={sortOrder}
@@ -418,7 +385,7 @@ export default function Page() {
                         id="asc"
                         className={`border-theme${theme}-primary`}
                       />
-                      <Label htmlFor="asc">昇順</Label>
+                      <Label htmlFor="asc" className="font-normal text-xs">昇順</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem
@@ -426,7 +393,41 @@ export default function Page() {
                         id="desc"
                         className={`border-theme${theme}-primary`}
                       />
-                      <Label htmlFor="desc">降順</Label>
+                      <Label htmlFor="desc" className="font-normal text-xs">降順</Label>
+                    </div>
+                  </RadioGroup>
+                  <RadioGroup
+                    defaultValue="all"
+                    value={filterPublic}
+                    className="flex flex-col"
+                    onValueChange={(value: "all" | "public" | "private") => {
+                      setFilterPublic(value);
+                    }}
+                  >
+                    <p className="pt-5 text-xs font-medium">公開状況</p>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem
+                        value="all"
+                        id="all"
+                        className={`border-theme${theme}-primary`}
+                      />
+                      <Label htmlFor="all" className="font-normal text-xs">すべて</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem
+                        value="public"
+                        id="public"
+                        className={`border-theme${theme}-primary`}
+                      />
+                      <Label htmlFor="public" className="font-normal text-xs">公開</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem
+                        value="private"
+                        id="private"
+                        className={`border-theme${theme}-primary`}
+                      />
+                      <Label htmlFor="private" className="font-normal text-xs">非公開</Label>
                     </div>
                   </RadioGroup>
                 </div>

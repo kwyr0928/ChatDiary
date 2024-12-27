@@ -268,7 +268,7 @@ function Page() {
   return (
     <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col bg-theme${theme}-background text-gray-600`}>
       <div className="fixed top-0 mb-5 flex w-full max-w-md flex-col justify-center bg-white pt-5 text-center">
-        <div className="mb-3 flex">
+        <div className="mb-1 flex">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5">
               <IoChevronBackSharp size={"30px"} className={`text-theme${theme}-primary`} />
@@ -301,7 +301,7 @@ function Page() {
               </div>
             </DialogContent>
           </Dialog>
-          <p className="mx-auto pr-12 text-lg text-gray-700">
+          <p className="mx-auto pr-12 text-md text-gray-700 font-medium">
             {new Date().toLocaleString("ja-JP", {
               year: "numeric",
               month: "2-digit",
@@ -312,24 +312,24 @@ function Page() {
           </p>
         </div>
         {/* プルダウン */}
-        <div className="mx-auto mb-3 w-fit items-center">
-          <div className="flex items-center space-x-2">
+        <div className="mx-auto flex space-x-5 mb-3 w-[60%] items-center justify-center text-sm font-medium">
+          <div className="flex items-center ">
             <Select onValueChange={handleChange}>
-              <SelectTrigger className="px-3 hover:bg-gray-50">
-                <SelectValue placeholder="物事を" />
+              <SelectTrigger className={`hover:bg-gray-50 border-theme${theme}-primary`}>
+                <SelectValue placeholder="物事を&nbsp;" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="episode">物事を</SelectItem>
-                  <SelectItem value="emotion">感情を</SelectItem>
+                  <SelectItem value="episode">物事を&nbsp;</SelectItem>
+                  <SelectItem value="emotion">感情を&nbsp;</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <span className="whitespace-nowrap">深堀る！</span>
           </div>
+          <p>深堀る！</p>
         </div>
       </div>
-      <div className="w-fill mb-[120px] mt-[130px]">
+      <div className="w-full mb-[120px] mt-[130px]">
         {messages.map((message, index) => (
           <ChatCard key={index} isAI={message.isAI}>
             {message.text}
@@ -346,10 +346,10 @@ function Page() {
           <p className="w-[360px] text-center">日記生成中...</p>
         ) : (
           <div>
-            <p className="w-[360px] text-xs text-center pb-1">日記生成まであと <span className="text-sm font-bold">{5-count}</span> メッセージ</p>
+            <p className="w-[360px] text-xs text-center pb-1">日記生成まであと <span className={`text-sm font-bold text-theme${theme}-primary`}>{5-count}</span> メッセージ</p>
             <div className="flex items-end justify-center space-x-2">
               <ResizeTextarea
-                className="w-[300px] resize-none rounded border p-1 focus:outline-none"
+                className={`w-[300px] resize-none rounded border p-1 focus:outline-none border-theme${theme}-background`}
                 text={inputText}
                 onChange={(text) => setInputText(text)}
                 isLimit={true}

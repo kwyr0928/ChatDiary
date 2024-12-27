@@ -189,7 +189,7 @@ function Page() {
     <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
       <div className="fixed top-0 mb-5 flex w-full max-w-md flex-col justify-around bg-white pt-5 text-center">
         <div className="mb-3 flex">
-          <p className="mx-auto my-auto text-lg">
+          <p className="mx-auto my-auto text-lg font-medium">
             {new Date().toLocaleString("ja-JP", {
               year: "numeric",
               month: "2-digit",
@@ -201,7 +201,7 @@ function Page() {
         </div>
       </div>
       <div className="mb-auto mt-[70px] w-[85%]">
-        <p className="mt-5 mb-3 text-left text-lg">生成された日記（修正可）</p>
+        <p className="mt-5 mb-3 text-left text-lg font-medium">生成された日記<span className="text-sm">（修正可）</span></p>
         <ResizeTextarea
           className="h-36 w-full resize-none rounded border border-gray-300 p-2 px-5 py-3 text-gray-600 focus:outline-none"
           text={text}
@@ -210,11 +210,11 @@ function Page() {
           }}
           isLimit={false}
         />
-        <p className="mt-8 text-left text-lg">タグ</p>
+        <p className="mt-8 text-left text-lg font-medium">タグ</p>
         <div className="flex justify-center">
           <InputTag initialTags={tags} initialTagList={tagList} onChangeTags={setTags} />
         </div>
-        <p className="mt-7 text-left text-lg">公開状況</p>
+        <p className="mt-7 text-left text-lg font-medium">公開状況</p>
         {/* ラジオボタン */}
         <div className="mb-5 flex justify-left mt-4">
           <RadioGroup
