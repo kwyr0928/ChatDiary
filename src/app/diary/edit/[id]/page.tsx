@@ -77,6 +77,65 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
   const router = useRouter();
   const [isSession, setIsSession] = useState(false);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && diaryId) {
+      const storedData = localStorage.getItem(`edit-${diaryId}`);
+      if (storedData) {
+        const { isPublic: storedPublic, text: storedText, tags: storedTags, tagList: storedTagList, isChanged: storedIsChanged } = JSON.parse(storedData) as {
+          isPublic: string;
+          text: string;
+          tags: string[];
+          tagList: string[];
+          isChanged: boolean;
+        };
+        console.log(storedData);
+        setIsPublic(storedPublic);
+        setText(storedText);
+        setTags(storedTags);
+        setTagList(storedTagList);
+        setIsChanged(storedIsChanged);
+        
+        
+      }
+    }
+  }, [diaryId]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && diaryId) {
+      localStorage.setItem(`edit-${diaryId}`, JSON.stringify({
+        isPublic,
+        text,
+        tags,
+        tagList,
+        isChanged,
+      }));
+    }
+  }, [diaryId, isPublic, text, tags, tagList, isChanged]);
+
+  const clearLocalStorage = () => {
+    if (typeof window !== 'undefined' && diaryId) {
+      localStorage.removeItem(`edit-${diaryId}`);
+    }
+  };
+
+  useEffect(() => {
+    if(isChanged){
+    window.history.pushState(null, '', window.location.href);
+  }
+    const handlePopState = (event: PopStateEvent) => {
+  if(isChanged){
+      event.preventDefault();
+      window.history.pushState(null, '', window.location.href);
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [isChanged]);
 
   useEffect(() => {
     const fetchDiaryDetails = async () => {
@@ -90,8 +149,18 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         const responseData = (await response.json()) as GetDiaryResponse;
         console.log(responseData);
         if (response.ok) {
-          setIsSession(true);
+      setIsSession(true);
+        const storedData = localStorage.getItem(`edit-${diaryId}`);
+        if(storedData != null){
+        const { isPublic: storedPublic, text: storedText, tags: storedTags, tagList: storedTagList, isChanged: storedIsChanged } = JSON.parse(storedData) as {
+          isPublic: string;
+          text: string;
+          tags: string[];
+          tagList: string[];
+          isChanged: boolean;
+        };
           setDiaryDetail(responseData);
+          if (storedText == "") {
           setText(responseData.diaryData.summary);
           setTags(responseData.tags);
           setTagList(responseData.tagList);
@@ -100,6 +169,8 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           } else {
             setIsPublic("private");
           }
+          }
+        }
         } else { // 401 500
           let errorMessage = '';
       switch (response.status) {
@@ -162,6 +233,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         toast({
           description: "変更を保存しました。",
         });
+        clearLocalStorage();
         router.push(`/diary/detail/${diaryId}`)
       } else { // 401 500
         let errorMessage = '';
@@ -212,6 +284,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         toast({
           description: "日記を削除しました。",
         });
+        clearLocalStorage();
         router.push("/home");
       } else { // 500
         let errorMessage = '';
@@ -287,7 +360,12 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
                 </div>
                 <Link href={`/diary/detail/${diaryId}`}>
                   <div className="my-2">
-                    <Button className={`w-[100px] rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}>
+                    <Button
+                      className={`w-[100px] rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}
+                      onClick={() => {
+                        clearLocalStorage();
+                      }}
+                    >
                       はい
                     </Button>
                   </div>
@@ -428,13 +506,19 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
       </div>
       <div className="fixed bottom-0 flex w-full max-w-md justify-around bg-white py-5">
         <Link href={"/setting"}>
-          <IoCogSharp size={"50px"} color="gray" />
+          <IoCogSharp size={"50px"} color="gray" onClick={() => {
+                        clearLocalStorage();
+                      }} />
         </Link>
         <Link href={"/home"}>
-          <IoHomeSharp size={"50px"} color="gray" />
+          <IoHomeSharp size={"50px"} color="gray" onClick={() => {
+                        clearLocalStorage();
+                      }} />
         </Link>
         <Link href={"/feedback"}>
-          <IoBarChartSharp size={"50px"} color="gray" />
+          <IoBarChartSharp size={"50px"} color="gray" onClick={() => {
+                        clearLocalStorage();
+                      }} />
         </Link>
       </div>
     </div>

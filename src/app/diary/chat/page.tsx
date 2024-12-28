@@ -99,6 +99,19 @@ function Page() {
   };
 
   useEffect(() => {
+    window.history.pushState(null, '', window.location.href);
+    const handlePopState = (event: PopStateEvent) => {
+      event.preventDefault();
+      window.history.pushState(null, '', window.location.href);
+      setIsOpen(true);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  useEffect(() => {
     const start = async () => {
       setIsLoading(true);
       try {
