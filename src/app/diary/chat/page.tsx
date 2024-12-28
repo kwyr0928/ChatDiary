@@ -71,6 +71,47 @@ function Page() {
   const [isSession, setIsSession] = useState(false);
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && diaryId) {
+      const storedData = localStorage.getItem(`chat-${diaryId}`);
+      if (storedData) {
+        const { count: storedCount, messages: storedMessages, mode: storedMode } = JSON.parse(storedData) as { count: number; messages: { text: string; isAI: boolean }[]; mode: number };
+        setCount(storedCount);
+        setMessages(storedMessages);
+        setMode(storedMode);
+      }
+    }
+  }, [diaryId]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && diaryId) {
+      localStorage.setItem(`chat-${diaryId}`, JSON.stringify({
+        count,
+        messages,
+        mode
+      }));
+    }
+  }, [count, messages, mode, diaryId]);
+
+  const clearLocalStorage = () => {
+    if (typeof window !== 'undefined' && diaryId) {
+      localStorage.removeItem(`chat-${diaryId}`);
+    }
+  };
+
+  useEffect(() => {
+    window.history.pushState(null, '', window.location.href);
+    const handlePopState = (event: PopStateEvent) => {
+      event.preventDefault();
+      window.history.pushState(null, '', window.location.href);
+      setIsOpen(true);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  useEffect(() => {
     const start = async () => {
       setIsLoading(true);
       try {
@@ -153,6 +194,7 @@ function Page() {
         setIsSession(true);
         if (count + 1 >= 5) {
           await new Promise((resolve) => setTimeout(resolve, 1000));
+          clearLocalStorage();
           router.push(
             `/diary/new?res=${responseData.summary}&diaryId=${diaryId}`,
           );
@@ -215,6 +257,7 @@ function Page() {
       const responseData = (await response.json()) as DeleteResponse;
       console.log(responseData);
       if (response.ok) {
+        clearLocalStorage();
         router.push("/home");
       } else { // 500
         let errorMessage = '';
@@ -346,8 +389,10 @@ function Page() {
           <p className="w-[360px] text-center">日記生成中...</p>
         ) : (
           <div>
-            <p className="w-[360px] text-xs text-center pb-1">日記生成まであと <span className={`text-sm font-bold text-theme${theme}-primary`}>{5-count}</span> メッセージ</p>
+           
             <div className="flex items-end justify-center space-x-2">
+               <div className="flex flex-col">
+               <p className="text-xs text-center pb-1">日記生成まであと <span className={`text-sm font-bold text-theme${theme}-primary`}>{5-count}</span> メッセージ</p>
               <ResizeTextarea
                 className={`w-[300px] resize-none rounded border p-1 focus:outline-none border-theme${theme}-background`}
                 text={inputText}
@@ -355,6 +400,7 @@ function Page() {
                 isLimit={true}
                 placeholder={count >= 1 ? "AIと会話して思い出を振り返りましょう" : "今日はどんなことがありましたか？"}
               />
+              </div>
               <IoSendSharp
                 onClick={handleSend}
                 size={"30px"}
