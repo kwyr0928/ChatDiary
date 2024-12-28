@@ -389,8 +389,10 @@ function Page() {
           <p className="w-[360px] text-center">日記生成中...</p>
         ) : (
           <div>
-            <p className="w-[360px] text-xs text-center pb-1">日記生成まであと <span className={`text-sm font-bold text-theme${theme}-primary`}>{5-count}</span> メッセージ</p>
+           
             <div className="flex items-end justify-center space-x-2">
+               <div className="flex flex-col">
+               <p className="text-xs text-center pb-1">日記生成まであと <span className={`text-sm font-bold text-theme${theme}-primary`}>{5-count}</span> メッセージ</p>
               <ResizeTextarea
                 className={`w-[300px] resize-none rounded border p-1 focus:outline-none border-theme${theme}-background`}
                 text={inputText}
@@ -398,6 +400,7 @@ function Page() {
                 isLimit={true}
                 placeholder={count >= 1 ? "AIと会話して思い出を振り返りましょう" : "今日はどんなことがありましたか？"}
               />
+              </div>
               <IoSendSharp
                 onClick={handleSend}
                 size={"30px"}
