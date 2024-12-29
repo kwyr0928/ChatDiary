@@ -8,6 +8,7 @@ import { IoChevronBackSharp } from "react-icons/io5";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { toast } from "~/hooks/use-toast";
+import { useThemeStore } from "~/store/themeStore";
 
 type CreateUserResponse = {
   message: string;
@@ -15,6 +16,7 @@ type CreateUserResponse = {
 }
 
 export default function Page() {
+  const theme = useThemeStore((state) => state.theme);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");

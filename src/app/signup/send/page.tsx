@@ -4,6 +4,7 @@ import { LoaderCircle } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { useToast } from "~/hooks/use-toast";
+import { useThemeStore } from "~/store/themeStore";
 
 type ReMailResponse = {
   message: string;
@@ -18,6 +19,7 @@ export default function Send() {
 }
 
 function Page() {
+  const theme = useThemeStore((state) => state.theme);
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
