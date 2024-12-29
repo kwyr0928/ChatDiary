@@ -174,7 +174,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
   if (isLoading) {
     return (
       <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
-        <LoaderCircle className="animate-spin" />
+        <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
       </div>
     );
   }

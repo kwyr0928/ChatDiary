@@ -119,14 +119,16 @@ export default {
     "hover:bg-theme0-hover", // 3
     "text-theme0-primary", // 4
     "border-theme0-primary", // 5
-    "fill-theme0-primary", // 6
-    "data-[state=checked]:bg-theme0-primary", // 7
-    "data-[state=checked]:border-theme0-primary", // 8
+    "border-theme0-background", // 6
+    "fill-theme0-primary", // 7
+    "data-[state=checked]:bg-theme0-primary", // 8
+    "data-[state=checked]:border-theme0-primary", // 9
     "bg-theme1-background",
     "bg-theme1-primary",
     "hover:bg-theme1-hover",
     "text-theme1-primary",
     "border-theme1-primary",
+    "border-theme1-background",
     "fill-theme1-primary",
     "data-[state=checked]:bg-theme1-primary",
     "data-[state=checked]:border-theme1-primary",
@@ -135,6 +137,7 @@ export default {
     "hover:bg-theme2-hover",
     "text-theme2-primary",
     "border-theme2-primary",
+    "border-theme2-background",
     "fill-theme2-primary",
     "data-[state=checked]:bg-theme2-primary",
     "data-[state=checked]:border-theme2-primary",
@@ -143,6 +146,7 @@ export default {
     "hover:bg-theme3-hover",
     "text-theme3-primary",
     "border-theme3-primary",
+    "border-theme3-background",
     "fill-theme3-primary",
     "data-[state=checked]:bg-theme3-primary",
     "data-[state=checked]:border-theme3-primary",
@@ -151,6 +155,7 @@ export default {
     "hover:bg-theme4-hover",
     "text-theme4-primary",
     "border-theme4-primary",
+    "border-theme4-background",
     "fill-theme4-primary",
     "data-[state=checked]:bg-theme4-primary",
     "data-[state=checked]:border-theme4-primary",
@@ -159,6 +164,7 @@ export default {
     "hover:bg-theme5-hover",
     "text-theme5-primary",
     "border-theme5-primary",
+    "border-theme5-background",
     "fill-theme5-primary",
     "data-[state=checked]:bg-theme5-primary",
     "data-[state=checked]:border-theme5-primary",
@@ -167,6 +173,7 @@ export default {
     "hover:bg-theme6-hover",
     "text-theme6-primary",
     "border-theme6-primary",
+    "border-theme6-background",
     "fill-theme6-primary",
     "data-[state=checked]:bg-theme6-primary",
     "data-[state=checked]:border-theme6-primary",

@@ -327,7 +327,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
   if (isLoading) {
     return (
       <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
-        <LoaderCircle className="animate-spin" />
+        <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
       </div>
     );
   }
@@ -399,7 +399,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           />
         ) : (
           <div className="flex h-36 w-full items-center justify-center">
-            <LoaderCircle className="animate-spin" />
+            <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
           </div>
         )}
         <p className="mt-8 text-left text-lg font-medium">タグ</p>
@@ -415,7 +415,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
             />
           ) : (
             <div className="flex h-36 w-full items-center justify-center">
-              <LoaderCircle className="animate-spin" />
+              <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
             </div>
           )}
         </div>
@@ -455,7 +455,7 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
               </RadioGroup>
           ) : (
             <div className="flex h-36 mx-auto items-center justify-center">
-              <LoaderCircle className="animate-spin" />
+              <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
             </div>
           )}
         </div>

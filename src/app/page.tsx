@@ -70,7 +70,7 @@ export default function Page() {
           width={250}
           height={250}
         />
-        <LoaderCircle className="animate-spin" />
+        <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
       </div>
     )
   }
@@ -84,7 +84,7 @@ export default function Page() {
         width={250}
         height={250}
       />
-      <LoaderCircle className="animate-spin" />
+      <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
     </div>
   );
 }
