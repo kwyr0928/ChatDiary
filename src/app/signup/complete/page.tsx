@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { toast } from "~/hooks/use-toast";
+import { useThemeStore } from "~/store/themeStore";
 
 type CertificationResponse = {
   message: string;
@@ -24,6 +25,7 @@ export default function Complete() {
 }
 
 function Page() {
+  const theme = useThemeStore((state) => state.theme);
   const [isLoading, setIsLoading] = useState(true);
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
