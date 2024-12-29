@@ -303,7 +303,7 @@ function Page() {
   if (isLoading) {
     return (
       <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
-        <LoaderCircle className="animate-spin" />
+        <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
       </div>
     );
   }
@@ -383,7 +383,7 @@ function Page() {
       <div className={`fixed bottom-0 w-full max-w-md items-end justify-center bg-theme${theme}-background pb-5 pt-3`}>
         {isSending ? (
           // 送信中の表示
-          <LoaderCircle className="w-[360px] animate-spin" />
+          <LoaderCircle className={`w-[360px] animate-spin text-theme${theme}-primary`} />
         ) : isGenerating ? (
           // 日記生成中の表示
           <p className="w-[360px] text-center">日記生成中...</p>
