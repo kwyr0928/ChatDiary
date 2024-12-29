@@ -2,10 +2,8 @@
 
 ;import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { useThemeStore } from "~/store/themeStore";
 
 export default function Page() {
-  const theme = useThemeStore((state) => state.theme);
   return (
     <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}>
       <div className="flex h-[350px] w-[80%] flex-col items-center justify-center rounded-md bg-white">
