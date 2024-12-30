@@ -117,7 +117,6 @@ export default function Page() {
       try {
         const shouldShowDialog = sessionStorage.getItem("showDialog");
         if (shouldShowDialog === "true") {
-          setIsOpen(true);
           const response = await fetch(`/api/share`, {
             method: "GET",
             headers: {
@@ -128,7 +127,10 @@ export default function Page() {
           console.log(responseData);
           if (response.ok) {
             setIsSession(true);
+            if(responseData.share != null){
+            setIsOpen(true);
             setShareData(responseData.share.summary);
+            }
             sessionStorage.removeItem("showDialog");
           } else {
             // 401 500
