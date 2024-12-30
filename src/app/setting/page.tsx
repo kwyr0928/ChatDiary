@@ -355,8 +355,8 @@ export default function Page() {
   }
 
   return (
-    <div className={`mx-auto min-h-screen w-full max-w-md bg-theme${theme}-background text-gray-600`}>
-      <div className="mb-[80px]">
+    <div className={`relative mb-[80px] mx-auto min-h-screen w-full max-w-md bg-theme${theme}-background text-gray-600`}>
+      <div className="">
         <div className="mx-auto flex flex-col items-center">
           <div className="ml-8 mr-auto">
             <p className="mt-8 w-full text-left text-xl font-bold">
@@ -400,7 +400,7 @@ export default function Page() {
               </div>
             </div>
           </div>
-        </div>
+          </div>
 
         <div className="mx-auto mt-5 w-[60%]">
           <Button
@@ -447,6 +447,7 @@ export default function Page() {
           </DialogContent>
         </Dialog>
       </div>
+      
 
       <div className="fixed bottom-0 flex w-full max-w-md justify-around bg-white py-5">
         <Link href={"/setting"}>
