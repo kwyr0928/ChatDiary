@@ -5,8 +5,8 @@ export async function registerEmail(email: string) {
   try {
     if (email == null) throw new Error("Invalid option data");
     const update = await db.user.update({
-      where: {email: email, emailVerified: null},
-      data: {emailVerified: new Date()},
+      where: { email: email, emailVerified: null },
+      data: { emailVerified: new Date() },
     });
     const parsedUpdata = userSchema.parse(update);
     return parsedUpdata;
@@ -50,8 +50,8 @@ export async function returnedChat(chatId: string, aiMessage: string) {
   try {
     if (chatId == null || aiMessage ==null) throw new Error("Invalid option data");
     const update = await db.chats.update({
-      where: {id: chatId},
-      data: {response: aiMessage},
+      where: { id: chatId },
+      data: { response: aiMessage },
     });
     const parsedUpdata = chatsSchema.parse(update);
     return parsedUpdata;

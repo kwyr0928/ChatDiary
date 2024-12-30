@@ -34,7 +34,6 @@ export async function GET(
     const tags = [];
     const tagConnections = await getTagConnectionsByDiary(diaryId);
     if (tagConnections == null) throw new Error("err in getTagConnectionsByDiary");
-
     for (const tag of tagConnections) {
       const tagData = await getTagByID(tag.tagId);
       if (tagData == null) throw new Error("err in getTagByID");
