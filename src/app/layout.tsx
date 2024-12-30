@@ -7,7 +7,8 @@ import { Toaster } from "~/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Chat Diary",
-  description: "｢ねえ聞いてよ、｣で充実した思い出を残そう。AIとのチャット形式で日記を作成するwebアプリです。",
+  description:
+    "｢ねえ聞いてよ、｣で充実した思い出を残そう。AIとのチャット形式で日記を作成するwebアプリです。",
   icons: [{ rel: "icon", url: "/logo.png" }],
 };
 
@@ -17,10 +18,8 @@ export default function RootLayout({
   return (
     <html lang="ja" className={`${GeistSans.variable}`}>
       <body>
-      <SessionProvider>
-        {children}
-      </SessionProvider>
-      <Toaster />
+        <SessionProvider>{children}</SessionProvider>
+        <Toaster />
       </body>
     </html>
   );

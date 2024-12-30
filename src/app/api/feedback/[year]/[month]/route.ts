@@ -2,30 +2,32 @@
 
 import { NextResponse } from "next/server";
 import { auth } from "~/server/auth";
-import { getAnalysesFeedBack, getDiariesByUserId } from "~/server/repository/getdata";
+import {
+  getAnalysesFeedBack,
+  getDiariesByUserId,
+} from "~/server/repository/getdata";
 import { createAnalysesFB, createMonthlyFB } from "~/server/service/create";
 import { getLastMonthFB, getMonthlyContinuation } from "~/server/service/fetch";
 import { updateAnalysesFB } from "~/server/service/update";
 
 export async function GET(
   req: Request,
-  { params }: { params: { year: string, month: string } },
+  { params }: { params: Promise<{ year: string; month: string }> },
 ) {
   try {
-    // eslint-disable-next-line @typescript-eslint/await-thenable
     const par = await params;
     const year = parseInt(par.year); //パスパラメータ
     const month = parseInt(par.month); //パスパラメータ
     const session = await auth();
-    if(session==null) {
+    if (session == null) {
       return NextResponse.json(
         { error: "can't get login session." },
         { status: 401 },
       );
     }
     const userId = session?.user.id;
-    if(userId==null) throw new Error("userId query is required");
-    
+    if (userId == null) throw new Error("userId query is required");
+
     const target = year * 100 + month;
     // 先月のDB
     let lastMonthFBData = await getLastMonthFB(userId, target);
@@ -39,7 +41,7 @@ export async function GET(
         lastMonthFBData = created;
         lastMonthFB = lastMonthFBData?.text;
       } else {
-        lastMonthFB = "日記を書いてね！"
+        lastMonthFB = "日記を書いてね！";
       }
     }
 
@@ -64,7 +66,8 @@ export async function GET(
 
     // 継続情報
     const continuation = await getMonthlyContinuation(userId, new Date());
-    if (continuation == null || continuation.length == 0) throw new Error("err in getMonthlyContinuation");
+    if (continuation == null || continuation.length == 0)
+      throw new Error("err in getMonthlyContinuation");
 
     return NextResponse.json({
       message: "get " + year + "/" + month + " feedback successfully",

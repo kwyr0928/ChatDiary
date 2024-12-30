@@ -9,7 +9,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
-        mplus: ["'M PLUS Rounded 1c'", 'sans-serif'],
+        mplus: ["'M PLUS Rounded 1c'", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -71,7 +71,7 @@ export default {
           hover: "#4D66C2",
         },
         theme2: {
-					// green
+          // green
           primary: "#32BF84", //"#f4a460",
           background: "#E8FBF3", //"#fffacd",
           hover: "#E5BC0E",
@@ -103,12 +103,12 @@ export default {
       },
       keyframes: {
         bounce: {
-          '0%, 100%': { transform: 'translateY(-30%)' },
-          '20%, 80%': { transform: 'translateY(0)' },
+          "0%, 100%": { transform: "translateY(-30%)" },
+          "20%, 80%": { transform: "translateY(0)" },
         },
       },
       animation: {
-        loadingBounce: 'bounce 2s ease-in-out infinite',
+        loadingBounce: "bounce 2s ease-in-out infinite",
       },
     },
   },
@@ -150,7 +150,7 @@ export default {
     "fill-theme3-primary",
     "data-[state=checked]:bg-theme3-primary",
     "data-[state=checked]:border-theme3-primary",
-		"bg-theme4-background",
+    "bg-theme4-background",
     "bg-theme4-primary",
     "hover:bg-theme4-hover",
     "text-theme4-primary",
@@ -159,7 +159,7 @@ export default {
     "fill-theme4-primary",
     "data-[state=checked]:bg-theme4-primary",
     "data-[state=checked]:border-theme4-primary",
-		"bg-theme5-background",
+    "bg-theme5-background",
     "bg-theme5-primary",
     "hover:bg-theme5-hover",
     "text-theme5-primary",
@@ -168,7 +168,7 @@ export default {
     "fill-theme5-primary",
     "data-[state=checked]:bg-theme5-primary",
     "data-[state=checked]:border-theme5-primary",
-		"bg-theme6-background",
+    "bg-theme6-background",
     "bg-theme6-primary",
     "hover:bg-theme6-hover",
     "text-theme6-primary",
@@ -178,7 +178,5 @@ export default {
     "data-[state=checked]:bg-theme6-primary",
     "data-[state=checked]:border-theme6-primary",
   ],
-  plugins: [
-    tailwindcssAnimate
-  ],
+  plugins: [tailwindcssAnimate],
 } satisfies Config;

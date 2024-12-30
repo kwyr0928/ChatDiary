@@ -2,11 +2,10 @@ import { NextResponse } from "next/server";
 import { auth } from "~/server/auth";
 import { createContinuation, initializeDiary } from "~/server/service/create";
 
-
 export async function POST() {
   try {
     const session = await auth();
-    if(session==null) {
+    if (session == null) {
       return NextResponse.json(
         { error: "can't get login session." },
         { status: 401 },
@@ -15,7 +14,7 @@ export async function POST() {
     const userId = session?.user.id;
 
     const newDiary = await initializeDiary(userId);
-    if(newDiary==null) throw new Error("err in initializeDiary");
+    if (newDiary == null) throw new Error("err in initializeDiary");
 
     // 継続登録処理
     await createContinuation(userId, new Date());

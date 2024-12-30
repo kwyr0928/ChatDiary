@@ -51,7 +51,7 @@ export async function deleteTagConnection(diaryId: string, tagId: string) {
     const deleted = await db.diaryTags.deleteMany({
       where: {
         diaryId: diaryId,
-        tagId: tagId
+        tagId: tagId,
       },
     });
     return deleted;
@@ -60,4 +60,3 @@ export async function deleteTagConnection(diaryId: string, tagId: string) {
     return null;
   }
 }
-

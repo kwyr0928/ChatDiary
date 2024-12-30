@@ -13,7 +13,7 @@ import { useThemeStore } from "~/store/themeStore";
 type CreateUserResponse = {
   message: string;
   userId: string;
-}
+};
 
 export default function Page() {
   const theme = useThemeStore((state) => state.theme);
@@ -97,28 +97,32 @@ export default function Page() {
       const responseData = (await response.json()) as CreateUserResponse;
       console.log(responseData);
       if (response.ok) {
-        router.push(`/signup/send?email=${email}&userId=${responseData.userId}`);
-      } else { // 409 500
-        let errorMessage = '';
-      switch (response.status) {
-        case 409:
-            errorMessage = '登録エラー（509）：このメールアドレスは既に登録されています。';
+        router.push(
+          `/signup/send?email=${email}&userId=${responseData.userId}`,
+        );
+      } else {
+        // 409 500
+        let errorMessage = "";
+        switch (response.status) {
+          case 409:
+            errorMessage =
+              "登録エラー（509）：このメールアドレスは既に登録されています。";
             setIsLoading(false); // ローディングを終了
             break;
           case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            errorMessage = "サーバーエラー（500）：処理に失敗しました。";
             setIsLoading(false); // ローディングを終了
             break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          setIsLoading(false); // ローディングを終了
-          break;
-      }
-      throw new Error(errorMessage);
+          default:
+            errorMessage = "予期しないエラーが発生しました。";
+            setIsLoading(false); // ローディングを終了
+            break;
+        }
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.log(error);
-        if (error instanceof Error) {
+      if (error instanceof Error) {
         toast({
           variant: "destructive",
           description: error.message,
@@ -135,15 +139,18 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme-background text-gray-600`}>
+      <div
+        className={`bg-theme-background mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center text-gray-600`}
+      >
         <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
       </div>
     );
   }
 
-
   return (
-    <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}>
+    <div
+      className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}
+    >
       <Link href={"/signin"} className="absolute left-7 top-9">
         <IoChevronBackSharp className={`text-theme0-primary`} size={"30px"} />
       </Link>
@@ -203,12 +210,14 @@ export default function Page() {
               onChange={(e) => validatePassword(e.target.value)}
             />
             <button
-               type="button"
-               onClick={()=>{setShowPassword(!showPassword)}}
-               className="absolute inset-y-0 right-4 flex items-center text-gray-500"
-             >
+              type="button"
+              onClick={() => {
+                setShowPassword(!showPassword);
+              }}
+              className="absolute inset-y-0 right-4 flex items-center text-gray-500"
+            >
               {showPassword ? <Eye /> : <EyeClosed />}
-             </button>
+            </button>
           </div>
           {passwordError && (
             <p className="text-xs text-red-500">{passwordError}</p>
@@ -216,7 +225,7 @@ export default function Page() {
         </div>
         <div className="space-y-2">
           <label className="text-sm">パスワード（再入力）</label>
-        <div className="relative w-full">
+          <div className="relative w-full">
             <Input
               type={showRePassword ? "text" : "password"}
               name="confirmPassword"
@@ -227,13 +236,15 @@ export default function Page() {
               onChange={(e) => validateRePassword(e.target.value)}
             />
             <button
-                 type="button"
-                 onClick={()=>{setShowRePassword(!showRePassword)}}
-                 className="absolute inset-y-0 right-4 flex items-center text-gray-500"
-               >
-                {showRePassword ? <Eye /> : <EyeClosed />}
-               </button>
-        </div>
+              type="button"
+              onClick={() => {
+                setShowRePassword(!showRePassword);
+              }}
+              className="absolute inset-y-0 right-4 flex items-center text-gray-500"
+            >
+              {showRePassword ? <Eye /> : <EyeClosed />}
+            </button>
+          </div>
           {rePasswordError && (
             <p className="text-xs text-red-500">{rePasswordError}</p>
           )}

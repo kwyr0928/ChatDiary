@@ -34,12 +34,12 @@ type DiaryData = {
   summary: string;
   isPublic: boolean;
   created_at: string;
-}
+};
 
 type ChatLogEntry = {
   message: string;
   response: string | null;
-}
+};
 
 type GetDiaryResponse = {
   message: string;
@@ -47,14 +47,14 @@ type GetDiaryResponse = {
   tags: string[];
   tagList: string[];
   chatLog: ChatLogEntry[];
-}
+};
 
 type DeleteDiaryResponse = {
   message: string;
-}
+};
 
 export default function Page({ params }: { params: Promise<{ id: number }> }) {
-   const theme = useThemeStore((state) => state.theme);
+  const theme = useThemeStore((state) => state.theme);
   const [diaryDetail, setDiaryDetail] = useState<GetDiaryResponse>();
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
@@ -78,44 +78,45 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         if (response.ok) {
           setIsSession(true);
           setDiaryDetail(responseData);
-        } else { // 401 500
-          let errorMessage = '';
-      switch (response.status) {
-        case 401:
-          errorMessage = '認証エラー（401）: ログインが必要です。';
-          router.push("/signin");
-          break;
-          case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
-            router.push("/home");
-            break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          break;
-      }
-      throw new Error(errorMessage);
+        } else {
+          // 401 500
+          let errorMessage = "";
+          switch (response.status) {
+            case 401:
+              errorMessage = "認証エラー（401）: ログインが必要です。";
+              router.push("/signin");
+              break;
+            case 500:
+              errorMessage = "サーバーエラー（500）：処理に失敗しました。";
+              router.push("/home");
+              break;
+            default:
+              errorMessage = "予期しないエラーが発生しました。";
+              break;
+          }
+          throw new Error(errorMessage);
         }
       } catch (error) {
         console.log(error);
         if (error instanceof Error) {
-        toast({
-          variant: "destructive",
-          description: error.message,
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          description: "予期しないエラーが発生しました。",
-        });
-      }
+          toast({
+            variant: "destructive",
+            description: error.message,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            description: "予期しないエラーが発生しました。",
+          });
+        }
       } finally {
-        if(isSession){
+        if (isSession) {
           setIsLoading(false); // ローディングを終了
         }
       }
     };
     void fetchDiaryDetails();
-  }, []);
+  }, [diaryId, isSession, router, toast]);
 
   const handleDelete = async () => {
     setIsLoading(true);
@@ -133,21 +134,22 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
           description: "日記を削除しました。",
         });
         router.push("/home");
-      } else { // 500
-        let errorMessage = '';
-      switch (response.status) {
+      } else {
+        // 500
+        let errorMessage = "";
+        switch (response.status) {
           case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            errorMessage = "サーバーエラー（500）：処理に失敗しました。";
             break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          break;
-      }
-      throw new Error(errorMessage);
+          default:
+            errorMessage = "予期しないエラーが発生しました。";
+            break;
+        }
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.log(error);
-        if (error instanceof Error) {
+      if (error instanceof Error) {
         toast({
           variant: "destructive",
           description: error.message,
@@ -159,35 +161,47 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         });
       }
     } finally {
-      if(isSession){
+      if (isSession) {
         setIsLoading(false); // ローディングを終了
       }
     }
   };
 
   useEffect(() => {
-    if(isSession){
+    if (isSession) {
       setIsLoading(false); // ローディングを終了
     }
   }, [isSession]);
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
+      <div
+        className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}
+      >
         <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
       </div>
     );
   }
 
   return (
-    <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-theme${theme}-background text-gray-600`}>
-      <div className="fixed top-0 flex w-full bg-white max-w-md items-center justify-between pb-5 pt-5 text-center">
+    <div
+      className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-theme${theme}-background text-gray-600`}
+    >
+      <div className="fixed top-0 flex w-full max-w-md items-center justify-between bg-white pb-5 pt-5 text-center">
         <Link href={"/home"} className="pl-4">
-          <IoChevronBackSharp size={"30px"} className={`text-theme${theme}-primary`} />
+          <IoChevronBackSharp
+            size={"30px"}
+            className={`text-theme${theme}-primary`}
+          />
         </Link>
-        <p className="text-lg text-gray-700 font-medium">{diaryDetail?.diaryData.title}</p>
+        <p className="text-lg font-medium text-gray-700">
+          {diaryDetail?.diaryData.title}
+        </p>
         <Link href={`/diary/edit/${diaryId}`}>
-          <GoPencil size={"33px"} className={`text-theme${theme}-primary mr-5`} />
+          <GoPencil
+            size={"33px"}
+            className={`text-theme${theme}-primary mr-5`}
+          />
         </Link>
       </div>
       <div className="mt-[60px] w-[85%]">
@@ -212,20 +226,22 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
         <p className="mt-7 text-left text-lg font-medium">公開状況</p>
         <div className="justify-left mb-5 mt-4 flex">
           {diaryDetail?.diaryData.isPublic ? (
-          <div className="flex items-center space-x-2">
-            <MdOutlinePublic size={30} className={`text-theme${theme}-primary mr-2`}/>
-            <Label htmlFor="public">
-            公開（他の人も見ることができます）
-            </Label>
-          </div>
-        ) : (
-          <div className="flex items-center space-x-2">
-            <PiLockKeyFill size={30} className={`text-theme${theme}-primary mr-2`}/>
-            <Label htmlFor="private">
-            非公開（外部には公開されません）
-            </Label>
-          </div>
-        )}
+            <div className="flex items-center space-x-2">
+              <MdOutlinePublic
+                size={30}
+                className={`text-theme${theme}-primary mr-2`}
+              />
+              <Label htmlFor="public">公開（他の人も見ることができます）</Label>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-2">
+              <PiLockKeyFill
+                size={30}
+                className={`text-theme${theme}-primary mr-2`}
+              />
+              <Label htmlFor="private">非公開（外部には公開されません）</Label>
+            </div>
+          )}
         </div>
         <p className="mb-3 mt-10 text-lg font-bold">チャットログ</p>
       </div>

@@ -20,25 +20,23 @@ export async function PUT(req: Request) {
       const verified = await jwtVerify(headToken, secretKey);
       token = verified.payload;
     } catch (err) {
-      if (err.code === "ERR_JWT_EXPIRED") {
-        return NextResponse.json(
-          { error: "Token expired" },
-          { status: 401 }
-        );
+      if (
+        err instanceof Error &&
+        "code" in err &&
+        err.code === "ERR_JWT_EXPIRED"
+      ) {
+        return NextResponse.json({ error: "Token expired" }, { status: 401 });
       }
       throw err; // 他のエラーは再スロー
     }
     const email = token.email;
     const userData = await getUserByUserID(token.id as string);
     // ユーザーが登録できてないなら
-    if(userData==null){
-      return NextResponse.json(
-        { error: "not found user" },
-        { status: 404 },
-      );
+    if (userData == null) {
+      return NextResponse.json({ error: "not found user" }, { status: 404 });
     }
     // 認証済みなら
-    if(userData.emailVerified!=null){
+    if (userData.emailVerified != null) {
       return NextResponse.json(
         { error: "already authenticated" },
         { status: 401 },
@@ -46,7 +44,7 @@ export async function PUT(req: Request) {
     }
     // 認証タイムスタンプ
     const registered = await registerEmail(email as string);
-    if(registered==null) throw new Error("err in registerEmail");
+    if (registered == null) throw new Error("err in registerEmail");
 
     return NextResponse.json({
       message: "register email successfully",

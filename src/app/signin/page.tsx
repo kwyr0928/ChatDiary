@@ -27,7 +27,7 @@ type GetUserResponse = {
   message: string;
   email: string;
   theme: number;
-}
+};
 
 export default function Page() {
   const theme = useThemeStore((state) => state.theme);
@@ -90,55 +90,58 @@ export default function Page() {
           if (response.ok) {
             setTheme(responseData.theme);
             router.push("/home");
-                    } else { // 401 500
-            let errorMessage = '';
-      switch (response.status) {
-        case 401:
-          errorMessage = '認証エラー（401）: ログインが必要です。';
-          router.push("/signin");
-          break;
-          case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
-            setIsLoading(false); // ローディングを終了
-            break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          setIsLoading(false); // ローディングを終了
-          break;
-      }
-      throw new Error(errorMessage);
+          } else {
+            // 401 500
+            let errorMessage = "";
+            switch (response.status) {
+              case 401:
+                errorMessage = "認証エラー（401）: ログインが必要です。";
+                router.push("/signin");
+                break;
+              case 500:
+                errorMessage = "サーバーエラー（500）：処理に失敗しました。";
+                setIsLoading(false); // ローディングを終了
+                break;
+              default:
+                errorMessage = "予期しないエラーが発生しました。";
+                setIsLoading(false); // ローディングを終了
+                break;
+            }
+            throw new Error(errorMessage);
           }
         } catch (error) {
           console.log(error);
-        if (error instanceof Error) {
-        toast({
-          variant: "destructive",
-          description: error.message,
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          description: "予期しないエラーが発生しました。",
-        });
-      }
+          if (error instanceof Error) {
+            toast({
+              variant: "destructive",
+              description: error.message,
+            });
+          } else {
+            toast({
+              variant: "destructive",
+              description: "予期しないエラーが発生しました。",
+            });
+          }
         }
-      } else { // 500
-        let errorMessage = '';
-      switch (response.status) {
+      } else {
+        // 500
+        let errorMessage = "";
+        switch (response.status) {
           case 500:
-            errorMessage = 'ログインエラー（500）：メールアドレスまたはパスワードが間違っています。';
+            errorMessage =
+              "ログインエラー（500）：メールアドレスまたはパスワードが間違っています。";
             setIsLoading(false); // ローディングを終了
             break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          setIsLoading(false); // ローディングを終了
-          break;
-      }
-      throw new Error(errorMessage);
+          default:
+            errorMessage = "予期しないエラーが発生しました。";
+            setIsLoading(false); // ローディングを終了
+            break;
+        }
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.log(error);
-        if (error instanceof Error) {
+      if (error instanceof Error) {
         toast({
           variant: "destructive",
           description: error.message,
@@ -155,14 +158,18 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}>
+      <div
+        className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}
+      >
         <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
       </div>
     );
   }
 
   return (
-    <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}>
+    <div
+      className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}
+    >
       <Image
         src="/logo.png"
         alt="logo"
@@ -204,7 +211,9 @@ export default function Page() {
             />
             <button
               type="button"
-              onClick={() => { setShowPassword(!showPassword) }}
+              onClick={() => {
+                setShowPassword(!showPassword);
+              }}
               className="absolute inset-y-0 right-4 flex items-center text-gray-500"
             >
               {showPassword ? <Eye /> : <EyeClosed />}

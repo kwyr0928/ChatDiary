@@ -6,14 +6,17 @@ import {
   getChatsByDiaryId,
   getDiariesByUserId,
   getTagByID,
-  getTagConnectionsByDiary
+  getTagConnectionsByDiary,
 } from "~/server/repository/getdata";
-import { getDiariesAndTag, getRecentTagNamesByUserId } from "~/server/service/fetch";
+import {
+  getDiariesAndTag,
+  getRecentTagNamesByUserId,
+} from "~/server/service/fetch";
 
 export async function GET() {
   try {
     const session = await auth();
-    if(session==null) {
+    if (session == null) {
       return NextResponse.json(
         { error: "can't get login session." },
         { status: 401 },
@@ -31,31 +34,31 @@ export async function GET() {
           // タグ取得
           getTagConnectionsByDiary(diaryId),
           //チャットログ
-          getChatsByDiaryId(diaryId)
+          getChatsByDiaryId(diaryId),
         ]);
         if (diaryData == null) throw new Error("err in getDiaryData");
         if (chats == null) throw new Error("err in getChatsByDiaryId");
-        
+
         const tags = tagConnections?.length
           ? await Promise.all(
               tagConnections.map(async (tag) => {
                 const tagData = await getTagByID(tag.tagId);
                 if (tagData == null) throw new Error("err in getTagByID");
                 return tagData.name;
-              })
+              }),
             )
           : [];
-          
-          // チャットログの処理
-          const chatLog = chats.map(chat => chatLogSchema.parse(chat));
-          
-          return {
-            ...diaryData,
-            tags,
-            chatLog
-          };
-        })
-      );
+
+        // チャットログの処理
+        const chatLog = chats.map((chat) => chatLogSchema.parse(chat));
+
+        return {
+          ...diaryData,
+          tags,
+          chatLog,
+        };
+      }),
+    );
 
     // タグ一覧
     const getTagNames = await getRecentTagNamesByUserId(userId);

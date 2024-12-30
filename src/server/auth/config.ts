@@ -1,8 +1,8 @@
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
-import CredentialsProvider from 'next-auth/providers/credentials';
-import { postSignin } from '~/lib/schemas';
-import { getVerifiedUserByEmail } from '../repository/getdata';
+import CredentialsProvider from "next-auth/providers/credentials";
+import { postSignin } from "~/lib/schemas";
+import { getVerifiedUserByEmail } from "../repository/getdata";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -22,7 +22,7 @@ declare module "next-auth" {
   }
 
   interface User {
-    emailVerified: Date | null,
+    emailVerified: Date | null;
     // ...other properties
     // role: UserRole;
   }
@@ -30,7 +30,7 @@ declare module "next-auth" {
 
 export const authConfig = {
   pages: {
-    signIn: '/signin',
+    signIn: "/signin",
   },
   providers: [
     CredentialsProvider({
@@ -87,18 +87,18 @@ export const authConfig = {
     authorized({ auth, request: { nextUrl } }) {
       console.log("authorized");
       const isLoggedIn = !!auth?.user;
-      const isAuthRoute = ['/signin', '/signup'].includes(nextUrl.pathname);
-      const isPublicRoute = ['/'].includes(nextUrl.pathname);
+      const isAuthRoute = ["/signin", "/signup"].includes(nextUrl.pathname);
+      const isPublicRoute = ["/"].includes(nextUrl.pathname);
       if (isAuthRoute) {
         if (isLoggedIn) {
-          return Response.redirect(new URL('/', nextUrl));
+          return Response.redirect(new URL("/", nextUrl));
         }
 
         return true;
       }
 
       if (!isPublicRoute && !isLoggedIn) {
-        return Response.redirect(new URL('/signin', nextUrl));
+        return Response.redirect(new URL("/signin", nextUrl));
         //return false;
       }
 

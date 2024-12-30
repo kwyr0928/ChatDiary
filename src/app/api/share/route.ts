@@ -6,14 +6,14 @@ import { getOtherUserDiary } from "~/server/service/fetch";
 export async function GET() {
   try {
     const session = await auth();
-    if(session==null) {
+    if (session == null) {
       return NextResponse.json(
         { error: "can't get login session." },
         { status: 401 },
       );
     }
     const userId = session?.user.id;
-    
+
     const share = await getOtherUserDiary(userId);
 
     return NextResponse.json({

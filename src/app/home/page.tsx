@@ -77,25 +77,25 @@ export default function Page() {
   const [isTagPopoverOpen, setIsTagPopoverOpen] = useState(false);
   const filteredDiary = diaryList
     ? diaryList.diaries
-      .filter((d) =>
-        JSON.stringify(d).toLowerCase().includes(keyword.toLowerCase()),
-      )
-      .filter((d) => {
-        if (filterPublic === "public") return d.isPublic;
-        if (filterPublic === "private") return !d.isPublic;
-        return true; // "all" の場合
-      })
-      .filter((d) => {
-        if (selectedTags.length === 0) return true;
-        return selectedTags.some((tag) => d.tags.includes(tag));
-      })
-      .sort((a, b) =>
-        sortOrder === "asc"
-          ? new Date(a.created_at).getTime() -
-          new Date(b.created_at).getTime()
-          : new Date(b.created_at).getTime() -
-          new Date(a.created_at).getTime(),
-      )
+        .filter((d) =>
+          JSON.stringify(d).toLowerCase().includes(keyword.toLowerCase()),
+        )
+        .filter((d) => {
+          if (filterPublic === "public") return d.isPublic;
+          if (filterPublic === "private") return !d.isPublic;
+          return true; // "all" の場合
+        })
+        .filter((d) => {
+          if (selectedTags.length === 0) return true;
+          return selectedTags.some((tag) => d.tags.includes(tag));
+        })
+        .sort((a, b) =>
+          sortOrder === "asc"
+            ? new Date(a.created_at).getTime() -
+              new Date(b.created_at).getTime()
+            : new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime(),
+        )
     : []; // 検索
 
   const [isOpen, setIsOpen] = useState(false);
@@ -103,7 +103,7 @@ export default function Page() {
   const router = useRouter();
   const [isSession, setIsSession] = useState(false);
 
-  const loadingText = "読み込み中..."
+  const loadingText = "読み込み中...";
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
@@ -127,9 +127,9 @@ export default function Page() {
           console.log(responseData);
           if (response.ok) {
             setIsSession(true);
-            if(responseData.share != null){
-            setIsOpen(true);
-            setShareData(responseData.share.summary);
+            if (responseData.share != null) {
+              setIsOpen(true);
+              setShareData(responseData.share.summary);
             }
             sessionStorage.removeItem("showDialog");
           } else {
@@ -198,7 +198,8 @@ export default function Page() {
     };
 
     void fetchDiaries();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router]);
 
   useEffect(() => {
     if (isSession) {
@@ -259,18 +260,19 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md items-center justify-center bg-theme${theme}-background text-rose-950`}>
+      <div
+        className={`mx-auto flex min-h-screen w-full max-w-md items-center justify-center bg-theme${theme}-background text-rose-950`}
+      >
         {loadingText.split("").map((char, index) => (
           <span
             key={index}
             style={{ animationDelay: `${index * 0.1}s` }}
-            className={`animate-loadingBounce pb-4 text-3xl italic font-medium tracking-wider font-mplus flex-col`}
+            className={`animate-loadingBounce flex-col pb-4 font-mplus text-3xl font-medium italic tracking-wider`}
           >
             {char}
           </span>
         ))}
       </div>
-
     );
   }
 
@@ -341,7 +343,7 @@ export default function Page() {
               </div>
             </PopoverTrigger>
             <PopoverContent
-              className="mt-1 flex w-full flex-col pt-6 px-6 pb-4"
+              className="mt-1 flex w-full flex-col px-6 pb-4 pt-6"
               align="start"
             >
               <button
@@ -371,7 +373,6 @@ export default function Page() {
                   ))}
                 </div>
                 <div className="ml-4 flex flex-col space-y-2">
-                  
                   <p className="text-xs font-medium">投稿日</p>
                   <RadioGroup
                     defaultValue="asc"
@@ -387,7 +388,9 @@ export default function Page() {
                         id="asc"
                         className={`border-theme${theme}-primary`}
                       />
-                      <Label htmlFor="asc" className="font-normal text-xs">昇順</Label>
+                      <Label htmlFor="asc" className="text-xs font-normal">
+                        昇順
+                      </Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem
@@ -395,7 +398,9 @@ export default function Page() {
                         id="desc"
                         className={`border-theme${theme}-primary`}
                       />
-                      <Label htmlFor="desc" className="font-normal text-xs">降順</Label>
+                      <Label htmlFor="desc" className="text-xs font-normal">
+                        降順
+                      </Label>
                     </div>
                   </RadioGroup>
                   <RadioGroup
@@ -413,7 +418,9 @@ export default function Page() {
                         id="all"
                         className={`border-theme${theme}-primary`}
                       />
-                      <Label htmlFor="all" className="font-normal text-xs">すべて</Label>
+                      <Label htmlFor="all" className="text-xs font-normal">
+                        すべて
+                      </Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem
@@ -421,7 +428,9 @@ export default function Page() {
                         id="public"
                         className={`border-theme${theme}-primary`}
                       />
-                      <Label htmlFor="public" className="font-normal text-xs">公開</Label>
+                      <Label htmlFor="public" className="text-xs font-normal">
+                        公開
+                      </Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem
@@ -429,7 +438,9 @@ export default function Page() {
                         id="private"
                         className={`border-theme${theme}-primary`}
                       />
-                      <Label htmlFor="private" className="font-normal text-xs">非公開</Label>
+                      <Label htmlFor="private" className="text-xs font-normal">
+                        非公開
+                      </Label>
                     </div>
                   </RadioGroup>
                 </div>
@@ -461,7 +472,13 @@ export default function Page() {
               href={`/diary/detail/${d.id}`}
               className="focus:outline-none focus-visible:outline-none focus-visible:ring-0"
             >
-              <DiaryCard key={index} title={d.title} summary={d.summary} isPublic={d.isPublic} tags={d.tags} />
+              <DiaryCard
+                key={index}
+                title={d.title}
+                summary={d.summary}
+                isPublic={d.isPublic}
+                tags={d.tags}
+              />
             </Link>
           ))
         ) : keyword == "" ? (
