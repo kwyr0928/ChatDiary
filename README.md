@@ -1,6 +1,7 @@
-<div style="text-align:center">
-  <img src="./public/logo.png" />
+<div style="text-align: center;">
+  <img src="./public/logo.png" style="width: 33%;" alt="Logo" />
 </div>
+
 # Chat Diary
 ｢ねえ聞いてよ、｣で充実した思い出を残そう。  
 AIとのチャット形式で日記を作成するwebアプリです。
