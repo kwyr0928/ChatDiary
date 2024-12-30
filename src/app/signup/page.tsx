@@ -136,16 +136,16 @@ export default function Page() {
   if (isLoading) {
     return (
       <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme-background text-gray-600`}>
-        <LoaderCircle className="animate-spin" />
+        <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
       </div>
     );
   }
 
 
   return (
-    <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme$-background text-gray-600`}>
+    <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}>
       <Link href={"/signin"} className="absolute left-7 top-9">
-        <IoChevronBackSharp className={`text-theme${theme}-primary`} size={"30px"} />
+        <IoChevronBackSharp className={`text-theme0-primary`} size={"30px"} />
       </Link>
       <p className="my-8 text-3xl font-bold">新規登録</p>
       <form className="flex w-[70%] flex-col space-y-6" onSubmit={onSubmit}>
@@ -243,7 +243,7 @@ export default function Page() {
           <Button
             type="submit"
             disabled={!!isError}
-            className={`mt-6 w-full rounded-full bg-theme${theme}-primary text-xl hover:bg-theme${theme}-hover`}
+            className={`mt-6 w-full rounded-full bg-theme0-primary text-xl hover:bg-theme0-hover`}
           >
             登録
           </Button>

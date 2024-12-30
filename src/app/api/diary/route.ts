@@ -23,35 +23,39 @@ export async function GET() {
     const diaries = await getDiariesByUserId(userId);
     if (diaries == null) throw new Error("err in getDiariesByUserId");
 
-    const diaryDatas = [];
-    if (diaries.length != 0) {
-      for (const diary of diaries) {
+    const diaryDatas = await Promise.all(
+      diaries.map(async (diary) => {
         const diaryId: string = diary.id!;
-        const diaryData = await getDiariesAndTag(diaryId);
+        const [diaryData, tagConnections, chats] = await Promise.all([
+          getDiariesAndTag(diaryId),
+          // タグ取得
+          getTagConnectionsByDiary(diaryId),
+          //チャットログ
+          getChatsByDiaryId(diaryId)
+        ]);
         if (diaryData == null) throw new Error("err in getDiaryData");
-
-        // タグ取得
-        const tags = [];
-        const tagConnections = await getTagConnectionsByDiary(diaryId);
-        if (tagConnections?.length != 0) {
-          for (const tag of tagConnections!) {
-            const tagData = await getTagByID(tag.tagId);
-            if (tagData == null) throw new Error("err in getTagByID");
-            tags.push(tagData.name);
-          }
-        }
-
-        //チャットログ
-        const chatLog = [];
-        const chats = await getChatsByDiaryId(diaryId);
         if (chats == null) throw new Error("err in getChatsByDiaryId");
-        for (const chat of chats) {
-          chatLog.push(chatLogSchema.parse(chat));
-        }
-
-        diaryDatas.push(diaryData);
-      }
-    }
+        
+        const tags = tagConnections?.length
+          ? await Promise.all(
+              tagConnections.map(async (tag) => {
+                const tagData = await getTagByID(tag.tagId);
+                if (tagData == null) throw new Error("err in getTagByID");
+                return tagData.name;
+              })
+            )
+          : [];
+          
+          // チャットログの処理
+          const chatLog = chats.map(chat => chatLogSchema.parse(chat));
+          
+          return {
+            ...diaryData,
+            tags,
+            chatLog
+          };
+        })
+      );
 
     // タグ一覧
     const getTagNames = await getRecentTagNamesByUserId(userId);

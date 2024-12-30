@@ -55,7 +55,7 @@ function Page() {
       if (errorData.error === "Token expired") {
           errorMessage = '期限切れ（401）: トークンの有効期限が切れています。';
           router.push("/signup/expired");
-      } else if  (errorData.error === "Already authenticated") {
+      } else {
         errorMessage = '認証済み（401）: 既に認証が完了しております。ログインをお試しください。';
         router.push("/signin");
       }
@@ -111,7 +111,7 @@ function Page() {
   if (isLoading) {
     return (
       <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}>
-        <LoaderCircle className="animate-spin" />
+        <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
       </div>
     );
   }

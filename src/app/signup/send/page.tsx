@@ -118,7 +118,7 @@ function Page() {
   if (isLoading) {
     return (
       <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}>
-        <LoaderCircle className="animate-spin" />
+        <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
       </div>
     );
   }
@@ -138,7 +138,7 @@ function Page() {
           開いて登録を完了させてください。
         </p>
         {isSending ? (
-        <LoaderCircle className="w-[300px] animate-spin" />
+        <LoaderCircle className={`w-[300px] animate-spin text-theme${theme}-primary`} />
       ) :
       <div className="border-b" onClick={handleRemail}>
       メールを再送
