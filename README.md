@@ -1,6 +1,6 @@
-<div style="text-align:center">
+<p align="center">
   <img src="./public/logo.png" style="width: 33%;" alt="Logo" />
-</div>
+</p>
 
 # Chat Diary
 ｢ねえ聞いてよ、｣で充実した思い出を残そう。  
