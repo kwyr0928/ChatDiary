@@ -3,31 +3,46 @@
 import { useEffect, useRef } from "react";
 
 // 可変テキストエリア
-export default function ResizeTextarea(props: { className: string, text: string, onChange?: (newValue: string) => void, isLimit?: boolean, placeholder?: string }) {
-    const { className, text, onChange, isLimit, placeholder } = props
-    const textareaRef = useRef<HTMLTextAreaElement>(null)
+export default function ResizeTextarea(props: {
+  className: string;
+  text: string;
+  onChange?: (newValue: string) => void;
+  isLimit?: boolean;
+  placeholder?: string;
+}) {
+  const { className, text, onChange, isLimit, placeholder } = props;
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    const resize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        if (onChange) {
-        onChange(e.target.value)
+  const resize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (onChange) {
+      onChange(e.target.value);
     }
-        if (textareaRef.current) {
-            textareaRef.current.style.height = "auto"
-            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
-        }
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
+  };
 
-    useEffect(() => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = "auto";
-            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
 
-            // 最大高さ
-            if(isLimit) textareaRef.current.style.maxHeight = `${4 * 1.5}em`;
-        }
-    }, [])
+      // 最大高さ
+      if (isLimit) textareaRef.current.style.maxHeight = `${4 * 1.5}em`;
+    }
+  }, [isLimit]);
 
-    return (
-        <textarea ref={textareaRef} rows={1} onChange={resize} className={className} style={{ resize: 'none', bottom: 0, overflow: "hidden" }} value={text} placeholder={placeholder} maxLength={1000} />
-    )
+  return (
+    <textarea
+      ref={textareaRef}
+      rows={1}
+      onChange={resize}
+      className={className}
+      style={{ resize: "none", bottom: 0, overflow: "hidden" }}
+      value={text}
+      placeholder={placeholder}
+      maxLength={1000}
+    />
+  );
 }

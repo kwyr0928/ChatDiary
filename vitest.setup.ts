@@ -14,7 +14,9 @@ let prisma: PrismaClient;
 
 export async function setupTestDBContainer() {
   // testcontainersを使用してPostgreSQLコンテナを起動
-  container = await new PostgreSqlContainer("public.ecr.aws/docker/library/postgres:16.1-alpine")
+  container = await new PostgreSqlContainer(
+    "public.ecr.aws/docker/library/postgres:16.1-alpine",
+  )
     .withDatabase("diary_db")
     .withUsername("diaryuser")
     .withPassword("password")
@@ -22,7 +24,7 @@ export async function setupTestDBContainer() {
     .start();
 
   const port = container.getMappedPort(5432);
-  
+
   // データベースURLを環境変数に設定
   process.env.DATABASE_URL = `postgresql://${container.getUsername()}:${container.getPassword()}@${container.getHost()}:${port}/diary_db?schema=public`;
 
@@ -56,8 +58,8 @@ afterAll(async () => {
 });
 
 afterEach(async () => {
-    // トランザクションを開始して順番に削除
-    await prisma.$transaction([
-      prisma.$executeRaw`TRUNCATE TABLE "User" RESTART IDENTITY CASCADE`
-    ]);
-})
+  // トランザクションを開始して順番に削除
+  await prisma.$transaction([
+    prisma.$executeRaw`TRUNCATE TABLE "User" RESTART IDENTITY CASCADE`,
+  ]);
+});

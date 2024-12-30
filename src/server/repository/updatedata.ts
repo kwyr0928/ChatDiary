@@ -1,4 +1,9 @@
-import { chatsSchema, diariesSchema, tagsSchema, userSchema } from "~/lib/schemas";
+import {
+  chatsSchema,
+  diariesSchema,
+  tagsSchema,
+  userSchema,
+} from "~/lib/schemas";
 import { db } from "../db";
 
 export async function registerEmail(email: string) {
@@ -48,7 +53,8 @@ export async function updateUserTheme(userId: string, theme: number) {
 
 export async function returnedChat(chatId: string, aiMessage: string) {
   try {
-    if (chatId == null || aiMessage ==null) throw new Error("Invalid option data");
+    if (chatId == null || aiMessage == null)
+      throw new Error("Invalid option data");
     const update = await db.chats.update({
       where: { id: chatId },
       data: { response: aiMessage },
@@ -63,10 +69,11 @@ export async function returnedChat(chatId: string, aiMessage: string) {
 
 export async function summariedDiary(diaryId: string, aiSummary: string) {
   try {
-    if (diaryId == null || aiSummary ==null) throw new Error("Invalid option data");
+    if (diaryId == null || aiSummary == null)
+      throw new Error("Invalid option data");
     const update = await db.diaries.update({
-      where: {id: diaryId},
-      data: {summary: aiSummary},
+      where: { id: diaryId },
+      data: { summary: aiSummary },
     });
     const parsedUpdata = diariesSchema.parse(update);
     return parsedUpdata;
@@ -76,15 +83,20 @@ export async function summariedDiary(diaryId: string, aiSummary: string) {
   }
 }
 
-export async function updateDiary(diaryId: string, summary: string, isPublic: boolean) {
+export async function updateDiary(
+  diaryId: string,
+  summary: string,
+  isPublic: boolean,
+) {
   try {
-    if (diaryId==null || summary==null || isPublic==null) throw new Error("Invalid option data");
+    if (diaryId == null || summary == null || isPublic == null)
+      throw new Error("Invalid option data");
     const update = await db.diaries.update({
-      where: {id: diaryId},
+      where: { id: diaryId },
       data: {
         summary: summary,
         isPublic: isPublic,
-        },
+      },
     });
     const parsedUpdata = diariesSchema.parse(update);
     return parsedUpdata;
@@ -96,12 +108,12 @@ export async function updateDiary(diaryId: string, summary: string, isPublic: bo
 
 export async function updateRecentTag(tagId: string) {
   try {
-    if (tagId==null) throw new Error("Invalid option data");
+    if (tagId == null) throw new Error("Invalid option data");
     const update = await db.tags.update({
-      where: {id: tagId},
+      where: { id: tagId },
       data: {
         updated_at: new Date(),
-        },
+      },
     });
     const parsedUpdata = tagsSchema.parse(update);
     return parsedUpdata;
@@ -113,11 +125,11 @@ export async function updateRecentTag(tagId: string) {
 
 export async function updateAnalyses(userId: string, text: string) {
   try {
-    if (text==null) throw new Error("Invalid option data");
+    if (text == null) throw new Error("Invalid option data");
     const update = await db.analyses.update({
       where: { userId: userId },
       data: {
-        text: text
+        text: text,
       },
     });
     return update;

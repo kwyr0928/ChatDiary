@@ -15,7 +15,7 @@ import { useThemeStore } from "~/store/themeStore";
 type GetTagResponse = {
   message: string;
   tagList: string[];
-}
+};
 
 type DiaryData = {
   id: string;
@@ -24,12 +24,12 @@ type DiaryData = {
   summary: string;
   isPublic: boolean;
   created_at: string;
-}
+};
 
 type UpdateDiaryResponse = {
   message: string;
   diaryData: DiaryData;
-}
+};
 
 export default function New() {
   return (
@@ -44,9 +44,9 @@ function Page() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const res = searchParams.get("res");
-  const [text, setText] = useState<string>(res ?? "")
+  const [text, setText] = useState<string>(res ?? "");
   const [tags, setTags] = useState<string[]>([]);
-  const [tagList, setTagList] = useState<string[]>([])
+  const [tagList, setTagList] = useState<string[]>([]);
   const [isPublic, setIsPublic] = useState("private");
   const [isLoading, setIsLoading] = useState(true);
   const diaryId = searchParams.get("diaryId");
@@ -55,33 +55,34 @@ function Page() {
   useEffect(() => {
     const fetchTagNames = async () => {
       try {
-        if( res == undefined ) {
-        router.push("/home");
-        throw new Error("エラーが発生しました。もう一度やり直してください。");
+        if (res == undefined) {
+          router.push("/home");
+          throw new Error("エラーが発生しました。もう一度やり直してください。");
         }
         const response = await fetch(`/api/diary/tag`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
-        })
+        });
         const responseData = (await response.json()) as GetTagResponse;
         console.log(responseData);
         if (response.ok) {
           setIsSession(true);
           setTagList(responseData.tagList);
-        } else { // 401 500
-          let errorMessage = '';
+        } else {
+          // 401 500
+          let errorMessage = "";
           switch (response.status) {
             case 401:
-              errorMessage = '認証エラー（401）: ログインが必要です。';
+              errorMessage = "認証エラー（401）: ログインが必要です。";
               router.push("/signin");
               break;
-              case 500:
-                errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
-                break;
+            case 500:
+              errorMessage = "サーバーエラー（500）：処理に失敗しました。";
+              break;
             default:
-              errorMessage = '予期しないエラーが発生しました。';
+              errorMessage = "予期しないエラーが発生しました。";
               break;
           }
           throw new Error(errorMessage);
@@ -89,24 +90,25 @@ function Page() {
       } catch (error) {
         console.log(error);
         if (error instanceof Error) {
-        toast({
-          variant: "destructive",
-          description: error.message,
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          description: "予期しないエラーが発生しました。",
-        });
-      }
+          toast({
+            variant: "destructive",
+            description: error.message,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            description: "予期しないエラーが発生しました。",
+          });
+        }
       } finally {
-        if(isSession){
+        if (isSession) {
           setIsLoading(false); // ローディングを終了
         }
       }
-    }
+    };
     void fetchTagNames();
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [res, router]);
 
   useEffect(() => {
     if (tagList.length > 0) {
@@ -133,27 +135,28 @@ function Page() {
       console.log(responseData);
       if (response.ok) {
         setIsSession(true);
-      router.push("/home");
-    } else { // 401 500
-      sessionStorage.removeItem("showDialog");
-      let errorMessage = '';
-      switch (response.status) {
-        case 401:
-          errorMessage = '認証エラー（401）: ログインが必要です。';
-          router.push("/signin");
-          break;
-          case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+        router.push("/home");
+      } else {
+        // 401 500
+        sessionStorage.removeItem("showDialog");
+        let errorMessage = "";
+        switch (response.status) {
+          case 401:
+            errorMessage = "認証エラー（401）: ログインが必要です。";
+            router.push("/signin");
             break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          break;
+          case 500:
+            errorMessage = "サーバーエラー（500）：処理に失敗しました。";
+            break;
+          default:
+            errorMessage = "予期しないエラーが発生しました。";
+            break;
+        }
+        throw new Error(errorMessage);
       }
-      throw new Error(errorMessage);
-    }
     } catch (error) {
       console.log(error);
-        if (error instanceof Error) {
+      if (error instanceof Error) {
         toast({
           variant: "destructive",
           description: error.message,
@@ -165,28 +168,32 @@ function Page() {
         });
       }
     } finally {
-      if(isSession){
+      if (isSession) {
         setIsLoading(false); // ローディングを終了
       }
     }
   };
-  
-    useEffect(() => {
-      if(isSession){
-        setIsLoading(false); // ローディングを終了
-      }
-    }, [isSession]);
 
-    if (isLoading) {
-      return (
-        <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
-          <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
-        </div>
-      );
+  useEffect(() => {
+    if (isSession) {
+      setIsLoading(false); // ローディングを終了
     }
+  }, [isSession]);
+
+  if (isLoading) {
+    return (
+      <div
+        className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}
+      >
+        <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
+      </div>
+    );
+  }
 
   return (
-    <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
+    <div
+      className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}
+    >
       <div className="fixed top-0 mb-5 flex w-full max-w-md flex-col justify-around bg-white pt-5 text-center">
         <div className="mb-3 flex">
           <p className="mx-auto my-auto text-lg font-medium">
@@ -201,7 +208,9 @@ function Page() {
         </div>
       </div>
       <div className="mb-auto mt-[70px] w-[85%]">
-        <p className="mt-5 mb-3 text-left text-lg font-medium">生成された日記<span className="text-sm">（修正可）</span></p>
+        <p className="mb-3 mt-5 text-left text-lg font-medium">
+          生成された日記<span className="text-sm">（修正可）</span>
+        </p>
         <ResizeTextarea
           className="h-36 w-full resize-none rounded border border-gray-300 p-2 px-5 py-3 text-gray-600 focus:outline-none"
           text={text}
@@ -212,11 +221,15 @@ function Page() {
         />
         <p className="mt-8 text-left text-lg font-medium">タグ</p>
         <div className="flex justify-center">
-          <InputTag initialTags={tags} initialTagList={tagList} onChangeTags={setTags} />
+          <InputTag
+            initialTags={tags}
+            initialTagList={tagList}
+            onChangeTags={setTags}
+          />
         </div>
         <p className="mt-7 text-left text-lg font-medium">公開状況</p>
         {/* ラジオボタン */}
-        <div className="mb-5 flex justify-left mt-4">
+        <div className="justify-left mb-5 mt-4 flex">
           <RadioGroup
             defaultValue="private"
             value={isPublic}
@@ -231,9 +244,7 @@ function Page() {
                 id="public"
                 className={`border-theme${theme}-primary`}
               />
-              <Label htmlFor="public">
-                公開（他の人も見ることができます）
-              </Label>
+              <Label htmlFor="public">公開（他の人も見ることができます）</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem
@@ -241,9 +252,7 @@ function Page() {
                 id="private"
                 className={`border-theme${theme}-primary`}
               />
-              <Label htmlFor="private">
-                非公開（外部には公開されません）
-              </Label>
+              <Label htmlFor="private">非公開（外部には公開されません）</Label>
             </div>
           </RadioGroup>
         </div>

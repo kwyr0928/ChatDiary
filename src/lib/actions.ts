@@ -1,10 +1,10 @@
-'use server';
+"use server";
 
-import { AuthError } from 'next-auth';
-import { NextResponse } from 'next/server';
-import { z } from 'zod';
-import { signIn, signOut } from '~/server/auth';
-import { userSchema } from './schemas';
+import { AuthError } from "next-auth";
+import { NextResponse } from "next/server";
+import { type z } from "zod";
+import { signIn, signOut } from "~/server/auth";
+import { type userSchema } from "./schemas";
 
 export type SignUpState = {
   errors?: {
@@ -14,11 +14,11 @@ export type SignUpState = {
   message?: string | null;
 };
 
-export type  SignInParams = {
+export type SignInParams = {
   email: string;
   password: string;
   redirect: boolean;
-}
+};
 
 // export async function signUp(prevState: SignUpState, formData: FormData): Promise<SignUpState> {
 //   try {
@@ -30,7 +30,10 @@ export type  SignInParams = {
 //   redirect('/login');
 // }
 
-export async function login(prevState: string | undefined, formData: z.infer<typeof userSchema>) {
+export async function login(
+  prevState: string | undefined,
+  formData: z.infer<typeof userSchema>,
+) {
   try {
     await signIn(prevState, {
       email: formData.email,
@@ -41,8 +44,10 @@ export async function login(prevState: string | undefined, formData: z.infer<typ
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
-        case 'CredentialsSignin':
-          console.log("Invalid credentials.メールかパスワードが違うか, 登録が完了していません.");
+        case "CredentialsSignin":
+          console.log(
+            "Invalid credentials.メールかパスワードが違うか, 登録が完了していません.",
+          );
           return false;
         default:
           console.log("Something went wrong.");
@@ -55,7 +60,7 @@ export async function login(prevState: string | undefined, formData: z.infer<typ
 
 export async function logout() {
   try {
-    await signOut({redirect: false,});
+    await signOut({ redirect: false });
     return NextResponse.json({
       message: "successfully logouted",
     });

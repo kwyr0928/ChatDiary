@@ -7,7 +7,7 @@ export const { GET } = handlers;
 
 export const POST = async () => {
   await logout();
-  
+
   return NextResponse.json({
     message: "sign out successfully",
   });

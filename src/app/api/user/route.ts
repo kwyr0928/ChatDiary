@@ -7,14 +7,14 @@ import { getUserByUserID } from "~/server/repository/getdata";
 export async function GET() {
   try {
     const session = await auth();
-    if(session==null) {
+    if (session == null) {
       return NextResponse.json(
         { error: "can't get login session." },
         { status: 401 },
       );
     }
     const userId = session?.user.id;
-    console.log("userId"+userId);
+    console.log("userId" + userId);
     const userData = await getUserByUserID(userId);
     return NextResponse.json({
       message: "get user successfully",
@@ -34,7 +34,7 @@ export async function GET() {
 export async function DELETE() {
   try {
     const session = await auth();
-    if(session==null) {
+    if (session == null) {
       return NextResponse.json(
         { error: "can't get login session." },
         { status: 401 },

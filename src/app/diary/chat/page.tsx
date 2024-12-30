@@ -33,17 +33,17 @@ type ChatResponse = {
   count: number;
   response: string;
   summary: string | null;
-}
+};
 
 type DeleteResponse = {
   message: string;
-}
+};
 
 type GetUserResponse = {
   message: string;
   email: string;
   theme: number;
-}
+};
 
 export default function Chat() {
   return (
@@ -71,10 +71,18 @@ function Page() {
   const [isSession, setIsSession] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && diaryId) {
+    if (typeof window !== "undefined" && diaryId) {
       const storedData = localStorage.getItem(`chat-${diaryId}`);
       if (storedData) {
-        const { count: storedCount, messages: storedMessages, mode: storedMode } = JSON.parse(storedData) as { count: number; messages: { text: string; isAI: boolean }[]; mode: number };
+        const {
+          count: storedCount,
+          messages: storedMessages,
+          mode: storedMode,
+        } = JSON.parse(storedData) as {
+          count: number;
+          messages: { text: string; isAI: boolean }[];
+          mode: number;
+        };
         setCount(storedCount);
         setMessages(storedMessages);
         setMode(storedMode);
@@ -83,31 +91,34 @@ function Page() {
   }, [diaryId]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && diaryId) {
-      localStorage.setItem(`chat-${diaryId}`, JSON.stringify({
-        count,
-        messages,
-        mode
-      }));
+    if (typeof window !== "undefined" && diaryId) {
+      localStorage.setItem(
+        `chat-${diaryId}`,
+        JSON.stringify({
+          count,
+          messages,
+          mode,
+        }),
+      );
     }
   }, [count, messages, mode, diaryId]);
 
   const clearLocalStorage = () => {
-    if (typeof window !== 'undefined' && diaryId) {
+    if (typeof window !== "undefined" && diaryId) {
       localStorage.removeItem(`chat-${diaryId}`);
     }
   };
 
   useEffect(() => {
-    window.history.pushState(null, '', window.location.href);
+    window.history.pushState(null, "", window.location.href);
     const handlePopState = (event: PopStateEvent) => {
       event.preventDefault();
-      window.history.pushState(null, '', window.location.href);
+      window.history.pushState(null, "", window.location.href);
       setIsOpen(true);
     };
-    window.addEventListener('popstate', handlePopState);
+    window.addEventListener("popstate", handlePopState);
     return () => {
-      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener("popstate", handlePopState);
     };
   }, []);
 
@@ -125,45 +136,47 @@ function Page() {
         console.log(responseData);
         if (response.ok) {
           setIsSession(true);
-        } else { // 401 500
-          let errorMessage = '';
-      switch (response.status) {
-        case 401:
-          errorMessage = '認証エラー（401）: ログインが必要です。';
-          router.push("/signin");
-          break;
-          case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
-            break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          break;
-      }
-      throw new Error(errorMessage);
+        } else {
+          // 401 500
+          let errorMessage = "";
+          switch (response.status) {
+            case 401:
+              errorMessage = "認証エラー（401）: ログインが必要です。";
+              router.push("/signin");
+              break;
+            case 500:
+              errorMessage = "サーバーエラー（500）：処理に失敗しました。";
+              break;
+            default:
+              errorMessage = "予期しないエラーが発生しました。";
+              break;
+          }
+          throw new Error(errorMessage);
         }
       } catch (error) {
         console.log(error);
         if (error instanceof Error) {
-        toast({
-          variant: "destructive",
-          description: error.message,
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          description: "予期しないエラーが発生しました。",
-        });
-      }
+          toast({
+            variant: "destructive",
+            description: error.message,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            description: "予期しないエラーが発生しました。",
+          });
+        }
         router.replace("/signin");
       } finally {
-        if(isSession){
+        if (isSession) {
           setIsLoading(false); // ローディングを終了
         }
       }
-    }
+    };
 
     void start();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router]);
 
   const handleSend = async () => {
     // メッセージを送信
@@ -206,30 +219,31 @@ function Page() {
           ...prev,
           { text: responseData.response, isAI: true },
         ]);
-      } else { // 401 500 504
-        let errorMessage = '';
-      switch (response.status) {
-        case 401:
-          errorMessage = '認証エラー（401）: ログインが必要です。';
-          router.push("/signin");
-          break;
+      } else {
+        // 401 500 504
+        let errorMessage = "";
+        switch (response.status) {
+          case 401:
+            errorMessage = "認証エラー（401）: ログインが必要です。";
+            router.push("/signin");
+            break;
           case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            errorMessage = "サーバーエラー（500）：処理に失敗しました。";
             break;
           case 504:
-            errorMessage = 'タイムアウト（504）：再試行してください。';
+            errorMessage = "タイムアウト（504）：再試行してください。";
             break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          break;
-      }
-      throw new Error(errorMessage);
+          default:
+            errorMessage = "予期しないエラーが発生しました。";
+            break;
+        }
+        throw new Error(errorMessage);
       }
       // 入力フィールドをクリア
       setInputText("");
     } catch (error) {
       console.log(error);
-        if (error instanceof Error) {
+      if (error instanceof Error) {
         toast({
           variant: "destructive",
           description: error.message,
@@ -259,23 +273,24 @@ function Page() {
       if (response.ok) {
         clearLocalStorage();
         router.push("/home");
-      } else { // 500
-        let errorMessage = '';
-      switch (response.status) {
+      } else {
+        // 500
+        let errorMessage = "";
+        switch (response.status) {
           case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            errorMessage = "サーバーエラー（500）：処理に失敗しました。";
             setIsLoading(false); // ローディングを終了
             break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          setIsLoading(false); // ローディングを終了
-          break;
-      }
-      throw new Error(errorMessage);
+          default:
+            errorMessage = "予期しないエラーが発生しました。";
+            setIsLoading(false); // ローディングを終了
+            break;
+        }
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.log(error);
-        if (error instanceof Error) {
+      if (error instanceof Error) {
         toast({
           variant: "destructive",
           description: error.message,
@@ -286,35 +301,42 @@ function Page() {
           description: "予期しないエラーが発生しました。",
         });
       }
-  } finally {
-  }
-};
+    } finally {
+    }
+  };
 
   const handleChange = (value: string) => {
     setMode(value === "episode" ? 0 : 1);
   };
 
   useEffect(() => {
-    if(isSession){
+    if (isSession) {
       setIsLoading(false); // ローディングを終了
     }
   }, [isSession]);
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
+      <div
+        className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}
+      >
         <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
       </div>
     );
   }
 
   return (
-    <div className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col bg-theme${theme}-background text-gray-600`}>
+    <div
+      className={`relative mx-auto flex min-h-screen w-full max-w-md flex-col bg-theme${theme}-background text-gray-600`}
+    >
       <div className="fixed top-0 mb-5 flex w-full max-w-md flex-col justify-center bg-white pt-5 text-center">
         <div className="mb-1 flex">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger onClick={() => setIsOpen(true)} className="pl-5">
-              <IoChevronBackSharp size={"30px"} className={`text-theme${theme}-primary`} />
+              <IoChevronBackSharp
+                size={"30px"}
+                className={`text-theme${theme}-primary`}
+              />
             </DialogTrigger>
             <DialogContent className="w-[80%]">
               <DialogHeader>
@@ -336,7 +358,9 @@ function Page() {
                 </div>
                 <div onClick={handleDelete}>
                   <div className="my-2">
-                    <Button className={`w-[100px] rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}>
+                    <Button
+                      className={`w-[100px] rounded-full bg-theme${theme}-primary hover:bg-theme${theme}-hover`}
+                    >
                       はい
                     </Button>
                   </div>
@@ -344,7 +368,7 @@ function Page() {
               </div>
             </DialogContent>
           </Dialog>
-          <p className="mx-auto pr-12 text-md text-gray-700 font-medium">
+          <p className="text-md mx-auto pr-12 font-medium text-gray-700">
             {new Date().toLocaleString("ja-JP", {
               year: "numeric",
               month: "2-digit",
@@ -355,10 +379,12 @@ function Page() {
           </p>
         </div>
         {/* プルダウン */}
-        <div className="mx-auto flex space-x-5 mb-3 w-[60%] items-center justify-center text-sm font-medium">
-          <div className="flex items-center ">
+        <div className="mx-auto mb-3 flex w-[60%] items-center justify-center space-x-5 text-sm font-medium">
+          <div className="flex items-center">
             <Select onValueChange={handleChange}>
-              <SelectTrigger className={`hover:bg-gray-50 border-theme${theme}-primary`}>
+              <SelectTrigger
+                className={`hover:bg-gray-50 border-theme${theme}-primary`}
+              >
                 <SelectValue placeholder="物事を&nbsp;" />
               </SelectTrigger>
               <SelectContent>
@@ -372,7 +398,7 @@ function Page() {
           <p>深堀る！</p>
         </div>
       </div>
-      <div className="w-full mb-[120px] mt-[130px]">
+      <div className="mb-[120px] mt-[130px] w-full">
         {messages.map((message, index) => (
           <ChatCard key={index} isAI={message.isAI}>
             {message.text}
@@ -380,26 +406,41 @@ function Page() {
         ))}
       </div>
       {/* チャット欄 */}
-      <div className={`fixed bottom-0 w-full max-w-md items-end justify-center bg-theme${theme}-background pb-5 pt-3`}>
+      <div
+        className={`fixed bottom-0 w-full max-w-md items-end justify-center bg-theme${theme}-background pb-5 pt-3`}
+      >
         {isSending ? (
           // 送信中の表示
-          <LoaderCircle className={`w-[360px] animate-spin text-theme${theme}-primary`} />
+          <LoaderCircle
+            className={`mx-auto animate-spin text-theme${theme}-primary`}
+          />
         ) : isGenerating ? (
           // 日記生成中の表示
-          <p className="w-[360px] text-center">日記生成中...</p>
+          <p className="mx-auto text-center">日記生成中...</p>
         ) : (
           <div>
-           
             <div className="flex items-end justify-center space-x-2">
-               <div className="flex flex-col">
-               <p className="text-xs text-center pb-1">日記生成まであと <span className={`text-sm font-bold text-theme${theme}-primary`}>{5-count}</span> メッセージ</p>
-              <ResizeTextarea
-                className={`w-[300px] resize-none rounded border p-1 focus:outline-none border-theme${theme}-background`}
-                text={inputText}
-                onChange={(text) => setInputText(text)}
-                isLimit={true}
-                placeholder={count >= 1 ? "AIと会話して思い出を振り返りましょう" : "今日はどんなことがありましたか？"}
-              />
+              <div className="flex flex-col">
+                <p className="pb-1 text-center text-xs">
+                  日記生成まであと{" "}
+                  <span
+                    className={`text-sm font-bold text-theme${theme}-primary`}
+                  >
+                    {5 - count}
+                  </span>{" "}
+                  メッセージ
+                </p>
+                <ResizeTextarea
+                  className={`w-[300px] resize-none rounded border p-1 focus:outline-none border-theme${theme}-background`}
+                  text={inputText}
+                  onChange={(text) => setInputText(text)}
+                  isLimit={true}
+                  placeholder={
+                    count >= 1
+                      ? "AIと会話して思い出を振り返りましょう"
+                      : "今日はどんなことがありましたか？"
+                  }
+                />
               </div>
               <IoSendSharp
                 onClick={handleSend}

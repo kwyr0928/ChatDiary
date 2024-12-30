@@ -29,11 +29,9 @@ describe("getOtherUserDiaryData", () => {
     const diary5 = await initializeDiary(user5?.id as unknown as string);
     await updateDiary(diary5?.id as unknown as string, "summary", true);
 
-
     const share = await getOtherUserDiaryData(user?.id as unknown as string);
     expect(share).not.toBeNull();
-    expect(share?.userId).not.toBe(user?.id) //cuidの形式
+    expect(share?.userId).not.toBe(user?.id); //cuidの形式
     expect(share?.summary).toBe("summary");
-
   });
 });

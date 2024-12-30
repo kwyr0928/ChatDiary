@@ -1,6 +1,16 @@
 import type { z } from "zod";
 import { type diaryAndTagSchema, getSummary } from "~/lib/schemas";
-import { getDateDiariesByUserId, getDiaryData, getHistoryData, getMonthlyFeedBack, getOtherUserDiaryData, getRecentTagsByUserId, getTagByID, getTagConnectionsByDiary, getTodayContinuation } from "../repository/getdata";
+import {
+  getDateDiariesByUserId,
+  getDiaryData,
+  getHistoryData,
+  getMonthlyFeedBack,
+  getOtherUserDiaryData,
+  getRecentTagsByUserId,
+  getTagByID,
+  getTagConnectionsByDiary,
+  getTodayContinuation,
+} from "../repository/getdata";
 
 export const getDiariesAndTag = async (diaryId: string) => {
   try {
@@ -9,9 +19,9 @@ export const getDiariesAndTag = async (diaryId: string) => {
     const tagNames: string[] = [];
     const connections = await getTagConnectionsByDiary(diaryId);
     if (connections != null) {
-      for (const tag of connections){
+      for (const tag of connections) {
         const tagName = await getTagByID(tag.tagId);
-        if(tagName != null) tagNames.push(tagName.name);
+        if (tagName != null) tagNames.push(tagName.name);
       }
     }
     const diaryAndTagData: z.infer<typeof diaryAndTagSchema> = {
@@ -20,8 +30,8 @@ export const getDiariesAndTag = async (diaryId: string) => {
       isPublic: diaryData.isPublic,
       summary: diaryData.summary,
       created_at: diaryData.created_at,
-      tags: tagNames
-    }
+      tags: tagNames,
+    };
     return diaryAndTagData;
   } catch (error) {
     console.error("Error in getDiariesAndTag:", error);
@@ -30,13 +40,43 @@ export const getDiariesAndTag = async (diaryId: string) => {
 };
 
 export const getChatHistory = async (mode: number, diaryId: string) => {
-  const historyArray = []
-  if (mode == 0) {              // 物事モード
-    historyArray.push({ role: "user", parts: [{ text: "あなたは物事について深掘りする質問を得意とするアシスタントです。ユーザーが書いた文章に基づいて、その出来事や状況の背景、関連する要素、起こった結果について詳しく引き出し、それを深く理解する手助けをする質問を1つしてください。質問は親しみやすく、ユーザーが考えを整理しやすいトーンで簡潔に作成してください。" }] });
-    historyArray.push({ role: "model", parts: [{ text: 'はい、私は物事を深掘りする質問を得意とするアシスタントです。個人的な意見は述べず、リラックスしたトーンで、ユーザーが答えやすい簡単な質問を、80字以内の簡潔な文章で1つ作成します。' }] });
-  } else {                       // 感情モード
-    historyArray.push({ role: "user", parts: [{ text: "あなたは感情を深掘りする質問を得意とするアシスタントです。ユーザーが書いた文章に基づいて、そのときの感情や体験の背景を詳しく引き出し、価値観、強みを見つけ出すことにつながるような質問を1つしてください。質問は親しみやすく、ユーザーが考えを整理しやすいトーンで簡潔に作成してください。" }] });
-    historyArray.push({ role: "model", parts: [{ text: 'はい、私は感情を深掘りする質問を得意とするアシスタントです。個人的な意見は述べず、リラックスしたトーンで、ユーザーが答えやすい簡単な質問を、80字以内の簡潔な文章で1つ作成します。' }] });
+  const historyArray = [];
+  if (mode == 0) {
+    // 物事モード
+    historyArray.push({
+      role: "user",
+      parts: [
+        {
+          text: "あなたは物事について深掘りする質問を得意とするアシスタントです。ユーザーが書いた文章に基づいて、その出来事や状況の背景、関連する要素、起こった結果について詳しく引き出し、それを深く理解する手助けをする質問を1つしてください。質問は親しみやすく、ユーザーが考えを整理しやすいトーンで簡潔に作成してください。",
+        },
+      ],
+    });
+    historyArray.push({
+      role: "model",
+      parts: [
+        {
+          text: "はい、私は物事を深掘りする質問を得意とするアシスタントです。個人的な意見は述べず、リラックスしたトーンで、ユーザーが答えやすい簡単な質問を、80字以内の簡潔な文章で1つ作成します。",
+        },
+      ],
+    });
+  } else {
+    // 感情モード
+    historyArray.push({
+      role: "user",
+      parts: [
+        {
+          text: "あなたは感情を深掘りする質問を得意とするアシスタントです。ユーザーが書いた文章に基づいて、そのときの感情や体験の背景を詳しく引き出し、価値観、強みを見つけ出すことにつながるような質問を1つしてください。質問は親しみやすく、ユーザーが考えを整理しやすいトーンで簡潔に作成してください。",
+        },
+      ],
+    });
+    historyArray.push({
+      role: "model",
+      parts: [
+        {
+          text: "はい、私は感情を深掘りする質問を得意とするアシスタントです。個人的な意見は述べず、リラックスしたトーンで、ユーザーが答えやすい簡単な質問を、80字以内の簡潔な文章で1つ作成します。",
+        },
+      ],
+    });
   }
   const historyData = await getHistoryData(diaryId);
   if (historyData == null) return [];
@@ -47,7 +87,7 @@ export const getChatHistory = async (mode: number, diaryId: string) => {
     }
   }
   return historyArray;
-}
+};
 
 export const getRecentTagNamesByUserId = async (userId: string) => {
   try {
@@ -62,7 +102,7 @@ export const getRecentTagNamesByUserId = async (userId: string) => {
     console.error("Error in getRecentTagNamesByUserId:", error);
     return null;
   }
-}
+};
 
 export const getLastMonthFB = async (userId: string, target: number) => {
   try {
@@ -74,7 +114,7 @@ export const getLastMonthFB = async (userId: string, target: number) => {
     console.error("Error in getLastMonthFB:", error);
     return null;
   }
-}
+};
 
 export const getMonthlyContinuation = async (userId: string, today: Date) => {
   try {
@@ -99,7 +139,7 @@ export const getMonthlyContinuation = async (userId: string, today: Date) => {
     console.error("Error in getMonthlyContinuation:", error);
     return null;
   }
-}
+};
 
 export const getOtherUserDiary = async (userId: string) => {
   try {
@@ -111,9 +151,12 @@ export const getOtherUserDiary = async (userId: string) => {
     console.error("Error in getOtherUserDiary:", error);
     return null;
   }
-}
+};
 
-export const getMonthlyDiariesByUserId = async (userId: string, yearMonth: number) => {
+export const getMonthlyDiariesByUserId = async (
+  userId: string,
+  yearMonth: number,
+) => {
   try {
     const year = Math.floor(yearMonth / 100); // 上位4桁が年
     const month = yearMonth % 100; // 下位2桁が月
@@ -129,4 +172,4 @@ export const getMonthlyDiariesByUserId = async (userId: string, yearMonth: numbe
     console.error("Error in getOtherUserDiary:", error);
     return null;
   }
-}
+};

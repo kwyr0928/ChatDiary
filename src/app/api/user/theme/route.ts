@@ -17,8 +17,8 @@ export async function PUT(req: Request) {
     const userId = session?.user.id;
 
     const updated = await updateUserTheme(userId, theme);
-    if(updated==null) throw new Error("err in updateUserTheme");
-    
+    if (updated == null) throw new Error("err in updateUserTheme");
+
     return NextResponse.json({
       message: "update theme successfully",
       theme: updated?.theme,

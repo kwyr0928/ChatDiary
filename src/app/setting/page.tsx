@@ -20,26 +20,26 @@ import { useThemeStore } from "~/store/themeStore";
 type GetTagResponse = {
   message: string;
   tagList: string[];
-}
+};
 
 type GetUserResponse = {
   message: string;
   email: string;
   theme: number;
-}
+};
 
 type SignOutResponse = {
   message: string;
-}
+};
 
 type DeleteResponse = {
   message: string;
-}
+};
 
 type UpdateThemeResponse = {
   message: string;
   theme: number;
-}
+};
 
 export default function Page() {
   const theme = useThemeStore((state) => state.theme);
@@ -67,18 +67,19 @@ export default function Page() {
         if (tagResponse.ok) {
           setIsSession(true);
           setTags(tagResponseData.tagList);
-        } else { // 401 500
-          let errorMessage = '';
+        } else {
+          // 401 500
+          let errorMessage = "";
           switch (tagResponse.status) {
             case 401:
-              errorMessage = '認証エラー（401）: ログインが必要です。';
+              errorMessage = "認証エラー（401）: ログインが必要です。";
               router.push("/signin");
               break;
             case 500:
-              errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+              errorMessage = "サーバーエラー（500）：処理に失敗しました。";
               break;
             default:
-              errorMessage = '予期しないエラーが発生しました。';
+              errorMessage = "予期しないエラーが発生しました。";
               break;
           }
           throw new Error(errorMessage);
@@ -90,23 +91,25 @@ export default function Page() {
             "Content-Type": "application/json",
           },
         });
-        const emailResponseData = (await emailResponse.json()) as GetUserResponse;
+        const emailResponseData =
+          (await emailResponse.json()) as GetUserResponse;
         console.log(emailResponseData);
         if (emailResponse.ok) {
           setIsSession(true);
           setEmail(emailResponseData.email);
-        } else { // 401 500
-          let errorMessage = '';
+        } else {
+          // 401 500
+          let errorMessage = "";
           switch (emailResponse.status) {
             case 401:
-              errorMessage = '認証エラー（401）: ログインが必要です。';
+              errorMessage = "認証エラー（401）: ログインが必要です。";
               router.push("/signin");
               break;
             case 500:
-              errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+              errorMessage = "サーバーエラー（500）：処理に失敗しました。";
               break;
             default:
-              errorMessage = '予期しないエラーが発生しました。';
+              errorMessage = "予期しないエラーが発生しました。";
               break;
           }
           throw new Error(errorMessage);
@@ -131,7 +134,8 @@ export default function Page() {
       }
     };
     void fetchInitialData();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router]);
 
   // 退会処理
   const handleDeleteUser = async () => {
@@ -148,19 +152,20 @@ export default function Page() {
       if (response.ok) {
         setIsSession(true);
         router.push("/setting/delete/complete");
-      } else { // 401 500
-        let errorMessage = '';
+      } else {
+        // 401 500
+        let errorMessage = "";
         switch (response.status) {
           case 401:
-            errorMessage = '認証エラー（401）: ログインが必要です。';
+            errorMessage = "認証エラー（401）: ログインが必要です。";
             router.push("/signin");
             break;
           case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            errorMessage = "サーバーエラー（500）：処理に失敗しました。";
             setIsLoading(false); // ローディングを終了
             break;
           default:
-            errorMessage = '予期しないエラーが発生しました。';
+            errorMessage = "予期しないエラーが発生しました。";
             setIsLoading(false); // ローディングを終了
             break;
         }
@@ -197,15 +202,16 @@ export default function Page() {
       if (response.ok) {
         setTheme(0);
         router.push("/signin");
-      } else { // 500
-        let errorMessage = '';
+      } else {
+        // 500
+        let errorMessage = "";
         switch (response.status) {
           case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            errorMessage = "サーバーエラー（500）：処理に失敗しました。";
             setIsLoading(false); // ローディングを終了
             break;
           default:
-            errorMessage = '予期しないエラーが発生しました。';
+            errorMessage = "予期しないエラーが発生しました。";
             setIsLoading(false); // ローディングを終了
             break;
         }
@@ -236,7 +242,8 @@ export default function Page() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-        }, body: JSON.stringify({
+        },
+        body: JSON.stringify({
           theme: themeNum,
         }),
       });
@@ -247,18 +254,19 @@ export default function Page() {
         toast({
           description: "テーマカラーを変更しました！",
         });
-      } else { // 401 500
-        let errorMessage = '';
+      } else {
+        // 401 500
+        let errorMessage = "";
         switch (response.status) {
           case 401:
-            errorMessage = '認証エラー（401）: ログインが必要です。';
+            errorMessage = "認証エラー（401）: ログインが必要です。";
             router.push("/signin");
             break;
           case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            errorMessage = "サーバーエラー（500）：処理に失敗しました。";
             break;
           default:
-            errorMessage = '予期しないエラーが発生しました。';
+            errorMessage = "予期しないエラーが発生しました。";
             break;
         }
         throw new Error(errorMessage);
@@ -304,18 +312,19 @@ export default function Page() {
         toast({
           description: "タグを削除しました。",
         });
-      } else { // 401 500
-        let errorMessage = '';
+      } else {
+        // 401 500
+        let errorMessage = "";
         switch (response.status) {
           case 401:
-            errorMessage = '認証エラー（401）: ログインが必要です。';
+            errorMessage = "認証エラー（401）: ログインが必要です。";
             router.push("/signin");
             break;
           case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+            errorMessage = "サーバーエラー（500）：処理に失敗しました。";
             break;
           default:
-            errorMessage = '予期しないエラーが発生しました。';
+            errorMessage = "予期しないエラーが発生しました。";
             break;
         }
         throw new Error(errorMessage);
@@ -348,15 +357,19 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}>
+      <div
+        className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme${theme}-background text-gray-600`}
+      >
         <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
       </div>
     );
   }
 
   return (
-    <div className={`relative mb-[80px] mx-auto min-h-screen w-full max-w-md bg-theme${theme}-background text-gray-600`}>
-      <div className="">
+    <div
+      className={`relative mx-auto min-h-screen w-full max-w-md bg-theme${theme}-background text-gray-600`}
+    >
+      <div className="mb-[80px]">
         <div className="mx-auto flex flex-col items-center">
           <div className="ml-8 mr-auto">
             <p className="mt-8 w-full text-left text-xl font-bold">
@@ -368,39 +381,59 @@ export default function Page() {
           </div>
 
           <div className="ml-8 mr-auto mt-12">
-            <p className="mb-4 w-full text-left text-xl font-bold">タグの編集</p>
+            <p className="mb-4 w-full text-left text-xl font-bold">
+              タグの編集
+            </p>
           </div>
           <div className="w-[85%]">
             <TagListSetting initialList={tags} onDeleteTags={handleDeleteTag} />
           </div>
         </div>
 
-        <div className="mt-6 ml-8 mr-auto">
+        <div className="ml-8 mr-auto mt-6">
           <div className="mb-4 w-full text-left text-xl font-bold">
             テーマカラー
-            <div className="flex space-x-4 mt-5 mb-16">
+            <div className="mb-16 mt-5 flex space-x-4">
               {/* テーマカラー変更4 */}
-              <div className="w-8 h-8 bg-theme0-primary rounded-full flex items-center justify-center" onClick={() => handleThemeChange(0)}>
-                {theme === 0 && <Check size={18} className="text-white"/>}
+              <div
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-theme0-primary"
+                onClick={() => handleThemeChange(0)}
+              >
+                {theme === 0 && <Check size={18} className="text-white" />}
               </div>
-              <div className="w-8 h-8 bg-theme1-primary rounded-full flex items-center justify-center" onClick={() => handleThemeChange(1)}>
-                {theme === 1 && <Check size={18} className="text-white"/>}
+              <div
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-theme1-primary"
+                onClick={() => handleThemeChange(1)}
+              >
+                {theme === 1 && <Check size={18} className="text-white" />}
               </div>
-              <div className="w-8 h-8 bg-theme2-primary rounded-full flex items-center justify-center" onClick={() => handleThemeChange(2)}>
-                {theme === 2 && <Check size={18} className="text-white"/>}
+              <div
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-theme2-primary"
+                onClick={() => handleThemeChange(2)}
+              >
+                {theme === 2 && <Check size={18} className="text-white" />}
               </div>
-              <div className="w-8 h-8 bg-theme3-primary rounded-full flex items-center justify-center" onClick={() => handleThemeChange(3)}>
-                {theme === 3 && <Check size={18} className="text-white"/>}
+              <div
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-theme3-primary"
+                onClick={() => handleThemeChange(3)}
+              >
+                {theme === 3 && <Check size={18} className="text-white" />}
               </div>
-              <div className="w-8 h-8 bg-theme4-primary rounded-full flex items-center justify-center" onClick={() => handleThemeChange(4)}>
-                {theme === 4 && <Check size={18} className="text-white"/>}
+              <div
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-theme4-primary"
+                onClick={() => handleThemeChange(4)}
+              >
+                {theme === 4 && <Check size={18} className="text-white" />}
               </div>
-              <div className="w-8 h-8 bg-theme5-hover rounded-full flex items-center justify-center" onClick={() => handleThemeChange(5)}>
-                {theme === 5 && <Check size={18} className="text-white"/>}
+              <div
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-theme5-hover"
+                onClick={() => handleThemeChange(5)}
+              >
+                {theme === 5 && <Check size={18} className="text-white" />}
               </div>
             </div>
           </div>
-          </div>
+        </div>
 
         <div className="mx-auto mt-5 w-[60%]">
           <Button
@@ -447,7 +480,6 @@ export default function Page() {
           </DialogContent>
         </Dialog>
       </div>
-      
 
       <div className="fixed bottom-0 flex w-full max-w-md justify-around bg-white py-5">
         <Link href={"/setting"}>
@@ -463,4 +495,3 @@ export default function Page() {
     </div>
   );
 }
-

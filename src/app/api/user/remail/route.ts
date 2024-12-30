@@ -14,14 +14,15 @@ export async function POST(req: Request) {
     const key = new TextEncoder().encode(secret);
 
     const payload = {
-        id: userId,
-        email: email,
-    }
-    const token = await new SignJWT(payload).setProtectedHeader({alg:"HS256"})
-    .setExpirationTime("5m") //5min
-    .sign(key);
-    console.log("signup token: "+token);
-    
+      id: userId,
+      email: email,
+    };
+    const token = await new SignJWT(payload)
+      .setProtectedHeader({ alg: "HS256" })
+      .setExpirationTime("5m") //5min
+      .sign(key);
+    console.log("signup token: " + token);
+
     // created_atを更新
     await updateUserCreated(userId);
 

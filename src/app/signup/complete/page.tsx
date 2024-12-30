@@ -10,11 +10,11 @@ import { useThemeStore } from "~/store/themeStore";
 
 type CertificationResponse = {
   message: string;
-}
+};
 
 type ErrorResponse = {
   error: string;
-}
+};
 
 export default function Complete() {
   return (
@@ -40,39 +40,42 @@ function Page() {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "authorization": `JWT ${token}`,
-          }
+            authorization: `JWT ${token}`,
+          },
         });
         if (response.ok) {
           setIsSession(true);
-        const responseData = (await response.json()) as CertificationResponse;
-        console.log(responseData);
-        } else { // 401 404 500
-          let errorMessage = '';
-      switch (response.status) {
-        case 401:
-          const errorData = (await response.json()) as ErrorResponse;
-      if (errorData.error === "Token expired") {
-          errorMessage = '期限切れ（401）: トークンの有効期限が切れています。';
-          router.push("/signup/expired");
-      } else {
-        errorMessage = '認証済み（401）: 既に認証が完了しております。ログインをお試しください。';
-        router.push("/signin");
-      }
-          break;
-          case 404:
-          errorMessage = 'Not Found（404）: ユーザーが見つかりません';
-          router.push("/signin");
-          break;
-          case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
-            router.push("/signin");
-            break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          break;
-      }
-      throw new Error(errorMessage);
+          const responseData = (await response.json()) as CertificationResponse;
+          console.log(responseData);
+        } else {
+          // 401 404 500
+          let errorMessage = "";
+          switch (response.status) {
+            case 401:
+              const errorData = (await response.json()) as ErrorResponse;
+              if (errorData.error === "Token expired") {
+                errorMessage =
+                  "期限切れ（401）: トークンの有効期限が切れています。";
+                router.push("/signup/expired");
+              } else {
+                errorMessage =
+                  "認証済み（401）: 既に認証が完了しております。ログインをお試しください。";
+                router.push("/signin");
+              }
+              break;
+            case 404:
+              errorMessage = "Not Found（404）: ユーザーが見つかりません";
+              router.push("/signin");
+              break;
+            case 500:
+              errorMessage = "サーバーエラー（500）：処理に失敗しました。";
+              router.push("/signin");
+              break;
+            default:
+              errorMessage = "予期しないエラーが発生しました。";
+              break;
+          }
+          throw new Error(errorMessage);
         }
       } catch (error) {
         console.log(error);
@@ -87,37 +90,42 @@ function Page() {
               description: error.message,
             });
           }
-      } else {
-        toast({
-          variant: "destructive",
-          description: "予期しないエラーが発生しました。",
-        });
-      }
+        } else {
+          toast({
+            variant: "destructive",
+            description: "予期しないエラーが発生しました。",
+          });
+        }
       } finally {
-        if(isSession){
+        if (isSession) {
           setIsLoading(false); // ローディングを終了
         }
       }
     };
     void fetchCertification();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, token]);
 
   useEffect(() => {
-    if(isSession){
+    if (isSession) {
       setIsLoading(false); // ローディングを終了
     }
   }, [isSession]);
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}>
+      <div
+        className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}
+      >
         <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
       </div>
     );
   }
 
   return (
-    <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}>
+    <div
+      className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}
+    >
       <div className="flex h-[350px] w-[80%] flex-col items-center justify-center rounded-md bg-white">
         <p className="my-8 text-xl font-bold">登録完了</p>
         <div className="flex w-[80%] flex-col space-y-5 text-left">

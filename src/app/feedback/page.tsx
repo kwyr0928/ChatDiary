@@ -24,7 +24,7 @@ export default function Page() {
   const year = now.getFullYear();
   const month = now.getMonth() + 1;
   const [isSession, setIsSession] = useState(false);
-  const loadingText = "読み込み中..."
+  const loadingText = "読み込み中...";
 
   useEffect(() => {
     const fetchFeedBack = async () => {
@@ -40,18 +40,19 @@ export default function Page() {
         if (response.ok) {
           setIsSession(true);
           setFeedback(responseData);
-        } else { // 401 500
-          let errorMessage = '';
+        } else {
+          // 401 500
+          let errorMessage = "";
           switch (response.status) {
             case 401:
-              errorMessage = '認証エラー（401）: ログインが必要です。';
+              errorMessage = "認証エラー（401）: ログインが必要です。";
               router.push("/signin");
               break;
             case 500:
-              errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
+              errorMessage = "サーバーエラー（500）：処理に失敗しました。";
               break;
             default:
-              errorMessage = '予期しないエラーが発生しました。';
+              errorMessage = "予期しないエラーが発生しました。";
               break;
           }
           throw new Error(errorMessage);
@@ -76,7 +77,8 @@ export default function Page() {
       }
     };
     void fetchFeedBack();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [month, router, year]);
 
   useEffect(() => {
     if (isSession) {
@@ -86,32 +88,37 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md items-center justify-center bg-theme${theme}-background text-rose-950`}>
-          {loadingText.split("").map((char, index) => (
-            <span
+      <div
+        className={`mx-auto flex min-h-screen w-full max-w-md items-center justify-center bg-theme${theme}-background text-rose-950`}
+      >
+        {loadingText.split("").map((char, index) => (
+          <span
             key={index}
             style={{ animationDelay: `${index * 0.1}s` }}
-            className={`animate-loadingBounce pb-4 text-3xl italic font-medium tracking-wider font-mplus flex-col`}
+            className={`animate-loadingBounce flex-col pb-4 font-mplus text-3xl font-medium italic tracking-wider`}
           >
             {char}
           </span>
-          ))}
-        </div>
+        ))}
+      </div>
     );
   }
 
   return (
-    <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-theme${theme}-background text-gray-600`}>
+    <div
+      className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center bg-theme${theme}-background text-gray-600`}
+    >
       <div className="mx-auto mb-[110px] w-[85%]">
         <p className="mb-5 mt-8 w-full text-left text-xl font-bold">
           {year}年{month}月の継続状況
         </p>
-        <div className="grid grid-cols-7 items-center place-items-center gap-3">
+        <div className="grid grid-cols-7 place-items-center items-center gap-3">
           {feedback?.continuation.map((isActive, index) => (
             <div
               key={index}
-              className={`h-4 w-4 rounded-full ${isActive ? "bg-green-500" : "bg-gray-300"
-                } `}
+              className={`h-4 w-4 rounded-full ${
+                isActive ? "bg-green-500" : "bg-gray-300"
+              } `}
             />
           ))}
         </div>
@@ -122,7 +129,7 @@ export default function Page() {
         <Card className={`shadow-none border-theme${theme}-background`}>
           <CardContent className="px-5 py-3">{feedback?.monthly}</CardContent>
         </Card>
-        <p className="mb-3 mt-9  w-full text-left text-xl font-bold">
+        <p className="mb-3 mt-9 w-full text-left text-xl font-bold">
           あなたの分析
         </p>
         {/* カード */}
@@ -138,7 +145,10 @@ export default function Page() {
           <IoHomeSharp size={"50px"} color="gray" />
         </Link>
         <Link href={"/feedback"}>
-          <IoBarChartSharp size={"50px"} className={`text-theme${theme}-primary`} />
+          <IoBarChartSharp
+            size={"50px"}
+            className={`text-theme${theme}-primary`}
+          />
         </Link>
       </div>
     </div>

@@ -78,7 +78,7 @@ export const continuationSchema = z.object({
   id: z.string().min(1).optional(),
   userId: z.string().min(1),
   day: z.number(),
-  done: z.boolean()
+  done: z.boolean(),
 });
 
 /////////////
@@ -97,20 +97,20 @@ export const chatLogSchema = z.object({
 // /api/user/signup
 export const postSignup = z.object({
   email: z.string().email({
-    message: 'メールアドレスを入力してください。',
+    message: "メールアドレスを入力してください。",
   }),
   password: z.string().min(1, {
-    message: 'パスワードを入力してください。',
+    message: "パスワードを入力してください。",
   }),
 });
 
 // /api/user/signin
 export const postSignin = z.object({
   email: z.string().email({
-    message: 'メールアドレスを入力してください。',
+    message: "メールアドレスを入力してください。",
   }),
   password: z.string().min(1, {
-    message: 'パスワードを入力してください。',
+    message: "パスワードを入力してください。",
   }),
 });
 
@@ -134,7 +134,6 @@ export const putResister = z.object({
   token: z.string(),
 });
 
-
 // api/chat/[id]/send
 export const postSendChat = z.object({
   mode: z.number(),
@@ -146,7 +145,7 @@ export const postSendChat = z.object({
 export const putDiary = z.object({
   tags: z.array(z.string()),
   summary: z.string(),
-  isPublic: z.boolean()
+  isPublic: z.boolean(),
 });
 
 export const newTag = z.object({
@@ -178,5 +177,5 @@ export const diaryAndTagSchema = z.object({
   summary: z.string().min(1).optional(),
   isPublic: z.boolean(),
   created_at: z.date().optional(),
-  tags: z.array(z.string())
+  tags: z.array(z.string()),
 });

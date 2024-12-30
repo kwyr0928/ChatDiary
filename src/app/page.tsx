@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { LoaderCircle } from "lucide-react";
 import Image from "next/image";
@@ -10,7 +10,7 @@ type GetUserResponse = {
   message: string;
   email: string;
   theme: number;
-}
+};
 
 export default function Page() {
   const theme = useThemeStore((state) => state.theme);
@@ -31,22 +31,22 @@ export default function Page() {
         console.log(responseData);
         if (response.ok) {
           setTheme(responseData.theme);
-          router.replace("/home")
+          router.replace("/home");
         } else {
-          let errorMessage = '';
-      switch (response.status) {
-        case 401:
-          errorMessage = '認証エラー（401）: ログインが必要です。';
-          router.push("/signin");
-          break;
-          case 500:
-            errorMessage = 'サーバーエラー（500）：処理に失敗しました。';
-            break;
-        default:
-          errorMessage = '予期しないエラーが発生しました。';
-          break;
-      }
-      throw new Error(errorMessage);
+          let errorMessage = "";
+          switch (response.status) {
+            case 401:
+              errorMessage = "認証エラー（401）: ログインが必要です。";
+              router.push("/signin");
+              break;
+            case 500:
+              errorMessage = "サーバーエラー（500）：処理に失敗しました。";
+              break;
+            default:
+              errorMessage = "予期しないエラーが発生しました。";
+              break;
+          }
+          throw new Error(errorMessage);
         }
       } catch (error) {
         console.log(error);
@@ -54,15 +54,16 @@ export default function Page() {
       } finally {
         setIsLoading(false); // ローディング状態を解除
       }
-    }
+    };
 
     void start();
-  }, [router, setTheme])
-  
+  }, [router, setTheme]);
 
   if (isLoading) {
     return (
-      <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}>
+      <div
+        className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}
+      >
         <Image
           src="/logo.png"
           alt="logo"
@@ -72,11 +73,13 @@ export default function Page() {
         />
         <LoaderCircle className={`animate-spin text-theme${theme}-primary`} />
       </div>
-    )
+    );
   }
 
   return (
-    <div className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}>
+    <div
+      className={`mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center bg-theme0-background text-gray-600`}
+    >
       <Image
         src="/logo.png"
         alt="logo"

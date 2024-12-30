@@ -8,7 +8,7 @@ import { getRecentTagNamesByUserId } from "~/server/service/fetch";
 export async function DELETE(req: Request) {
   try {
     const session = await auth();
-    if(session==null) {
+    if (session == null) {
       return NextResponse.json(
         { error: "can't get login session." },
         { status: 401 },
@@ -19,7 +19,7 @@ export async function DELETE(req: Request) {
 
     const nameArray = z.array(z.string()).parse(names);
     await deleteTags(userId, nameArray);
-    
+
     return NextResponse.json({
       message: "delete tag successfully",
     });
@@ -35,7 +35,7 @@ export async function DELETE(req: Request) {
 export async function GET() {
   try {
     const session = await auth();
-    if(session==null) {
+    if (session == null) {
       return NextResponse.json(
         { error: "can't get login session." },
         { status: 401 },
@@ -45,10 +45,11 @@ export async function GET() {
 
     // タグ一覧取得
     const getTagNames = await getRecentTagNamesByUserId(userId);
-    if(getTagNames==null) throw new Error("err in getRecentTagNamesByUserId");
+    if (getTagNames == null)
+      throw new Error("err in getRecentTagNamesByUserId");
     return NextResponse.json({
       message: "get tag successfully",
-      tagList: getTagNames
+      tagList: getTagNames,
     });
   } catch (error) {
     console.error("Error in GET tag request:", error);

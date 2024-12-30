@@ -3,7 +3,13 @@ import { z } from "zod";
 import { chatLogSchema, putDiary } from "~/lib/schemas";
 import { auth } from "~/server/auth";
 import { deleteDiary } from "~/server/repository/deletedata";
-import { getChatsByDiaryId, getDiaryData, getTagByID, getTagByName, getTagConnectionsByDiary } from "~/server/repository/getdata";
+import {
+  getChatsByDiaryId,
+  getDiaryData,
+  getTagByID,
+  getTagByName,
+  getTagConnectionsByDiary,
+} from "~/server/repository/getdata";
 import { updateDiary, updateRecentTag } from "~/server/repository/updatedata";
 import { connectDiaryTag, createTag } from "~/server/service/create";
 import { deleteTagConnectionsByName } from "~/server/service/delete";
@@ -12,13 +18,10 @@ import { getRecentTagNamesByUserId } from "~/server/service/fetch";
 // 特定の日記の詳細GET
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    // eslint-disable-next-line @typescript-eslint/await-thenable
-    const par = await params;
-    console.log(par);
-    const diaryId = z.string().parse(par.id); //パスパラメータ
+    const diaryId = z.string().parse((await params).id); //パスパラメータ
     const session = await auth();
     if (session == null) {
       return NextResponse.json(
@@ -33,7 +36,8 @@ export async function GET(
     // タグ取得
     const tags = [];
     const tagConnections = await getTagConnectionsByDiary(diaryId);
-    if (tagConnections == null) throw new Error("err in getTagConnectionsByDiary");
+    if (tagConnections == null)
+      throw new Error("err in getTagConnectionsByDiary");
     for (const tag of tagConnections) {
       const tagData = await getTagByID(tag.tagId);
       if (tagData == null) throw new Error("err in getTagByID");
@@ -70,12 +74,10 @@ export async function GET(
 // タグ、本文、公開範囲更新のPUT
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    // eslint-disable-next-line @typescript-eslint/await-thenable
-    const par = await params;
-    const diaryId = z.string().parse(par.id); //パスパラメータ
+    const diaryId = z.string().parse((await params).id); //パスパラメータ
     const { summary, tags, isPublic } = putDiary.parse(await req.json()); //body
 
     const session = await auth();
@@ -93,7 +95,8 @@ export async function PUT(
     // 今あるタグ取得
     const nowTags: string[] = [];
     const tagConnections = await getTagConnectionsByDiary(diaryId);
-    if (tagConnections == null) throw new Error("err in getTagConnectionsByDiary");
+    if (tagConnections == null)
+      throw new Error("err in getTagConnectionsByDiary");
 
     for (const tag of tagConnections) {
       const tagData = await getTagByID(tag.tagId);
@@ -123,7 +126,8 @@ export async function PUT(
       }
     }
     const deleteTagNames = nowTags.filter((val) => !tags.includes(val));
-    if (deleteTagNames.length > 0) await deleteTagConnectionsByName(userId, diaryId, deleteTagNames);
+    if (deleteTagNames.length > 0)
+      await deleteTagConnectionsByName(userId, diaryId, deleteTagNames);
     return NextResponse.json({
       message: "update diary successfully",
       diaryData: updatedDiary,
@@ -140,12 +144,10 @@ export async function PUT(
 // 日記削除DELETE
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    // eslint-disable-next-line @typescript-eslint/await-thenable
-    const par = await params;
-    const diaryId = z.string().parse(par.id); //パスパラメータ
+    const diaryId = z.string().parse((await params).id); //パスパラメータ
 
     const deleted = await deleteDiary(diaryId);
     if (deleted == null) throw new Error("err in deleteDiary");
